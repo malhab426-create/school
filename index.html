@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مدارس الإمام أحمد للأيتام في الشمال السوري</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --primary:#0d3b66; --primary-dark:#082a4a; --gold:#d4a017; --gold-light:#f0c14b;
+  --bg:#f7f9fc; --text:#1a1a1a; --muted:#5a6472; --white:#fff;
+  --success:#16a34a; --danger:#dc2626; --warn:#f59e0b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+a{text-decoration:none;color:inherit;}
+button,input,select,textarea{font-family:inherit;}
+
+/* ==== Header ==== */
+header{position:sticky;top:0;z-index:1000;background:var(--white);box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;gap:20px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:18px;}
+.logo{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--gold));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:12px;text-align:center;border:3px solid var(--gold);overflow:hidden;}
+.logo img{width:100%;height:100%;object-fit:cover;}
+.school-name{text-align:center;}
+.school-name h1{font-size:20px;color:var(--primary);font-weight:900;}
+.school-name p{font-size:13px;color:var(--muted);margin-top:2px;}
+nav ul{display:flex;list-style:none;gap:26px;align-items:center;}
+nav a{font-weight:500;color:var(--text);font-size:15px;transition:.2s;position:relative;}
+nav a:hover{color:var(--primary);}
+nav a::after{content:"";position:absolute;bottom:-6px;right:0;width:0;height:2px;background:var(--gold);transition:.3s;}
+nav a:hover::after{width:100%;}
+
+/* ==== Buttons ==== */
+.btn{display:inline-block;padding:10px 22px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.25s;text-align:center;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);}
+.btn-outline{background:transparent;border:2px solid #fff;color:#fff;}
+.btn-outline:hover{background:#fff;color:var(--primary);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-sm{padding:6px 14px;font-size:13px;}
+
+/* ==== Hero ==== */
+.hero{background:linear-gradient(rgba(13,59,102,.85),rgba(13,59,102,.85)),linear-gradient(135deg,#0d3b66,#082a4a);color:#fff;padding:100px 40px;text-align:center;}
+.hero h2{font-size:42px;font-weight:900;margin-bottom:20px;line-height:1.4;}
+.hero p{font-size:19px;max-width:700px;margin:0 auto 35px;color:#e6eef7;}
+.hero .btn{margin:0 8px;}
+
+/* ==== Sections ==== */
+section{padding:80px 40px;}
+.container{max-width:1150px;margin:0 auto;}
+.section-title{text-align:center;font-size:32px;font-weight:900;color:var(--primary);margin-bottom:12px;}
+.section-sub{text-align:center;color:var(--muted);margin-bottom:50px;font-size:17px;}
+.divider{width:70px;height:4px;background:var(--gold);margin:0 auto 20px;border-radius:2px;}
+.about-text{max-width:900px;margin:0 auto;text-align:center;font-size:17px;color:#333;line-height:2;}
+.vm-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:20px;}
+.vm-card{background:#fff;padding:40px 30px;border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.06);border-top:5px solid var(--gold);transition:.3s;}
+.vm-card:hover{transform:translateY(-6px);}
+.vm-card .icon{font-size:38px;margin-bottom:16px;}
+.vm-card h3{color:var(--primary);font-size:22px;margin-bottom:14px;}
+.vm-card p{color:#444;font-size:16px;line-height:1.9;}
+.values{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;}
+.value-card{background:#fff;padding:28px 20px;border-radius:14px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.05);transition:.3s;border:1px solid #eef2f7;}
+.value-card:hover{transform:translateY(-6px);border-color:var(--gold);}
+.value-card .vi{font-size:34px;margin-bottom:12px;}
+.value-card h4{color:var(--primary);font-size:18px;}
+.programs-bg{background:#fff;}
+.programs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;}
+.program-card{background:var(--bg);padding:30px 26px;border-radius:14px;border-right:5px solid var(--primary);transition:.3s;}
+.program-card:hover{background:#eef4fb;border-right-color:var(--gold);}
+.program-card h4{color:var(--primary);font-size:19px;margin-bottom:10px;}
+.program-card p{color:#555;font-size:15px;line-height:1.8;}
+.staff{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;}
+.staff-card{background:#fff;padding:26px 18px;border-radius:14px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.05);transition:.3s;}
+.staff-card:hover{transform:translateY(-5px);}
+.staff-avatar{width:90px;height:90px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--primary),var(--gold));color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;}
+.staff-card h4{color:var(--primary);font-size:17px;margin-bottom:4px;}
+.staff-card p{color:var(--muted);font-size:14px;}
+.cta{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;text-align:center;border-radius:20px;padding:60px 30px;margin:0 auto;max-width:1000px;}
+.cta h3{font-size:28px;margin-bottom:14px;}
+.cta p{margin-bottom:26px;color:#dbe6f3;}
+footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:36px;max-width:1150px;margin:0 auto 30px;}
+.footer-grid h4{color:var(--gold);margin-bottom:16px;font-size:17px;}
+.footer-grid p,.footer-grid a{font-size:14px;color:#c9d6e5;display:block;margin-bottom:8px;}
+.footer-grid a:hover{color:var(--gold);}
+.footer-bottom{border-top:1px solid #1c3b5c;text-align:center;padding-top:18px;font-size:13px;color:#8fa3ba;max-width:1150px;margin:0 auto;}
+
+/* ==== Login ==== */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));}
+.auth-card{background:#fff;padding:45px 40px;border-radius:18px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.auth-card h2{color:var(--primary);text-align:center;font-size:26px;margin-bottom:8px;}
+.auth-card .sub{text-align:center;color:var(--muted);margin-bottom:30px;font-size:14px;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;margin-bottom:6px;font-size:14px;font-weight:700;color:#333;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border:1.5px solid #d5dde8;border-radius:8px;font-size:15px;transition:.2s;background:#fbfcfe;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);background:#fff;}
+.auth-card .btn{width:100%;padding:12px;font-size:16px;}
+.auth-error{background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:16px;display:none;}
+.auth-info{background:#dbeafe;color:#1e40af;padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:16px;}
+
+/* ==== Dashboard ==== */
+.dash-wrap{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
+.sidebar{background:var(--primary-dark);color:#c9d6e5;padding:24px 18px;}
+.sidebar .brand-sm{display:flex;align-items:center;gap:10px;padding-bottom:18px;border-bottom:1px solid #1c3b5c;margin-bottom:20px;}
+.sidebar .brand-sm .logo{width:44px;height:44px;font-size:10px;border-width:2px;}
+.sidebar .brand-sm h3{color:#fff;font-size:14px;line-height:1.3;}
+.sidebar .user-info{background:#0d3b66;padding:12px;border-radius:10px;margin-bottom:20px;font-size:13px;}
+.sidebar .user-info .role{color:var(--gold);font-weight:700;margin-top:4px;}
+.sidebar nav ul{display:flex;flex-direction:column;gap:4px;list-style:none;}
+.sidebar nav a{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:8px;color:#c9d6e5;font-size:14.5px;transition:.2s;cursor:pointer;}
+.sidebar nav a:hover,.sidebar nav a.active{background:var(--primary);color:#fff;}
+.sidebar nav a::after{display:none;}
+.sidebar .logout{margin-top:20px;padding-top:20px;border-top:1px solid #1c3b5c;}
+.main{padding:30px 40px;overflow-x:auto;}
+.page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;flex-wrap:wrap;gap:12px;}
+.page-head h2{color:var(--primary);font-size:26px;}
+.page-head p{color:var(--muted);font-size:14px;}
+
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 18px rgba(0,0,0,.05);margin-bottom:22px;}
+.card h3{color:var(--primary);margin-bottom:16px;font-size:19px;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.stat{background:#fff;padding:22px;border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.05);border-right:5px solid var(--gold);}
+.stat .num{font-size:30px;font-weight:900;color:var(--primary);}
+.stat .lbl{color:var(--muted);font-size:14px;margin-top:6px;}
+
+table{width:100%;border-collapse:collapse;font-size:14px;}
+table th{background:#f0f4f9;padding:12px;text-align:right;color:var(--primary);font-weight:700;border-bottom:2px solid #e2e8f0;}
+table td{padding:11px 12px;border-bottom:1px solid #eef2f7;}
+table tr:hover td{background:#fafbfd;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;}
+.badge-success{background:#dcfce7;color:#166534;}
+.badge-warn{background:#fef3c7;color:#92400e;}
+.badge-danger{background:#fee2e2;color:#991b1b;}
+.badge-info{background:#dbeafe;color:#1e40af;}
+
+.empty{text-align:center;padding:40px;color:var(--muted);font-size:14px;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;}
+.modal-overlay.show{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:28px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal h3{color:var(--primary);margin-bottom:20px;}
+.modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--primary);color:#fff;padding:12px 22px;border-radius:10px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:.3s;z-index:3000;opacity:0;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.toast.error{background:var(--danger);}
+.toast.success{background:var(--success);}
+
+@media (max-width:900px){
+  .topbar{padding:10px 20px;}
+  nav ul{gap:14px;font-size:14px;}
+  .school-name h1{font-size:16px;}
+  .hero{padding:70px 20px;}
+  .hero h2{font-size:28px;}
+  section{padding:60px 20px;}
+  .section-title{font-size:24px;}
+  .vm-grid{grid-template-columns:1fr;}
+  .dash-wrap{grid-template-columns:1fr;}
+  .sidebar{position:fixed;inset:0 auto 0 0;width:260px;transform:translateX(-100%);transition:.3s;z-index:1500;overflow-y:auto;}
+  .sidebar.open{transform:translateX(0);}
+  .main{padding:20px;}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}
+}
+@media (max-width:600px){
+  nav{display:none;}
+  .logo{width:48px;height:48px;font-size:10px;}
+  .school-name h1{font-size:14px;}
+  .school-name p{font-size:11px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LANDING PAGE ============ -->
+<div id="landing">
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo" id="logo1">شعار 1</div>
+      <div class="school-name">
+        <h1>مدارس الإمام أحمد للأيتام</h1>
+        <p>في الشمال السوري</p>
+      </div>
+      <div class="logo" id="logo2">شعار 2</div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#about">عن المدرسة</a></li>
+        <li><a href="#vision">الرؤية والرسالة</a></li>
+        <li><a href="#programs">البرامج والمناهج</a></li>
+        <li><a href="#staff">الكادر</a></li>
+        <li><a href="#contact">تواصل معنا</a></li>
+      </ul>
+    </nav>
+    <button class="btn btn-primary" onclick="showLogin()">تسجيل الدخول</button>
+  </div>
+</header>
+
+<section class="hero">
+  <h2>بيئة تعليمية آمنة تبني جيلاً مبدعاً ومسؤولاً</h2>
+  <p>مدارس الإمام أحمد للأيتام في الشمال السوري — رسالة تربوية وتعليمية تُعنى برعاية الأيتام وتنشئتهم على العلم والقيم.</p>
+  <a href="#about" class="btn btn-gold">تعرّف علينا</a>
+  <button class="btn btn-outline" onclick="showLogin()">تسجيل الدخول</button>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="divider"></div>
+    <h2 class="section-title">من نحن</h2>
+    <p class="section-sub">تعريف بالمدرسة ورسالتها التربوية</p>
+    <p class="about-text">
+      مدارس الإمام أحمد للأيتام في الشمال السوري مؤسسة تعليمية تربوية تُعنى برعاية الأيتام وتقديم تعليم نوعي متوازن يجمع بين التحصيل الأكاديمي وبناء الشخصية والقيم. نسعى إلى تهيئة بيئة تعليمية آمنة ومحفزة، بإشراف كادر تعليمي وإداري مؤهل، وبشراكة فاعلة مع الأسرة والمجتمع.
+    </p>
+  </div>
+</section>
+
+<section id="vision" style="background:#fff;">
+  <div class="container">
+    <div class="divider"></div>
+    <h2 class="section-title">الرؤية والرسالة</h2>
+    <p class="section-sub">ما نطمح إليه وما نعمل من أجله</p>
+    <div class="vm-grid">
+      <div class="vm-card">
+        <div class="icon">🎯</div>
+        <h3>رؤيتنا</h3>
+        <p>أن نكون مؤسسة تعليمية رائدة في رعاية الأيتام وتعليمهم، ونموذجاً في إعداد جيل مبدع، متمسك بقيمه، قادر على خدمة مجتمعه وبناء مستقبله.</p>
+      </div>
+      <div class="vm-card">
+        <div class="icon">📚</div>
+        <h3>رسالتنا</h3>
+        <p>تقديم تعليم متكامل يرتكز على المعرفة والمهارات والقيم، في بيئة آمنة ومحفزة، بكادر مؤهل ومناهج حديثة، وبشراكة فاعلة مع الأسرة والمجتمع.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="values">
+  <div class="container">
+    <div class="divider"></div>
+    <h2 class="section-title">قيمنا</h2>
+    <p class="section-sub">المبادئ التي نربي عليها أبناءنا</p>
+    <div class="values">
+      <div class="value-card"><div class="vi">🤝</div><h4>الاحترام</h4></div>
+      <div class="value-card"><div class="vi">⭐</div><h4>الإتقان</h4></div>
+      <div class="value-card"><div class="vi">🛡️</div><h4>المسؤولية</h4></div>
+      <div class="value-card"><div class="vi">💡</div><h4>الإبداع</h4></div>
+      <div class="value-card"><div class="vi">🤲</div><h4>التعاون</h4></div>
+      <div class="value-card"><div class="vi">🏡</div><h4>الانتماء</h4></div>
+    </div>
+  </div>
+</section>
+
+<section id="programs" class="programs-bg">
+  <div class="container">
+    <div class="divider"></div>
+    <h2 class="section-title">البرامج والمناهج الدراسية</h2>
+    <p class="section-sub">ماذا نقدم لطلابنا</p>
+    <div class="programs">
+      <div class="program-card"><h4>المنهج المعتمد</h4><p>مناهج تعليمية معتمدة تراعي المستويات العمرية وتواكب التطور التربوي.</p></div>
+      <div class="program-card"><h4>المراحل الدراسية</h4><p>رياض الأطفال، المرحلة الابتدائية، والمرحلة الإعدادية.</p></div>
+      <div class="program-card"><h4>برامج إثرائية</h4><p>أنشطة إثرائية لتطوير مهارات الطلاب وتنمية مواهبهم.</p></div>
+      <div class="program-card"><h4>الأنشطة اللاصفية</h4><p>أنشطة رياضية وثقافية وفنية تُنمّي شخصية الطالب.</p></div>
+      <div class="program-card"><h4>الدعم الأكاديمي</h4><p>حصص دعم ومتابعة فردية للطلاب المحتاجين لرفع مستواهم.</p></div>
+      <div class="program-card"><h4>المهارات الحياتية</h4><p>برامج لتنمية المهارات الحياتية والتقنية والاعتماد على النفس.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="staff">
+  <div class="container">
+    <div class="divider"></div>
+    <h2 class="section-title">الكادر التدريسي والإداري</h2>
+    <p class="section-sub">من يقف خلف رسالتنا التربوية</p>
+    <div class="staff" id="publicStaff">
+      <div class="staff-card"><div class="staff-avatar">أ</div><h4>—</h4><p>سيتم التحديث</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="cta">
+    <h3>هل لديك استفسار؟</h3>
+    <p>تواصل معنا وسنكون سعداء بخدمتك.</p>
+    <a href="#" class="btn btn-gold">تواصل معنا</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h4>مدارس الإمام أحمد للأيتام</h4>
+      <p>في الشمال السوري</p>
+    </div>
+    <div>
+      <h4>روابط سريعة</h4>
+      <a href="#about">عن المدرسة</a>
+      <a href="#programs">البرامج والمناهج</a>
+      <a href="#staff">الكادر</a>
+      <a href="#" onclick="showLogin();return false;">تسجيل الدخول</a>
+    </div>
+    <div>
+      <h4>تواصل معنا</h4>
+      <p>📍 الشمال السوري</p>
+      <p>📞 0000 000 000</p>
+      <p>✉️ info@school.com</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 مدارس الإمام أحمد للأيتام في الشمال السوري — جميع الحقوق محفوظة</div>
+</footer>
+</div>
+
+<!-- ============ LOGIN PAGE ============ -->
+<div id="loginPage" class="auth-page" style="display:none">
+  <div class="auth-card">
+    <h2>تسجيل الدخول</h2>
+    <p class="sub">مدارس الإمام أحمد للأيتام</p>
+    <div id="loginError" class="auth-error"></div>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="loginEmail" required autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn btn-primary" id="loginBtn">دخول</button>
+    </form>
+    <p style="text-align:center;margin-top:18px;font-size:13px;color:var(--muted)">
+      <a href="#" onclick="showLanding();return false;" style="color:var(--primary);font-weight:700;">← العودة للصفحة الرئيسية</a>
+    </p>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="dashboard" class="dash-wrap" style="display:none">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-sm">
+      <div class="logo">🏫</div>
+      <h3>مدارس الإمام أحمد<br/>للأيتام</h3>
+    </div>
+    <div class="user-info">
+      <div id="uName">—</div>
+      <div class="role" id="uRole">—</div>
+    </div>
+    <nav>
+      <ul id="navLinks"></ul>
+    </nav>
+    <div class="logout">
+      <button class="btn btn-danger btn-sm" style="width:100%" onclick="handleLogout()">🚪 تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <main class="main" id="mainContent">
+    <!-- dynamically rendered -->
+  </main>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast"></div>
+
+<!-- ============ SUPABASE ============ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ============================================================
+   ⚙️  الإعدادات — عدّل هذين السطرين فقط
+============================================================ */
+const SUPABASE_URL  = "https://msewuspuarnifzfvouik.supabase.co";
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zZXd1c3B1YXJuaWZ6ZnZvdWlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNjU2NzAsImV4cCI6MjEwNzc0MTY3MH0.TrjVBM6PEfHsp9IXobJsFU7i9OGpY8J7GE-TOujMm4A";
+const BUCKET_NAME   = "lesson-plans";
+/* ========================================================== */
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+let currentUser  = null; // { id, email, full_name, role }
+let currentView  = 'overview';
+
+/* ========== Utils ========== */
+function $(id){ return document.getElementById(id); }
+function show(el){ el.style.display=''; }
+function hide(el){ el.style.display='none'; }
+function toast(msg, type=''){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(()=>t.className='toast '+type, 2600);
+}
+function openModal(html){
+  $('modalBody').innerHTML = html;
+  $('modalOverlay').classList.add('show');
+}
+function closeModal(){ $('modalOverlay').classList.remove('show'); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function fmt(d){ return d ? new Date(d).toLocaleDateString('ar-EG') : ''; }
+function esc(s){ return (s??'').toString().replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function roleLabel(r){ return r==='admin'?'مدير':r==='supervisor'?'موجّه':r==='teacher'?'أستاذ':'—'; }
+function statusBadge(s){
+  if(s==='approved') return '<span class="badge badge-success">معتمد</span>';
+  if(s==='rejected') return '<span class="badge badge-danger">مرفوض</span>';
+  return '<span class="badge badge-warn">قيد المراجعة</span>';
+}
+function attBadge(s){
+  if(s==='present') return '<span class="badge badge-success">حاضر</span>';
+  if(s==='absent')  return '<span class="badge badge-danger">غائب</span>';
+  if(s==='late')    return '<span class="badge badge-warn">متأخر</span>';
+  return s;
+}
+
+/* ========== Navigation ========== */
+function showLanding(){
+  hide($('loginPage')); hide($('dashboard')); show($('landing'));
+  window.scrollTo(0,0);
+}
+function showLogin(){
+  hide($('landing')); hide($('dashboard')); show($('loginPage'));
+}
+function showDashboard(){
+  hide($('landing')); hide($('loginPage')); show($('dashboard'));
+}
+
+/* ========== Auth ========== */
+$('loginForm').addEventListener('submit', handleLogin);
+async function handleLogin(e){
+  e.preventDefault();
+  const btn = $('loginBtn');
+  const err = $('loginError');
+  err.style.display='none';
+  btn.disabled = true; btn.textContent='جاري الدخول...';
+
+  const email = $('loginEmail').value.trim();
+  const password = $('loginPassword').value;
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  btn.disabled = false; btn.textContent='دخول';
+
+  if(error){
+    err.textContent = 'فشل تسجيل الدخول: ' + error.message;
+    err.style.display='block';
+    return;
+  }
+  await loadUserAndDashboard(data.user);
+}
+
+async function handleLogout(){
+  await sb.auth.signOut();
+  currentUser = null;
+  showLanding();
+}
+
+async function loadUserAndDashboard(authUser){
+  // جلب البروفايل
+  const { data: prof, error } = await sb
+    .from('profiles')
+    .select('*')
+    .eq('id', authUser.id)
+    .single();
+
+  if(error || !prof){
+    toast('لا يوجد بروفايل مرتبط بهذا الحساب. تواصل مع المدير.', 'error');
+    await sb.auth.signOut();
+    return;
+  }
+  currentUser = prof;
+  $('uName').textContent = prof.full_name || prof.email;
+  $('uRole').textContent = roleLabel(prof.role);
+  showDashboard();
+  buildNav();
+  renderView('overview');
+}
+
+// فحص الجلسة عند فتح الصفحة
+(async function init(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session) await loadUserAndDashboard(session.user);
+  else showLanding();
+})();
+
+/* ========== Build Sidebar Navigation ========== */
+function buildNav(){
+  const links = [];
+  links.push({ key:'overview',   label:'🏠 نظرة عامة' });
+
+  if(currentUser.role === 'admin'){
+    links.push({ key:'users',            label:'👥 إدارة الحسابات' });
+    links.push({ key:'teacherAtt',       label:'🗓️ دوام الأساتذة' });
+    links.push({ key:'studentAtt',       label:'🎒 دوام الطلاب' });
+    links.push({ key:'plans',            label:'📄 دفاتر التحضير' });
+  }
+  if(currentUser.role === 'supervisor'){
+    links.push({ key:'teacherAtt',       label:'🗓️ دوام الأساتذة' });
+    links.push({ key:'studentAtt',       label:'🎒 دوام الطلاب' });
+    links.push({ key:'plans',            label:'📄 دفاتر التحضير' });
+  }
+  if(currentUser.role === 'teacher'){
+    links.push({ key:'studentAtt',       label:'🎒 دوام طلابي' });
+    links.push({ key:'myPlans',          label:'📄 دفتري' });
+  }
+
+  const ul = $('navLinks');
+  ul.innerHTML = links.map(l =>
+    `<li><a data-view="${l.key}" onclick="renderView('${l.key}')">${l.label}</a></li>`
+  ).join('');
+}
+
+function setActiveNav(key){
+  document.querySelectorAll('#navLinks a').forEach(a=>{
+    a.classList.toggle('active', a.dataset.view === key);
+  });
+}
+
+/* ========== View Router ========== */
+async function renderView(key){
+  currentView = key;
+  setActiveNav(key);
+  const main = $('mainContent');
+  main.innerHTML = '<div class="empty">⏳ جاري التحميل...</div>';
+
+  try{
+    if(key==='overview')      return renderOverview();
+    if(key==='users')         return renderUsers();
+    if(key==='teacherAtt')    return renderTeacherAtt();
+    if(key==='studentAtt')    return renderStudentAtt();
+    if(key==='plans')         return renderPlans();
+    if(key==='myPlans')       return renderMyPlans();
+  }catch(e){
+    console.error(e);
+    main.innerHTML = '<div class="empty">حدث خطأ: '+esc(e.message)+'</div>';
+  }
+}
+
+/* ========== OVERVIEW ========== */
+async function renderOverview(){
+  const main = $('mainContent');
+  let stats = { teachers:0, supervisors:0, plans:0, todayTeachers:0, todayStudents:0 };
+
+  const { count: cTeachers } = await sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','teacher');
+  const { count: cSuper }    = await sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','supervisor');
+  const { count: cPlans }    = await sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','teacher');
+  const { count: cTAtt }     = await sb.from('teacher_attendance').select('*',{count:'exact',head:true}).eq('date', today());
+  const { count: cSAtt }     = await sb.from('student_attendance').select('*',{count:'exact',head:true}).eq('date', today());
+  const { count: cLP }       = await sb.from('lesson_plans').select('*',{count:'exact',head:true});
+
+  stats.teachers = cTeachers||0;
+  stats.supervisors = cSuper||0;
+  stats.plans = cLP||0;
+  stats.todayTeachers = cTAtt||0;
+  stats.todayStudents = cSAtt||0;
+
+  main.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h2>مرحباً ${esc(currentUser.full_name)} 👋</h2>
+        <p>نظرة عامة على النظام — ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
+      </div>
+    </div>
+    <div class="grid-4">
+      <div class="stat"><div class="num">${stats.teachers}</div><div class="lbl">عدد الأساتذة</div></div>
+      <div class="stat"><div class="num">${stats.supervisors}</div><div class="lbl">عدد الموجهين</div></div>
+      <div class="stat"><div class="num">${stats.todayTeachers}</div><div class="lbl">دوام أساتذة اليوم</div></div>
+      <div class="stat"><div class="num">${stats.todayStudents}</div><div class="lbl">دوام طلاب اليوم</div></div>
+    </div>
+    <div class="card" style="margin-top:22px;">
+      <h3>روابط سريعة</h3>
+      <p style="color:var(--muted);font-size:14px;">استخدم القائمة الجانبية للتنقل بين الأقسام.</p>
+    </div>
+  `;
+}
+
+/* ========== USERS (Admin only) ========== */
+async function renderUsers(){
+  const { data, error } = await sb.from('profiles').select('*').order('created_at',{ascending:false});
+  if(error) throw error;
+
+  $('mainContent').innerHTML = `
+    <div class="page-head">
+      <div><h2>إدارة الحسابات</h2><p>إنشاء وتعديل حسابات الأساتذة والموجهين</p></div>
+      <button class="btn btn-primary" onclick="openCreateUser()">➕ إضافة حساب</button>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>الاسم</th><th>البريد</th><th>الدور</th><th>تاريخ الإنشاء</th><th>إجراءات</th></tr></thead>
+        <tbody>
+          ${data.map(u=>`
+            <tr>
+              <td>${esc(u.full_name)}</td>
+              <td>${esc(u.email)}</td>
+              <td><span class="badge badge-info">${roleLabel(u.role)}</span></td>
+              <td>${fmt(u.created_at)}</td>
+              <td>
+                <button class="btn btn-sm btn-gold" onclick='openEditUser(${JSON.stringify(u)})'>تعديل</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">حذف</button>
+              </td>
+            </tr>`).join('') || '<tr><td colspan="5" class="empty">لا يوجد مستخدمون</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function openCreateUser(){
+  openModal(`
+    <h3>إضافة حساب جديد</h3>
+    <div class="form-group"><label>الاسم الكامل</label><input id="cuName" /></div>
+    <div class="form-group"><label>البريد الإلكتروني</label><input id="cuEmail" type="email" /></div>
+    <div class="form-group"><label>كلمة المرور</label><input id="cuPass" type="password" /></div>
+    <div class="form-group"><label>الدور</label>
+      <select id="cuRole">
+        <option value="teacher">أستاذ</option>
+        <option value="supervisor">موجّه</option>
+        <option value="admin">مدير</option>
+      </select>
+    </div>
+    <div class="actions">
+      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="createUser()">إنشاء</button>
+    </div>
+  `);
+}
+
+async function createUser(){
+  const full_name = $('cuName').value.trim();
+  const email = $('cuEmail').value.trim();
+  const password = $('cuPass').value;
+  const role = $('cuRole').value;
+
+  if(!full_name || !email || !password){ toast('املأ كل الحقول','error'); return; }
+  if(password.length < 6){ toast('كلمة المرور 6 أحرف على الأقل','error'); return; }
+
+  // ملاحظة: إنشاء مستخدم من داخل المتصفح يتطلب إما:
+  // (أ) دعوة عبر inviteUserByEmail ثم المستخدم يضبط كلمة السر
+  // (ب) Edge Function بـ service_role
+  // هون منستخدم signUp العادي (قد يتطلب تفعيل البريد حسب إعدادات المشروع)
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if(error){ toast('فشل: '+error.message,'error'); return; }
+
+  const uid = data.user?.id;
+  if(!uid){ toast('لم يتم إنشاء المستخدم','error'); return; }
+
+  const { error: pErr } = await sb.from('profiles').insert({
+    id: uid, full_name, email, role
+  });
+  if(pErr){ toast('فشل حفظ البروفايل: '+pErr.message,'error'); return; }
+
+  closeModal();
+  toast('تم إنشاء الحساب بنجاح','success');
+  renderUsers();
+}
+
+function openEditUser(u){
+  openModal(`
+    <h3>تعديل حساب</h3>
+    <div class="form-group"><label>الاسم الكامل</label><input id="euName" value="${esc(u.full_name)}" /></div>
+    <div class="form-group"><label>البريد (غير قابل للتعديل)</label><input value="${esc(u.email)}" disabled /></div>
+    <div class="form-group"><label>الدور</label>
+      <select id="euRole">
+        <option value="teacher" ${u.role==='teacher'?'selected':''}>أستاذ</option>
+        <option value="supervisor" ${u.role==='supervisor'?'selected':''}>موجّه</option>
+        <option value="admin" ${u.role==='admin'?'selected':''}>مدير</option>
+      </select>
+    </div>
+    <div class="actions">
+      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="updateUser('${u.id}')">حفظ</button>
+    </div>
+  `);
+}
+
+async function updateUser(id){
+  const full_name = $('euName').value.trim();
+  const role = $('euRole').value;
+  const { error } = await sb.from('profiles').update({ full_name, role }).eq('id', id);
+  if(error){ toast('فشل: '+error.message,'error'); return; }
+  closeModal(); toast('تم التحديث','success'); renderUsers();
+}
+
+async function deleteUser(id){
+  if(!confirm('تأكيد حذف الحساب؟ (لن يُحذف من auth.users بل من البروفايل فقط)')) return;
+  const { error } = await sb.from('profiles').delete().eq('id', id);
+  if(error){ toast('فشل: '+error.message,'error'); return; }
+  toast('تم الحذف','success'); renderUsers();
+}
+
+/* ========== TEACHER ATTENDANCE (Admin + Supervisor) ========== */
+async function renderTeacherAtt(){
+  const date = today();
+  const { data: teachers } = await sb.from('profiles').select('*').eq('role','teacher').order('full_name');
+  const { data: att } = await sb.from('teacher_attendance').select('*').eq('date', date);
+  const map = {}; (att||[]).forEach(a=> map[a.teacher_id] = a);
+
+  $('mainContent').innerHTML = `
+    <div class="page-head">
+      <div><h2>دوام الأساتذة</h2><p>سجّل حضور وغياب الأساتذة — تاريخ اليوم: ${fmt(date)}</p></div>
+      <input type="date" id="tattDate" value="${date}" onchange="renderTeacherAttByDate(this.value)" style="padding:8px 12px;border:1.5px solid #d5dde8;border-radius:8px;"/>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>الأستاذ</th><th>الحالة</th><th>ملاحظات</th><th>إجراء</th></tr></thead>
+        <tbody>
+          ${(teachers||[]).map(t=>{
+            const a = map[t.id];
+            return `<tr>
+              <td>${esc(t.full_name)}</td>
+              <td>${a? attBadge(a.status) : '<span class="badge badge-warn">لم يُسجّل</span>'}</td>
+              <td>${a? esc(a.notes||'—') : '—'}</td>
+              <td>
+                <button class="btn btn-sm btn-success" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','present')">حاضر</button>
+                <button class="btn btn-sm btn-gold" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','late')">متأخر</button>
+                <button class="btn btn-sm btn-danger" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','absent')">غائب</button>
+              </td>
+            </tr>`;
+          }).join('') || '<tr><td colspan="4" class="empty">لا يوجد أساتذة</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function openTeacherAtt(teacherId, name, status){
+  openModal(`
+    <h3>تسجيل دوام: ${esc(name)}</h3>
+    <div class="form-group"><label>التاريخ</label><input type="date" id="taDate" value="${today()}" /></div>
+    <div class="form-group"><label>الحالة</label>
+      <select id="taStatus">
+        <option value="present" ${status==='present'?'selected':''}>حاضر</option>
+        <option value="late" ${status==='late'?'selected':''}>متأخر</option>
+        <option value="absent" ${status==='absent'?'selected':''}>غائب</option>
+      </select>
+    </div>
+    <div class="form-group"><label>ملاحظات</label><textarea id="taNotes" rows="3"></textarea></div>
+    <div class="actions">
+      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveTeacherAtt('${teacherId}')">حفظ</button>
+    </div>
+  `);
+}
+
+async function saveTeacherAtt(teacherId){
+  const date = $('taDate').value;
+  const status = $('taStatus').value;
+  const notes = $('taNotes').value.trim();
+  const { error } = await sb.from('teacher_attendance').upsert({
+    teacher_id: teacherId, date, status, notes, recorded_by: currentUser.id
+  }, { onConflict: 'teacher_id,date' });
+  if(error){ toast('فشل: '+error.message,'error'); return; }
+  closeModal(); toast('تم الحفظ','success'); renderTeacherAtt();
+}
+
+/* ========== STUDENT ATTENDANCE ========== */
+async function renderStudentAtt(){
+  const date = today();
+  let query = sb.from('student_attendance').select('*').eq('date', date).order('created_at',{ascending:false});
+  if(currentUser.role === 'teacher') query = query.eq('teacher_id', currentUser.id);
+  const { data } = await query;
+
+  // جلب أسماء الأساتذة
+  const ids = [...new Set((data||[]).map(d=>d.teacher_id))];
+  let names = {};
+  if(ids.length){
+    const { data: profs } = await sb.from('profiles').select('id,full_name').in('id', ids);
+    (profs||[]).forEach(p=> names[p.id]=p.full_name);
+  }
+
+  $('mainContent').innerHTML = `
+    <div class="page-head">
+      <div><h2>دوام الطلاب</h2><p>${currentUser.role==='teacher'?'سجّل دوام طلابك اليوم':'سجلات دوام الطلاب اليوم'}</p></div>
+      ${currentUser.role==='teacher' ? `<button class="btn btn-primary" onclick="openStudentAtt()">➕ تسجيل دوام</button>` : ''}
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>الصف</th>${currentUser.role!=='teacher'?'<th>الأستاذ</th>':''}<th>حاضر</th><th>غائب</th><th>ملاحظات</th><th>الوقت</th></tr></thead>
+        <tbody>
+          ${(data||[]).map(d=>`
+            <tr>
+              <td>${esc(d.class_name)}</td>
+              ${currentUser.role!=='teacher'?`<td>${esc(names[d.teacher_id]||'—')}</td>`:''}
+              <td><span class="badge badge-success">${d.present_count}</span></td>
+              <td><span class="badge badge-danger">${d.absent_count}</span></td>
+              <td>${esc(d.notes||'—')}</td>
+              <td>${new Date(d.created_at).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</td>
+            </tr>`).join('') || `<tr><td colspan="6" class="empty">لا توجد سجلات اليوم</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function openStudentAtt(){
+  openModal(`
+    <h3>تسجيل دوام الطلاب</h3>
+    <div class="form-group"><label>الصف / الشعبة</label><input id="saClass" placeholder="مثال: الصف الخامس - أ" /></div>
+    <div class="form-group"><label>التاريخ</label><input type="date" id="saDate" value="${today()}" /></div>
+    <div class="grid-2">
+      <div class="form-group"><label>عدد الحاضرين</label><input type="number" id="saPresent" min="0" value="0" /></div>
+      <div class="form-group"><label>عدد الغائبين</label><input type="number" id="saAbsent" min="0" value="0" /></div>
+    </div>
+    <div class="form-group"><label>ملاحظات</label><textarea id="saNotes" rows="3"></textarea></div>
+    <div class="actions">
+      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveStudentAtt()">حفظ</button>
+    </div>
+  `);
+}
+
+async function saveStudentAtt(){
+  const class_name = $('saClass').value.trim();
+  const date = $('saDate').value;
+  const present_count = parseInt($('saPresent').value)||0;
+  const absent_count = parseInt($('saAbsent').value)||0;
+  const notes = $('saNotes').value.trim();
+  if(!class_name){ toast('أدخل اسم الصف','error'); return; }
+
+  const { error } = await sb.from('student_attendance').insert({
+    teacher_id: currentUser.id, class_name, date, present_count, absent_count, notes
+  });
+  if(error){ toast('فشل: '+error.message,'error'); return; }
+  closeModal(); toast('تم الحفظ','success'); renderStudentAtt();
+}
+
+/* ========== LESSON PLANS (Admin/Supervisor view) ========== */
+async function renderPlans(){
+  const { data } = await sb.from('lesson_plans').select('*').order('created_at',{ascending:false});
+  const ids = [...new Set((data||[]).map(d=>d.teacher_id))];
+  let names = {};
+  if(ids.length){
+    const { data: profs } = await sb.from('profiles').select('id,full_name').in('id', ids);
+    (profs||[]).forEach(p=> names[p.id]=p.full_name);
+  }
+
+  $('mainContent').innerHTML = `
+    <div class="page-head">
+      <div><h2>دفاتر التحضير</h2><p>${currentUser.role==='admin'?'يمكنك الاعتماد أو الرفض':'مراجعة وإضافة ملاحظات'}</p></div>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>الأستاذ</th><th>تاريخ الدفتر</th><th>الحالة</th><th>ملاحظات الموجّه</th><th>ملاحظات المدير</th><th>إجراءات</th></tr></thead>
+        <tbody>
+          ${(data||[]).map(d=>`
+            <tr>
+              <td>${esc(names[d.teacher_id]||'—')}</td>
+              <td>${fmt(d.plan_date)}</td>
+              <td>${statusBadge(d.status)}</td>
+              <td>${esc(d.supervisor_notes||'—')}</td>
+              <td>${esc(d.admin_notes||'—')}</td>
+              <td>
+                <button class="btn btn-sm btn-gold" onclick="openPlanReview(${d.id})">مراجعة</button>
+              </td>
+            </tr>`).join('') || '<tr><td colspan="6" class="empty">لا توجد دفاتر</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+async function openPlanReview(planId){
+  const { data } = await sb.from('lesson_plans').select('*').eq('id', planId).single();
+  if(!data){ toast('لم يتم العثور على الدفتر','error'); return; }
+
+  // رابط موقّع مؤقت للعرض
+  let signedUrl = null;
+  const { data: su } = await sb.storage.from(BUCKET_NAME).createSignedUrl(data.file_url, 300);
+  if(su) signedUrl = su.signedUrl;
+
+  const isAdmin = currentUser.role === 'admin';
+
+  openModal(`
+    <h3>مراجعة دفتر التحضير</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">التاريخ: ${fmt(data.plan_date)} — الحالة: ${statusBadge(data.status)}</p>
+
+    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank" rel="noopener">📄 فتح الملف (PDF)</a>` : '<p class="empty">تعذّر توليد رابط الملف</p>'}
+
+    <div class="form-group" style="margin-top:20px;">
+      <label>ملاحظات الموجّه</label>
+      <textarea id="prSup" rows="3">${esc(data.supervisor_notes||'')}</textarea>
+    </div>
+
+    ${isAdmin ? `
+      <div class="form-group">
+        <label>ملاحظات المدير</label>
+        <textarea id="prAdm" rows="3">${esc(data.admin_notes||'')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>القرار</label>
+        <select id="prStatus">
+          <option value="pending" ${data.status==='pending'?'selected':''}>قيد المراجعة</option>
+          <option value="approved" ${data.status==='approved'?'selected':''}>معتمد</option>
+          <option value="rejected" ${data.status==='rejected'?'selected':''}>مرفوض</option>
+        </select>
+      </div>
+    ` : ''}
+
+    <div class="actions">
+      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إغلاق</button>
+      <button class="btn btn-primary" onclick="savePlanReview(${planId}, ${isAdmin})">حفظ</button>
+    </div>
+  `);
+}
+
+async function savePlanReview(planId, isAdmin){
+  const sup = $('prSup')?.value.trim() || '';
+  const updates = { supervisor_notes: sup };
+  if(isAdmin){
+    updates.admin_notes = $('prAdm').value.trim();
+    updates.status = $('prStatus').value;
+  }
+  const { error } = await sb.from('lesson_plans').update(updates).eq('id', planId);
+  if(error){ toast('فشل: '+error.message,'error'); return; }
+  closeModal(); toast('تم الحفظ','success'); renderPlans();
+}
+
+/* ========== MY PLANS (Teacher) ========== */
+async function renderMyPlans(){
+  const { data } = await sb.from('lesson_plans').select('*').eq('teacher_id', currentUser.id).order('created_at',{ascending:false});
+
+  $('mainContent').innerHTML = `
+    <div class="page-head">
+      <div><h2>دفتر التحضير</h2><p>ارفع دفترك اليومي بصيغة PDF</p></div>
+      <button class="btn btn-primary" onclick="openUploadPlan()">➕ رفع دفتر</button>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>تاريخ الدفتر</th><th>الحالة</th><th>ملاحظات الموجّه</th><th>ملاحظات المدير</th><th>الملف</th></tr></thead>
+        <tbody>
+          ${(data||[]).map(d=>`
+            <tr>
+              <td>${fmt(d.plan_date)}</td>
+              <td>${statusBadge(d.status)}</td>
+              <td>${esc(d.supervisor_notes||'—')}</td>
+              <td>${esc(d.admin_notes||'—')}</td>
+              <td><button class="btn btn-sm btn-primary" onclick="openMyPlanFile('${esc(d.file_url)}')">عرض</button></td>
+            </tr>`).join('') || '<tr><td colspan="5" class="empty">لم ترفع أي دفتر بعد</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function openUploadPlan(){
+  openModal(`
+    <h3>رفع دفتر التحضير</h3>
+    <div class="form-group"><label>تاريخ الدفتر</label><input type="date" id="upDate" value="${today()}" /></div>
+    <div class="form-group"><label>ملف PDF</label><input type="file" id="upFile" accept="application/pdf" /></div>
+    <div class="actions">
+      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" id="upBtn" onclick="uploadPlan()">رفع</button>
+    </div>
+  `);
+}
+
+async function uploadPlan(){
+  const date = $('upDate').value;
+  const file = $('upFile').files[0];
+  if(!file){ toast('اختر ملف PDF','error'); return; }
+  if(file.type !== 'application/pdf'){ toast('يجب أن يكون الملف PDF','error'); return; }
+
+  const btn = $('upBtn'); btn.disabled = true; btn.textContent = 'جاري الرفع...';
+
+  const path = `${currentUser.id}/${date}_${Date.now()}.pdf`;
+  const { error: upErr } = await sb.storage.from(BUCKET_NAME).upload(path, file, { contentType:'application/pdf', upsert:false });
+  if(upErr){ btn.disabled=false; btn.textContent='رفع'; toast('فشل الرفع: '+upErr.message,'error'); return; }
+
+  const { error: insErr } = await sb.from('lesson_plans').insert({
+    teacher_id: currentUser.id, plan_date: date, file_url: path, status:'pending'
+  });
+  btn.disabled=false; btn.textContent='رفع';
+  if(insErr){ toast('فشل الحفظ: '+insErr.message,'error'); return; }
+
+  closeModal(); toast('تم رفع الدفتر بنجاح','success'); renderMyPlans();
+}
+
+async function openMyPlanFile(path){
+  const { data, error } = await sb.storage.from(BUCKET_NAME).createSignedUrl(path, 300);
+  if(error || !data){ toast('تعذّر فتح الملف','error'); return; }
+  window.open(data.signedUrl, '_blank');
+}
+
+/* ========== Mobile sidebar toggle ========== */
+document.addEventListener('click', (e)=>{
+  if(window.innerWidth <= 900){
+    const sb = $('sidebar');
+    if(!sb) return;
+    if(e.target.closest('#sidebar')) return;
+    sb.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
