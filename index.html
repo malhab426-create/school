@@ -223,7 +223,7 @@ table tr:hover td{background:#fafbfd;}
         <li><a href="#contact">تواصل معنا</a></li>
       </ul>
     </nav>
-    <button class="btn btn-primary" onclick="showLogin()">تسجيل الدخول</button>
+    <button class="btn btn-primary"onclick="showLogin()">تسجيل الدخول</button>
   </div>
 </header>
 
@@ -823,7 +823,6 @@ async function renderStudentAtt(){
   if(currentUser.role === 'teacher') query = query.eq('teacher_id', currentUser.id);
   const { data } = await query;
 
-  // جلب أسماء الأساتذة
   const ids = [...new Set((data||[]).map(d=>d.teacher_id))];
   let names = {};
   if(ids.length){
@@ -834,7 +833,11 @@ async function renderStudentAtt(){
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>دوام الطلاب</h2><p>${currentUser.role==='teacher'?'سجّل دوام طلابك اليوم':'سجلات دوام الطلاب اليوم'}</p></div>
-      ${currentUser.role==='teacher' ? `<button class="btn btn-primary" onclick="openStudentAtt()">➕ تسجيل دوام</button>` : ''}
+      
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+        ${currentUser.role==='teacher' ? '<button class="btn btn-gold" onclick="openStudentAtt()">📝 تسجيل دوام</button>' : ''}
+      </div>
     </div>
     <div class="card">
       <table>
@@ -854,6 +857,38 @@ async function renderStudentAtt(){
     </div>
   `;
 }
+
+  // جلب أسماء الأساتذة
+  const ids = [...new Set((data||[]).map(d=>d.teacher_id))];
+  let names = {};
+  if(ids.length){
+    const { data: profs } = await sb.from('profiles').select('id,full_name').in('id', ids);
+    (profs||[]).forEach(p=> names[p.id]=p.full_name);
+  }
+
+  $('mainContent').innerHTML = `
+    <div class="page-head">
+      <div><h2>دوام الطلاب</h2><p>${currentUser.role==='teacher'?'سجّل دوام طلابك اليوم':'سجلات دوام الطلاب اليوم'}</p></div>
+      ${currentUser.role==='teacher' ? '<button class="btn btn-gold" onclick="openStudentAtt()">📝 تسجيل دوام</button>' : ''}
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>الصف</th>${currentUser.role!=='teacher'?'<th>الأستاذ</th>':''}<th>حاضر</th><th>غائب</th><th>ملاحظات</th><th>الوقت</th></tr></thead>
+        <tbody>
+          ${(data||[]).map(d=>`
+            <tr>
+              <td>${esc(d.class_name)}</td>
+              ${currentUser.role!=='teacher'?`<td>${esc(names[d.teacher_id]||'—')}</td>`:''}
+              <td><span class="badge badge-success">${d.present_count}</span></td>
+              <td><span class="badge badge-danger">${d.absent_count}</span></td>
+              <td>${esc(d.notes||'—')}</td>
+              <td>${new Date(d.created_at).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</td>
+            </tr>`).join('') || `<tr><td colspan="6" class="empty">لا توجد سجلات اليوم</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+
 
 function openStudentAtt(){
   openModal(`
