@@ -401,14 +401,13 @@ table tr:hover td{background:#fafbfd;}
 const SUPABASE_URL  = "https://msewuspuarnifzfvouik.supabase.co";
 const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zZXd1c3B1YXJuaWZ6ZnZvdWlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNjU2NzAsImV4cCI6MjEwNzc0MTY3MH0.TrjVBM6PEfHsp9IXobJsFU7i9OGpY8J7GE-TOujMm4A";
 const BUCKET_NAME   = "lesson-plans";
-/* ========================================================== */
 
+// تأكد إنك تبدل الروابط فوق بروابط مشروعك
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-let currentUser  = null; // { id, email, full_name, role }
+let currentUser  = null;
 let currentView  = 'overview';
 
-/* ========== Utils ========== */
 function $(id){ return document.getElementById(id); }
 function show(el){ el.style.display=''; }
 function hide(el){ el.style.display='none'; }
@@ -418,10 +417,7 @@ function toast(msg, type=''){
   t.className = 'toast show ' + type;
   setTimeout(()=>t.className='toast '+type, 2600);
 }
-function openModal(html){
-  $('modalBody').innerHTML = html;
-  $('modalOverlay').classList.add('show');
-}
+function openModal(html){ $('modalBody').innerHTML = html; $('modalOverlay').classList.add('show'); }
 function closeModal(){ $('modalOverlay').classList.remove('show'); }
 function today(){ return new Date().toISOString().slice(0,10); }
 function fmt(d){ return d ? new Date(d).toLocaleDateString('ar-EG') : ''; }
@@ -440,19 +436,13 @@ function attBadge(s){
 }
 
 /* ========== Navigation ========== */
-function showLanding(){
-  hide($('loginPage')); hide($('dashboard')); show($('landing'));
-  window.scrollTo(0,0);
-}
-function showLogin(){
-  hide($('landing')); hide($('dashboard')); show($('loginPage'));
-}
-function showDashboard(){
-  hide($('landing')); hide($('loginPage')); show($('dashboard'));
-}
+function showLanding(){ hide($('loginPage')); hide($('dashboard')); show($('landing')); window.scrollTo(0,0); }
+function showLogin(){ hide($('landing')); hide($('dashboard')); show($('loginPage')); }
+function showDashboard(){ hide($('landing')); hide($('loginPage')); show($('dashboard')); }
 
 /* ========== Auth ========== */
 $('loginForm').addEventListener('submit', handleLogin);
+
 async function handleLogin(e){
   e.preventDefault();
   const btn = $('loginBtn');
@@ -466,75 +456,71 @@ async function handleLogin(e){
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
   btn.disabled = false; btn.textContent='دخول';
 
-  if(error){
-    err.textContent = 'فشل تسجيل الدخول: ' + error.message;
-    err.style.display='block';
-    return;
-  }
+  if(error){ err.textContent = 'فشل تسجيل الدخول: ' + error.message; err.style.display='block'; return; }
   await loadUserAndDashboard(data.user);
 }
 
-async function handleLogout(){
-  await sb.auth.signOut();
-  currentUser = null;
-  showLanding();
+async function handleLogout(){ 
+  await sb.auth.signOut(); 
+  currentUser = null; 
+  showLanding(); 
 }
 
 async function loadUserAndDashboard(authUser){
-  // جلب البروفايل
-  const { data: prof, error } = await sb
-    .from('profiles')
-    .select('*')
-    .eq('id', authUser.id)
-    .single();
-
-  if(error || !prof){
-    toast('لا يوجد بروفايل مرتبط بهذا الحساب. تواصل مع المدير.', 'error');
-    await sb.auth.signOut();
-    return;
-  }
+  const { data: prof, error } = await sb.from('profiles').select('*').eq('id', authUser.id).single();
+  if(error || !prof){ toast('لا يوجد بروفايل مرتبط بهذا الحساب.','error'); await sb.auth.signOut(); return; }
   currentUser = prof;
   $('uName').textContent = prof.full_name || prof.email;
   $('uRole').textContent = roleLabel(prof.role);
   showDashboard();
   buildNav();
   renderView('overview');
+  loadNotifications();
 }
 
-// فحص الجلسة عند فتح الصفحة
 (async function init(){
   const { data:{ session } } = await sb.auth.getSession();
   if(session) await loadUserAndDashboard(session.user);
   else showLanding();
 })();
 
-/* ========== Build Sidebar Navigation ========== */
+/* ========== Notifications ========== */
+async function loadNotifications(){
+  const { data, count } = await sb.from('notifications').select('*', {count: 'exact'}).eq('user_id', currentUser.id).eq('is_read', false);
+  const badge = $('notifCount');
+  if(count > 0) { badge.textContent = count; badge.style.display = 'flex'; }
+  else { badge.style.display = 'none'; }
+}
+
+/* ========== Build Navigation ========== */
 function buildNav(){
   const links = [];
   links.push({ key:'overview',   label:'🏠 نظرة عامة' });
+  links.push({ key:'notifications', label:'🔔 الإشعارات' });
 
   if(currentUser.role === 'admin'){
-    links.push({ key:'users',            label:'👥 إدارة الحسابات' });
-    links.push({ key:'teacherAtt',       label:'🗓️ دوام الأساتذة' });
-    links.push({ key:'studentAtt',       label:'🎒 دوام الطلاب' });
-    links.push({ key:'plans',            label:'📄 دفاتر التحضير' });
+    links.push({ key:'users',      label:'👥 إدارة الحسابات' });
+    links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
+    links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
+    links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
+    links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
+    links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
   }
   if(currentUser.role === 'supervisor'){
-    links.push({ key:'teacherAtt',       label:'🗓️ دوام الأساتذة' });
-    links.push({ key:'studentAtt',       label:'🎒 دوام الطلاب' });
-    links.push({ key:'plans',            label:'📄 دفاتر التحضير' });
+    links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
+    links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
+    links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
+    links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
+    links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
   }
-    if(currentUser.role === 'teacher'){
-    links.push({ key:'students',   label:'🎓 إدارة الطلاب' }); // السطر الجديد
+  if(currentUser.role === 'teacher'){
+    links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
     links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
     links.push({ key:'myPlans',    label:'📄 دفتري' });
-  
   }
 
   const ul = $('navLinks');
-  ul.innerHTML = links.map(l =>
-    `<li><a data-view="${l.key}" onclick="renderView('${l.key}')">${l.label}</a></li>`
-  ).join('');
+  ul.innerHTML = links.map(l => `<li><a data-view="${l.key}" onclick="renderView('${l.key}')">${l.label}</a></li>`).join('');
 }
 
 function setActiveNav(key){
@@ -553,10 +539,13 @@ async function renderView(key){
   try{
     if(key==='overview')      return renderOverview();
     if(key==='users')         return renderUsers();
+    if(key==='students')      return renderStudents();
     if(key==='teacherAtt')    return renderTeacherAtt();
     if(key==='studentAtt')    return renderStudentAtt();
     if(key==='plans')         return renderPlans();
     if(key==='myPlans')       return renderMyPlans();
+    if(key==='reports')       return renderReports();
+    if(key==='notifications') return renderNotifications();
   }catch(e){
     console.error(e);
     main.innerHTML = '<div class="empty">حدث خطأ: '+esc(e.message)+'</div>';
@@ -566,70 +555,77 @@ async function renderView(key){
 /* ========== OVERVIEW ========== */
 async function renderOverview(){
   const main = $('mainContent');
-  let stats = { teachers:0, supervisors:0, plans:0, todayTeachers:0, todayStudents:0 };
+  let stats = { teachers:0, supervisors:0, students:0, todayTeachers:0, todayStudents:0 };
 
   const { count: cTeachers } = await sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','teacher');
   const { count: cSuper }    = await sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','supervisor');
-  const { count: cPlans }    = await sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','teacher');
+  const { count: cStudents } = await sb.from('students').select('*',{count:'exact',head:true});
   const { count: cTAtt }     = await sb.from('teacher_attendance').select('*',{count:'exact',head:true}).eq('date', today());
   const { count: cSAtt }     = await sb.from('student_attendance').select('*',{count:'exact',head:true}).eq('date', today());
-  const { count: cLP }       = await sb.from('lesson_plans').select('*',{count:'exact',head:true});
 
   stats.teachers = cTeachers||0;
   stats.supervisors = cSuper||0;
-  stats.plans = cLP||0;
+  stats.students = cStudents||0;
   stats.todayTeachers = cTAtt||0;
   stats.todayStudents = cSAtt||0;
 
   main.innerHTML = `
     <div class="page-head">
-      <div>
-        <h2>مرحباً ${esc(currentUser.full_name)} 👋</h2>
-        <p>نظرة عامة على النظام — ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
-      </div>
+      <div><h2>مرحباً ${esc(currentUser.full_name)} 👋</h2><p>نظرة عامة — ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p></div>
     </div>
     <div class="grid-4">
       <div class="stat"><div class="num">${stats.teachers}</div><div class="lbl">عدد الأساتذة</div></div>
-      <div class="stat"><div class="num">${stats.supervisors}</div><div class="lbl">عدد الموجهين</div></div>
+      <div class="stat"><div class="num">${stats.students}</div><div class="lbl">إجمالي الطلاب</div></div>
       <div class="stat"><div class="num">${stats.todayTeachers}</div><div class="lbl">دوام أساتذة اليوم</div></div>
       <div class="stat"><div class="num">${stats.todayStudents}</div><div class="lbl">دوام طلاب اليوم</div></div>
-    </div>
-    <div class="card" style="margin-top:22px;">
-      <h3>روابط سريعة</h3>
-      <p style="color:var(--muted);font-size:14px;">استخدم القائمة الجانبية للتنقل بين الأقسام.</p>
     </div>
   `;
 }
 
-/* ========== USERS (Admin only) ========== */
-async function renderUsers(){
-  const { data, error } = await sb.from('profiles').select('*').order('created_at',{ascending:false});
-  if(error) throw error;
+/* ========== NOTIFICATIONS ========== */
+async function renderNotifications(){
+  const { data } = await sb.from('notifications').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false});
+  
+  if(data && data.length > 0) {
+    await sb.from('notifications').update({is_read: true}).eq('user_id', currentUser.id).eq('is_read', false);
+    loadNotifications();
+  }
 
-    $('mainContent').innerHTML = `
-    <div class="page-head">
-      <div><h2>دوام الطلاب</h2><p>${currentUser.role==='teacher'?'سجّل دوام طلابك اليوم':'سجلات دوام الطلاب اليوم'}</p></div>
-      
-      <div style="display:flex; gap:10px;">
-        <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
-        ${currentUser.role==='teacher' ? `<button class="btn btn-gold" onclick="openStudentAtt()">📝 تسجيل دوام</button>` : ''}
-      </div>
+  $('mainContent').innerHTML = `
+    <div class="page-head"><div><h2>الإشعارات</h2><p>آخر التحديثات والنشاطات</p></div></div>
+    <div class="card">
+      ${(data||[]).map(n=>`
+        <div style="padding:15px; border-bottom:1px solid #eee; ${n.is_read ? 'opacity:0.7;' : 'background:#f0f8ff;'}">
+          <strong style="color:var(--primary)">${esc(n.title)}</strong>
+          <p style="font-size:14px; margin-top:5px;">${esc(n.message)}</p>
+          <small style="color:var(--muted)">${new Date(n.created_at).toLocaleString('ar-EG')}</small>
+        </div>
+      `).join('') || '<div class="empty">لا توجد إشعارات حالياً</div>'}
     </div>
-    
+  `;
+}
+
+/* ========== USERS MANAGEMENT ========== */
+async function renderUsers(){
+  const { data } = await sb.from('profiles').select('*').order('created_at',{ascending:false});
+  $('mainContent').innerHTML = `
+    <div class="page-head">
+      <div><h2>إدارة الحسابات</h2><p>إنشاء وتعديل حسابات الأساتذة والموجهين</p></div>
+      <button class="btn btn-primary" onclick="openCreateUser()">➕ إضافة حساب</button>
+    </div>
+    <div class="card">
       <table>
-        <thead><tr><th>الاسم</th><th>البريد</th><th>الدور</th><th>تاريخ الإنشاء</th><th>إجراءات</th></tr></thead>
+        <thead><tr><th>الاسم</th><th>البريد</th><th>الدور</th><th>إجراءات</th></tr></thead>
         <tbody>
-          ${data.map(u=>`
+          ${(data||[]).map(u=>`
             <tr>
               <td>${esc(u.full_name)}</td>
               <td>${esc(u.email)}</td>
               <td><span class="badge badge-info">${roleLabel(u.role)}</span></td>
-              <td>${fmt(u.created_at)}</td>
               <td>
-                <button class="btn btn-sm btn-gold" onclick='openEditUser(${JSON.stringify(u)})'>تعديل</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">حذف</button>
               </td>
-            </tr>`).join('') || '<tr><td colspan="5" class="empty">لا يوجد مستخدمون</td></tr>'}
+            </tr>`).join('')}
         </tbody>
       </table>
     </div>
@@ -665,93 +661,89 @@ async function createUser(){
   if(!full_name || !email || !password){ toast('املأ كل الحقول','error'); return; }
   if(password.length < 6){ toast('كلمة المرور 6 أحرف على الأقل','error'); return; }
 
-  // إنشاء المستخدم في نظام Authentication
-  const { data, error } = await sb.auth.signUp({ email, password });
-  
-  if(error){ 
-    toast('فشل إنشاء الحساب: ' + error.message, 'error'); 
-    return; 
-  }
-
-  const uid = data.user?.id;
-  if(!uid){ 
-    toast('لم يتم إنشاء المستخدم (تأكد من إعدادات الإيميل)', 'error'); 
-    return; 
-  }
-
-  // ننتظر نصف ثانية عشان نضمن إن Supabase حفظ المستخدم
-  await new Promise(resolve => setTimeout(resolve, 500));
-
-  // إضافة البروفايل في الجدول
-  const { error: pErr } = await sb.from('profiles').insert({
-    id: uid, full_name, email, role
-  });
-
-  if(pErr){ 
-    toast('فشل حفظ البروفايل: ' + pErr.message, 'error'); 
-    return; 
-  }
-
-  closeModal();
-  toast('تم إنشاء الحساب بنجاح', 'success');
-  renderUsers();
-}
-
-  // ملاحظة: إنشاء مستخدم من داخل المتصفح يتطلب إما:
-  // (أ) دعوة عبر inviteUserByEmail ثم المستخدم يضبط كلمة السر
-  // (ب) Edge Function بـ service_role
-  // هون منستخدم signUp العادي (قد يتطلب تفعيل البريد حسب إعدادات المشروع)
   const { data, error } = await sb.auth.signUp({ email, password });
   if(error){ toast('فشل: '+error.message,'error'); return; }
 
   const uid = data.user?.id;
   if(!uid){ toast('لم يتم إنشاء المستخدم','error'); return; }
 
-  const { error: pErr } = await sb.from('profiles').insert({
-    id: uid, full_name, email, role
-  });
+  // تأخير بسيط لضمان معالجة المستخدم في الخلفية
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  const { error: pErr } = await sb.from('profiles').insert({ id: uid, full_name, email, role });
   if(pErr){ toast('فشل حفظ البروفايل: '+pErr.message,'error'); return; }
 
-  closeModal();
-  toast('تم إنشاء الحساب بنجاح','success');
-  renderUsers();
-
-
-function openEditUser(u){
-  openModal(`
-    <h3>تعديل حساب</h3>
-    <div class="form-group"><label>الاسم الكامل</label><input id="euName" value="${esc(u.full_name)}" /></div>
-    <div class="form-group"><label>البريد (غير قابل للتعديل)</label><input value="${esc(u.email)}" disabled /></div>
-    <div class="form-group"><label>الدور</label>
-      <select id="euRole">
-        <option value="teacher" ${u.role==='teacher'?'selected':''}>أستاذ</option>
-        <option value="supervisor" ${u.role==='supervisor'?'selected':''}>موجّه</option>
-        <option value="admin" ${u.role==='admin'?'selected':''}>مدير</option>
-      </select>
-    </div>
-    <div class="actions">
-      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" onclick="updateUser('${u.id}')">حفظ</button>
-    </div>
-  `);
-}
-
-async function updateUser(id){
-  const full_name = $('euName').value.trim();
-  const role = $('euRole').value;
-  const { error } = await sb.from('profiles').update({ full_name, role }).eq('id', id);
-  if(error){ toast('فشل: '+error.message,'error'); return; }
-  closeModal(); toast('تم التحديث','success'); renderUsers();
+  closeModal(); toast('تم إنشاء الحساب بنجاح','success'); renderUsers();
 }
 
 async function deleteUser(id){
-  if(!confirm('تأكيد حذف الحساب؟ (لن يُحذف من auth.users بل من البروفايل فقط)')) return;
+  if(!confirm('تأكيد حذف الحساب؟')) return;
   const { error } = await sb.from('profiles').delete().eq('id', id);
   if(error){ toast('فشل: '+error.message,'error'); return; }
   toast('تم الحذف','success'); renderUsers();
 }
 
-/* ========== TEACHER ATTENDANCE (Admin + Supervisor) ========== */
+/* ========== STUDENTS MANAGEMENT ========== */
+async function renderStudents(){
+  const { data } = await sb.from('students').select('*').order('class_name').order('full_name');
+  $('mainContent').innerHTML = `
+    <div class="page-head">
+      <div><h2>إدارة الطلاب</h2><p>سجل الطلاب وتوزيعهم على الصفوف</p></div>
+      <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>اسم الطالب</th><th>الصف</th><th>تاريخ التسجيل</th><th>إجراء</th></tr></thead>
+        <tbody>
+          ${(data||[]).map(s=>`
+            <tr>
+              <td>${esc(s.full_name)}</td>
+              <td><span class="badge badge-info">${esc(s.class_name)}</span></td>
+              <td>${fmt(s.created_at)}</td>
+              <td><button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">حذف</button></td>
+            </tr>
+          `).join('') || '<tr><td colspan="4" class="empty">لا يوجد طلاب مسجلين</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function openAddStudent(){
+  openModal(`
+    <h3>إضافة طالب جديد</h3>
+    <div class="form-group"><label>اسم الطالب الثلاثي</label><input id="stName" placeholder="مثال: أحمد محمد علي" /></div>
+    <div class="form-group"><label>الصف / الشعبة</label><input id="stClass" placeholder="مثال: الصف الخامس - أ" /></div>
+    <div class="actions">
+      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveStudent()">حفظ</button>
+    </div>
+  `);
+}
+
+async function saveStudent(){
+  const full_name = $('stName').value.trim();
+  const class_name = $('stClass').value.trim();
+  if(!full_name || !class_name){ toast('يرجى ملء جميع الحقول', 'error'); return; }
+
+  const { error } = await sb.from('students').insert({ full_name, class_name });
+  if(error){ toast('فشل الحفظ: '+error.message, 'error'); return; }
+  
+  closeModal(); 
+  toast('تم إضافة الطالب بنجاح', 'success'); 
+  
+  if (currentView === 'students') renderStudents();
+  if (currentView === 'studentAtt') renderStudentAtt();
+}
+
+async function deleteStudent(id){
+  if(!confirm('هل أنت متأكد من حذف هذا الطالب؟')) return;
+  const { error } = await sb.from('students').delete().eq('id', id);
+  if(error){ toast('فشل الحذف: '+error.message, 'error'); return; }
+  toast('تم حذف الطالب', 'success'); renderStudents();
+}
+
+/* ========== TEACHER ATTENDANCE ========== */
 async function renderTeacherAtt(){
   const date = today();
   const { data: teachers } = await sb.from('profiles').select('*').eq('role','teacher').order('full_name');
@@ -760,26 +752,23 @@ async function renderTeacherAtt(){
 
   $('mainContent').innerHTML = `
     <div class="page-head">
-      <div><h2>دوام الأساتذة</h2><p>سجّل حضور وغياب الأساتذة — تاريخ اليوم: ${fmt(date)}</p></div>
-      <input type="date" id="tattDate" value="${date}" onchange="renderTeacherAttByDate(this.value)" style="padding:8px 12px;border:1.5px solid #d5dde8;border-radius:8px;"/>
+      <div><h2>دوام الأساتذة</h2><p>تاريخ اليوم: ${fmt(date)}</p></div>
     </div>
     <div class="card">
       <table>
-        <thead><tr><th>الأستاذ</th><th>الحالة</th><th>ملاحظات</th><th>إجراء</th></tr></thead>
+        <thead><tr><th>الأستاذ</th><th>الحالة</th><th>إجراء</th></tr></thead>
         <tbody>
           ${(teachers||[]).map(t=>{
             const a = map[t.id];
             return `<tr>
               <td>${esc(t.full_name)}</td>
               <td>${a? attBadge(a.status) : '<span class="badge badge-warn">لم يُسجّل</span>'}</td>
-              <td>${a? esc(a.notes||'—') : '—'}</td>
               <td>
                 <button class="btn btn-sm btn-success" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','present')">حاضر</button>
-                <button class="btn btn-sm btn-gold" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','late')">متأخر</button>
                 <button class="btn btn-sm btn-danger" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','absent')">غائب</button>
               </td>
             </tr>`;
-          }).join('') || '<tr><td colspan="4" class="empty">لا يوجد أساتذة</td></tr>'}
+          }).join('')}
         </tbody>
       </table>
     </div>
@@ -789,7 +778,6 @@ async function renderTeacherAtt(){
 function openTeacherAtt(teacherId, name, status){
   openModal(`
     <h3>تسجيل دوام: ${esc(name)}</h3>
-    <div class="form-group"><label>التاريخ</label><input type="date" id="taDate" value="${today()}" /></div>
     <div class="form-group"><label>الحالة</label>
       <select id="taStatus">
         <option value="present" ${status==='present'?'selected':''}>حاضر</option>
@@ -797,20 +785,17 @@ function openTeacherAtt(teacherId, name, status){
         <option value="absent" ${status==='absent'?'selected':''}>غائب</option>
       </select>
     </div>
-    <div class="form-group"><label>ملاحظات</label><textarea id="taNotes" rows="3"></textarea></div>
     <div class="actions">
-      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="saveTeacherAtt('${teacherId}')">حفظ</button>
     </div>
   `);
 }
 
 async function saveTeacherAtt(teacherId){
-  const date = $('taDate').value;
+  const date = today();
   const status = $('taStatus').value;
-  const notes = $('taNotes').value.trim();
   const { error } = await sb.from('teacher_attendance').upsert({
-    teacher_id: teacherId, date, status, notes, recorded_by: currentUser.id
+    teacher_id: teacherId, date, status, recorded_by: currentUser.id
   }, { onConflict: 'teacher_id,date' });
   if(error){ toast('فشل: '+error.message,'error'); return; }
   closeModal(); toast('تم الحفظ','success'); renderTeacherAtt();
@@ -841,7 +826,7 @@ async function renderStudentAtt(){
     </div>
     <div class="card">
       <table>
-        <thead><tr><th>الصف</th>${currentUser.role!=='teacher'?'<th>الأستاذ</th>':''}<th>حاضر</th><th>غائب</th><th>ملاحظات</th><th>الوقت</th></tr></thead>
+        <thead><tr><th>الصف</th>${currentUser.role!=='teacher'?'<th>الأستاذ</th>':''}<th>حاضر</th><th>غائب</th></tr></thead>
         <tbody>
           ${(data||[]).map(d=>`
             <tr>
@@ -849,82 +834,41 @@ async function renderStudentAtt(){
               ${currentUser.role!=='teacher'?`<td>${esc(names[d.teacher_id]||'—')}</td>`:''}
               <td><span class="badge badge-success">${d.present_count}</span></td>
               <td><span class="badge badge-danger">${d.absent_count}</span></td>
-              <td>${esc(d.notes||'—')}</td>
-              <td>${new Date(d.created_at).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</td>
-            </tr>`).join('') || `<tr><td colspan="6" class="empty">لا توجد سجلات اليوم</td></tr>`}
+            </tr>`).join('') || `<tr><td colspan="4" class="empty">لا توجد سجلات اليوم</td></tr>`}
         </tbody>
       </table>
     </div>
   `;
 }
 
-  // جلب أسماء الأساتذة
-  const ids = [...new Set((data||[]).map(d=>d.teacher_id))];
-  let names = {};
-  if(ids.length){
-    const { data: profs } = await sb.from('profiles').select('id,full_name').in('id', ids);
-    (profs||[]).forEach(p=> names[p.id]=p.full_name);
-  }
-
-  $('mainContent').innerHTML = `
-    <div class="page-head">
-      <div><h2>دوام الطلاب</h2><p>${currentUser.role==='teacher'?'سجّل دوام طلابك اليوم':'سجلات دوام الطلاب اليوم'}</p></div>
-      ${currentUser.role==='teacher' ? '<button class="btn btn-gold" onclick="openStudentAtt()">📝 تسجيل دوام</button>' : ''}
-    </div>
-    <div class="card">
-      <table>
-        <thead><tr><th>الصف</th>${currentUser.role!=='teacher'?'<th>الأستاذ</th>':''}<th>حاضر</th><th>غائب</th><th>ملاحظات</th><th>الوقت</th></tr></thead>
-        <tbody>
-          ${(data||[]).map(d=>`
-            <tr>
-              <td>${esc(d.class_name)}</td>
-              ${currentUser.role!=='teacher'?`<td>${esc(names[d.teacher_id]||'—')}</td>`:''}
-              <td><span class="badge badge-success">${d.present_count}</span></td>
-              <td><span class="badge badge-danger">${d.absent_count}</span></td>
-              <td>${esc(d.notes||'—')}</td>
-              <td>${new Date(d.created_at).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</td>
-            </tr>`).join('') || `<tr><td colspan="6" class="empty">لا توجد سجلات اليوم</td></tr>`}
-        </tbody>
-      </table>
-    </div>
-  `;
-
-
 function openStudentAtt(){
   openModal(`
     <h3>تسجيل دوام الطلاب</h3>
-    <div class="form-group"><label>الصف / الشعبة</label><input id="saClass" placeholder="مثال: الصف الخامس - أ" /></div>
-    <div class="form-group"><label>التاريخ</label><input type="date" id="saDate" value="${today()}" /></div>
+    <div class="form-group"><label>الصف / الشعبة</label><input id="saClass" /></div>
     <div class="grid-2">
-      <div class="form-group"><label>عدد الحاضرين</label><input type="number" id="saPresent" min="0" value="0" /></div>
-      <div class="form-group"><label>عدد الغائبين</label><input type="number" id="saAbsent" min="0" value="0" /></div>
+      <div class="form-group"><label>حاضر</label><input type="number" id="saPresent" value="0" /></div>
+      <div class="form-group"><label>غائب</label><input type="number" id="saAbsent" value="0" /></div>
     </div>
-    <div class="form-group"><label>ملاحظات</label><textarea id="saNotes" rows="3"></textarea></div>
     <div class="actions">
-      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="saveStudentAtt()">حفظ</button>
     </div>
   `);
 }
 
-async function saveStudent(){
-  const full_name = $('stName').value.trim();
-  const class_name = $('stClass').value.trim();
-  if(!full_name || !class_name){ toast('يرجى ملء جميع الحقول', 'error'); return; }
+async function saveStudentAtt(){
+  const class_name = $('saClass').value.trim();
+  const present_count = parseInt($('saPresent').value)||0;
+  const absent_count = parseInt($('saAbsent').value)||0;
+  if(!class_name){ toast('أدخل اسم الصف','error'); return; }
 
-  const { error } = await sb.from('students').insert({ full_name, class_name });
-  if(error){ toast('فشل الحفظ: '+error.message, 'error'); return; }
-  
-  closeModal(); 
-  toast('تم إضافة الطالب بنجاح', 'success'); 
-  
-  // تحديث الصفحة اللي واقف عليها المستخدم
-  if (currentView === 'students') renderStudents();
-  if (currentView === 'studentAtt') renderStudentAtt();
+  const { error } = await sb.from('student_attendance').insert({
+    teacher_id: currentUser.id, class_name, date: today(), present_count, absent_count
+  });
+  if(error){ toast('فشل: '+error.message,'error'); return; }
+  closeModal(); toast('تم الحفظ','success'); renderStudentAtt();
 }
 
-
-/* ========== LESSON PLANS (Admin/Supervisor view) ========== */
+/* ========== LESSON PLANS ========== */
 async function renderPlans(){
   const { data } = await sb.from('lesson_plans').select('*').order('created_at',{ascending:false});
   const ids = [...new Set((data||[]).map(d=>d.teacher_id))];
@@ -936,23 +880,19 @@ async function renderPlans(){
 
   $('mainContent').innerHTML = `
     <div class="page-head">
-      <div><h2>دفاتر التحضير</h2><p>${currentUser.role==='admin'?'يمكنك الاعتماد أو الرفض':'مراجعة وإضافة ملاحظات'}</p></div>
+      <div><h2>دفاتر التحضير</h2></div>
     </div>
     <div class="card">
       <table>
-        <thead><tr><th>الأستاذ</th><th>تاريخ الدفتر</th><th>الحالة</th><th>ملاحظات الموجّه</th><th>ملاحظات المدير</th><th>إجراءات</th></tr></thead>
+        <thead><tr><th>الأستاذ</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th></tr></thead>
         <tbody>
           ${(data||[]).map(d=>`
             <tr>
               <td>${esc(names[d.teacher_id]||'—')}</td>
               <td>${fmt(d.plan_date)}</td>
               <td>${statusBadge(d.status)}</td>
-              <td>${esc(d.supervisor_notes||'—')}</td>
-              <td>${esc(d.admin_notes||'—')}</td>
-              <td>
-                <button class="btn btn-sm btn-gold" onclick="openPlanReview(${d.id})">مراجعة</button>
-              </td>
-            </tr>`).join('') || '<tr><td colspan="6" class="empty">لا توجد دفاتر</td></tr>'}
+              <td><button class="btn btn-sm btn-gold" onclick="openPlanReview(${d.id})">مراجعة</button></td>
+            </tr>`).join('')}
         </tbody>
       </table>
     </div>
@@ -961,81 +901,37 @@ async function renderPlans(){
 
 async function openPlanReview(planId){
   const { data } = await sb.from('lesson_plans').select('*').eq('id', planId).single();
-  if(!data){ toast('لم يتم العثور على الدفتر','error'); return; }
+  if(!data){ toast('خطأ','error'); return; }
 
-  // رابط موقّع مؤقت للعرض
   let signedUrl = null;
   const { data: su } = await sb.storage.from(BUCKET_NAME).createSignedUrl(data.file_url, 300);
   if(su) signedUrl = su.signedUrl;
 
-  const isAdmin = currentUser.role === 'admin';
-
   openModal(`
-    <h3>مراجعة دفتر التحضير</h3>
-    <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">التاريخ: ${fmt(data.plan_date)} — الحالة: ${statusBadge(data.status)}</p>
-
-    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank" rel="noopener">📄 فتح الملف (PDF)</a>` : '<p class="empty">تعذّر توليد رابط الملف</p>'}
-
-    <div class="form-group" style="margin-top:20px;">
-      <label>ملاحظات الموجّه</label>
-      <textarea id="prSup" rows="3">${esc(data.supervisor_notes||'')}</textarea>
-    </div>
-
-    ${isAdmin ? `
-      <div class="form-group">
-        <label>ملاحظات المدير</label>
-        <textarea id="prAdm" rows="3">${esc(data.admin_notes||'')}</textarea>
-      </div>
-      <div class="form-group">
-        <label>القرار</label>
-        <select id="prStatus">
-          <option value="pending" ${data.status==='pending'?'selected':''}>قيد المراجعة</option>
-          <option value="approved" ${data.status==='approved'?'selected':''}>معتمد</option>
-          <option value="rejected" ${data.status==='rejected'?'selected':''}>مرفوض</option>
-        </select>
-      </div>
-    ` : ''}
-
-    <div class="actions">
-      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إغلاق</button>
-      <button class="btn btn-primary" onclick="savePlanReview(${planId}, ${isAdmin})">حفظ</button>
-    </div>
+    <h3>مراجعة الدفتر</h3>
+    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank">📄 فتح الملف</a>` : ''}
+    <div class="actions"><button class="btn btn-outline" onclick="closeModal()">إغلاق</button></div>
   `);
-}
-
-async function savePlanReview(planId, isAdmin){
-  const sup = $('prSup')?.value.trim() || '';
-  const updates = { supervisor_notes: sup };
-  if(isAdmin){
-    updates.admin_notes = $('prAdm').value.trim();
-    updates.status = $('prStatus').value;
-  }
-  const { error } = await sb.from('lesson_plans').update(updates).eq('id', planId);
-  if(error){ toast('فشل: '+error.message,'error'); return; }
-  closeModal(); toast('تم الحفظ','success'); renderPlans();
 }
 
 /* ========== MY PLANS (Teacher) ========== */
 async function renderMyPlans(){
   const { data } = await sb.from('lesson_plans').select('*').eq('teacher_id', currentUser.id).order('created_at',{ascending:false});
-
   $('mainContent').innerHTML = `
     <div class="page-head">
-      <div><h2>دفتر التحضير</h2><p>ارفع دفترك اليومي بصيغة PDF</p></div>
+      <div><h2>دفتر التحضير</h2></div>
       <button class="btn btn-primary" onclick="openUploadPlan()">➕ رفع دفتر</button>
     </div>
     <div class="card">
       <table>
-        <thead><tr><th>تاريخ الدفتر</th><th>الحالة</th><th>ملاحظات الموجّه</th><th>ملاحظات المدير</th><th>الملف</th></tr></thead>
+        <thead><tr><th>التاريخ</th><th>الحالة</th><th>الملف</th></tr></thead>
         <tbody>
           ${(data||[]).map(d=>`
             <tr>
               <td>${fmt(d.plan_date)}</td>
               <td>${statusBadge(d.status)}</td>
-              <td>${esc(d.supervisor_notes||'—')}</td>
-              <td>${esc(d.admin_notes||'—')}</td>
               <td><button class="btn btn-sm btn-primary" onclick="openMyPlanFile('${esc(d.file_url)}')">عرض</button></td>
-            </tr>`).join('') || '<tr><td colspan="5" class="empty">لم ترفع أي دفتر بعد</td></tr>'}
+            </tr>`).join('')}
         </tbody>
       </table>
     </div>
@@ -1044,12 +940,11 @@ async function renderMyPlans(){
 
 function openUploadPlan(){
   openModal(`
-    <h3>رفع دفتر التحضير</h3>
-    <div class="form-group"><label>تاريخ الدفتر</label><input type="date" id="upDate" value="${today()}" /></div>
+    <h3>رفع دفتر</h3>
+    <div class="form-group"><label>التاريخ</label><input type="date" id="upDate" value="${today()}" /></div>
     <div class="form-group"><label>ملف PDF</label><input type="file" id="upFile" accept="application/pdf" /></div>
     <div class="actions">
-      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" id="upBtn" onclick="uploadPlan()">رفع</button>
+      <button class="btn btn-primary" onclick="uploadPlan()">رفع</button>
     </div>
   `);
 }
@@ -1057,39 +952,39 @@ function openUploadPlan(){
 async function uploadPlan(){
   const date = $('upDate').value;
   const file = $('upFile').files[0];
-  if(!file){ toast('اختر ملف PDF','error'); return; }
-  if(file.type !== 'application/pdf'){ toast('يجب أن يكون الملف PDF','error'); return; }
-
-  const btn = $('upBtn'); btn.disabled = true; btn.textContent = 'جاري الرفع...';
+  if(!file) return;
 
   const path = `${currentUser.id}/${date}_${Date.now()}.pdf`;
-  const { error: upErr } = await sb.storage.from(BUCKET_NAME).upload(path, file, { contentType:'application/pdf', upsert:false });
-  if(upErr){ btn.disabled=false; btn.textContent='رفع'; toast('فشل الرفع: '+upErr.message,'error'); return; }
+  const { error: upErr } = await sb.storage.from(BUCKET_NAME).upload(path, file);
+  if(upErr){ toast('فشل الرفع: '+upErr.message,'error'); return; }
 
-  const { error: insErr } = await sb.from('lesson_plans').insert({
-    teacher_id: currentUser.id, plan_date: date, file_url: path, status:'pending'
-  });
-  btn.disabled=false; btn.textContent='رفع';
-  if(insErr){ toast('فشل الحفظ: '+insErr.message,'error'); return; }
-
-  closeModal(); toast('تم رفع الدفتر بنجاح','success'); renderMyPlans();
+  await sb.from('lesson_plans').insert({ teacher_id: currentUser.id, plan_date: date, file_url: path });
+  closeModal(); toast('تم الرفع','success'); renderMyPlans();
 }
 
 async function openMyPlanFile(path){
-  const { data, error } = await sb.storage.from(BUCKET_NAME).createSignedUrl(path, 300);
-  if(error || !data){ toast('تعذّر فتح الملف','error'); return; }
-  window.open(data.signedUrl, '_blank');
+  const { data } = await sb.storage.from(BUCKET_NAME).createSignedUrl(path, 300);
+  if(data) window.open(data.signedUrl, '_blank');
 }
 
-/* ========== Mobile sidebar toggle ========== */
-document.addEventListener('click', (e)=>{
-  if(window.innerWidth <= 900){
-    const sb = $('sidebar');
-    if(!sb) return;
-    if(e.target.closest('#sidebar')) return;
-    sb.classList.remove('open');
-  }
-});
+/* ========== MONTHLY REPORTS ========== */
+async function renderReports(){
+  const currentMonth = new Date().toISOString().slice(0, 7); 
+  const { data: tAtt } = await sb.from('teacher_attendance').select('*').gte('date', currentMonth + '-01');
+  const { data: sAtt } = await sb.from('student_attendance').select('*').gte('date', currentMonth + '-01');
+
+  let tPresent = 0, tAbsent = 0;
+  (tAtt||[]).forEach(a => { if(a.status === 'present') tPresent++; else if(a.status === 'absent') tAbsent++; });
+
+  let sPresent = 0, sAbsent = 0;
+  (sAtt||[]).forEach(a => { sPresent += a.present_count; sAbsent += a.absent_count; });
+
+  $('mainContent').innerHTML = `
+    <div class="page-head"><div><h2>التقارير الشهرية</h2></div></div>
+    <h3>الأساتذة: حاضر (${tPresent}) | غائب (${tAbsent})</h3>
+    <h3>الطلاب: حاضر (${sPresent}) | غائب (${sAbsent})</h3>
+  `;
+}
 </script>
 </body>
 </html>
