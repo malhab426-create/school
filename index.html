@@ -332,7 +332,7 @@ table tr:hover td{background:#fafbfd;}
     <div>
       <h4>تواصل معنا</h4>
       <p>📍 الشمال السوري</p>
-      <p>📞 0000 000 000</p>
+      <p>📞 09</p>
       <p>✉️ info@school.com</p>
     </div>
   </div>
@@ -367,7 +367,6 @@ table tr:hover td{background:#fafbfd;}
 <div id="dashboard" class="dash-wrap" style="display:none">
   <aside class="sidebar" id="sidebar">
     <div class="brand-sm">
-      <div class="logo">🏫</div>
       <h3>مدارس الإمام أحمد<br/>للأيتام</h3>
     </div>
     <div class="user-info">
@@ -398,9 +397,7 @@ table tr:hover td{background:#fafbfd;}
 <!-- ============ SUPABASE ============ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ============================================================
-   ⚙️  الإعدادات — عدّل هذين السطرين فقط
-============================================================ */
+
 const SUPABASE_URL  = "https://msewuspuarnifzfvouik.supabase.co";
 const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zZXd1c3B1YXJuaWZ6ZnZvdWlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNjU2NzAsImV4cCI6MjEwNzc0MTY3MH0.TrjVBM6PEfHsp9IXobJsFU7i9OGpY8J7GE-TOujMm4A";
 const BUCKET_NAME   = "lesson-plans";
@@ -527,9 +524,11 @@ function buildNav(){
     links.push({ key:'studentAtt',       label:'🎒 دوام الطلاب' });
     links.push({ key:'plans',            label:'📄 دفاتر التحضير' });
   }
-  if(currentUser.role === 'teacher'){
-    links.push({ key:'studentAtt',       label:'🎒 دوام طلابي' });
-    links.push({ key:'myPlans',          label:'📄 دفتري' });
+    if(currentUser.role === 'teacher'){
+    links.push({ key:'students',   label:'🎓 إدارة الطلاب' }); // السطر الجديد
+    links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
+    links.push({ key:'myPlans',    label:'📄 دفتري' });
+  
   }
 
   const ul = $('navLinks');
@@ -607,12 +606,16 @@ async function renderUsers(){
   const { data, error } = await sb.from('profiles').select('*').order('created_at',{ascending:false});
   if(error) throw error;
 
-  $('mainContent').innerHTML = `
+    $('mainContent').innerHTML = `
     <div class="page-head">
-      <div><h2>إدارة الحسابات</h2><p>إنشاء وتعديل حسابات الأساتذة والموجهين</p></div>
-      <button class="btn btn-primary" onclick="openCreateUser()">➕ إضافة حساب</button>
+      <div><h2>دوام الطلاب</h2><p>${currentUser.role==='teacher'?'سجّل دوام طلابك اليوم':'سجلات دوام الطلاب اليوم'}</p></div>
+      
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+        ${currentUser.role==='teacher' ? `<button class="btn btn-gold" onclick="openStudentAtt()">📝 تسجيل دوام</button>` : ''}
+      </div>
     </div>
-    <div class="card">
+    
       <table>
         <thead><tr><th>الاسم</th><th>البريد</th><th>الدور</th><th>تاريخ الإنشاء</th><th>إجراءات</th></tr></thead>
         <tbody>
@@ -662,6 +665,38 @@ async function createUser(){
   if(!full_name || !email || !password){ toast('املأ كل الحقول','error'); return; }
   if(password.length < 6){ toast('كلمة المرور 6 أحرف على الأقل','error'); return; }
 
+  // إنشاء المستخدم في نظام Authentication
+  const { data, error } = await sb.auth.signUp({ email, password });
+  
+  if(error){ 
+    toast('فشل إنشاء الحساب: ' + error.message, 'error'); 
+    return; 
+  }
+
+  const uid = data.user?.id;
+  if(!uid){ 
+    toast('لم يتم إنشاء المستخدم (تأكد من إعدادات الإيميل)', 'error'); 
+    return; 
+  }
+
+  // ننتظر نصف ثانية عشان نضمن إن Supabase حفظ المستخدم
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  // إضافة البروفايل في الجدول
+  const { error: pErr } = await sb.from('profiles').insert({
+    id: uid, full_name, email, role
+  });
+
+  if(pErr){ 
+    toast('فشل حفظ البروفايل: ' + pErr.message, 'error'); 
+    return; 
+  }
+
+  closeModal();
+  toast('تم إنشاء الحساب بنجاح', 'success');
+  renderUsers();
+}
+
   // ملاحظة: إنشاء مستخدم من داخل المتصفح يتطلب إما:
   // (أ) دعوة عبر inviteUserByEmail ثم المستخدم يضبط كلمة السر
   // (ب) Edge Function بـ service_role
@@ -680,7 +715,7 @@ async function createUser(){
   closeModal();
   toast('تم إنشاء الحساب بنجاح','success');
   renderUsers();
-}
+
 
 function openEditUser(u){
   openModal(`
@@ -837,20 +872,22 @@ function openStudentAtt(){
   `);
 }
 
-async function saveStudentAtt(){
-  const class_name = $('saClass').value.trim();
-  const date = $('saDate').value;
-  const present_count = parseInt($('saPresent').value)||0;
-  const absent_count = parseInt($('saAbsent').value)||0;
-  const notes = $('saNotes').value.trim();
-  if(!class_name){ toast('أدخل اسم الصف','error'); return; }
+async function saveStudent(){
+  const full_name = $('stName').value.trim();
+  const class_name = $('stClass').value.trim();
+  if(!full_name || !class_name){ toast('يرجى ملء جميع الحقول', 'error'); return; }
 
-  const { error } = await sb.from('student_attendance').insert({
-    teacher_id: currentUser.id, class_name, date, present_count, absent_count, notes
-  });
-  if(error){ toast('فشل: '+error.message,'error'); return; }
-  closeModal(); toast('تم الحفظ','success'); renderStudentAtt();
+  const { error } = await sb.from('students').insert({ full_name, class_name });
+  if(error){ toast('فشل الحفظ: '+error.message, 'error'); return; }
+  
+  closeModal(); 
+  toast('تم إضافة الطالب بنجاح', 'success'); 
+  
+  // تحديث الصفحة اللي واقف عليها المستخدم
+  if (currentView === 'students') renderStudents();
+  if (currentView === 'studentAtt') renderStudentAtt();
 }
+
 
 /* ========== LESSON PLANS (Admin/Supervisor view) ========== */
 async function renderPlans(){
