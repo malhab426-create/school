@@ -44,13 +44,11 @@ nav a:hover::after{width:100%;}
 .btn-success{background:var(--success);color:#fff;}
 .btn-sm{padding:6px 14px;font-size:13px;}
 
-/* ==== Hero ==== */
+/* ==== Hero & Sections ==== */
 .hero{background:linear-gradient(rgba(13,59,102,.85),rgba(13,59,102,.85)),linear-gradient(135deg,#0d3b66,#082a4a);color:#fff;padding:100px 40px;text-align:center;}
 .hero h2{font-size:42px;font-weight:900;margin-bottom:20px;line-height:1.4;}
 .hero p{font-size:19px;max-width:700px;margin:0 auto 35px;color:#e6eef7;}
 .hero .btn{margin:0 8px;}
-
-/* ==== Sections ==== */
 section{padding:80px 40px;}
 .container{max-width:1150px;margin:0 auto;}
 .section-title{text-align:center;font-size:32px;font-weight:900;color:var(--primary);margin-bottom:12px;}
@@ -105,8 +103,9 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);background:#fff;}
 .auth-card .btn{width:100%;padding:12px;font-size:16px;}
 .auth-error{background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:16px;display:none;}
+
 .dash-wrap{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
-.sidebar{background:var(--primary-dark);color:#c9d6e5;padding:24px 18px;display:flex;flex-direction:column;transition: transform 0.3s ease;}
+.sidebar{background:var(--primary-dark);color:#c9d6e5;padding:24px 18px;display:flex;flex-direction:column;transition: transform 0.3s ease; z-index: 1500;}
 .sidebar .brand-sm{display:flex;align-items:center;gap:10px;padding-bottom:18px;border-bottom:1px solid #1c3b5c;margin-bottom:20px;}
 .sidebar .brand-sm .logo{width:44px;height:44px;font-size:10px;border-width:2px;}
 .sidebar .brand-sm h3{color:#fff;font-size:14px;line-height:1.3;}
@@ -120,16 +119,17 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .sidebar .logout{margin-top:auto;padding-top:20px;border-top:1px solid #1c3b5c;}
 .main{padding:30px 40px;overflow-x:auto;}
 
-.mobile-topbar {display: none; background: var(--primary-dark); color: white; padding: 12px 20px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000;}
-.mobile-menu-btn {background: none; border: none; color: white; font-size: 24px; cursor: pointer;}
-.sidebar-overlay {display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1400;}
+/* شريط الموبايل */
+.mobile-topbar {display: none; background: var(--primary-dark); color: white; padding: 12px 20px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);}
+.mobile-menu-btn {background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px;}
+.sidebar-overlay {display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1400; backdrop-filter: blur(2px);}
 
 .page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;flex-wrap:wrap;gap:12px;}
 .page-head h2{color:var(--primary);font-size:26px;}
 .page-head p{color:var(--muted);font-size:14px;}
 
 /* ==== Cards & Tables ==== */
-.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 18px rgba(0,0,0,.05);margin-bottom:22px;}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 18px rgba(0,0,0,.05);margin-bottom:22px; overflow-x: auto;}
 .card h3{color:var(--primary);margin-bottom:16px;font-size:19px;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
@@ -137,7 +137,7 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .stat{background:#fff;padding:22px;border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.05);border-right:5px solid var(--gold);}
 .stat .num{font-size:30px;font-weight:900;color:var(--primary);}
 .stat .lbl{color:var(--muted);font-size:14px;margin-top:6px;}
-table{width:100%;border-collapse:collapse;font-size:14px;}
+table{width:100%;border-collapse:collapse;font-size:14px; min-width: 600px; /* عشان يسمح بالسحب أفقياً */ }
 table th{background:#f0f4f9;padding:12px;text-align:right;color:var(--primary);font-weight:700;border-bottom:2px solid #e2e8f0;}
 table td{padding:11px 12px;border-bottom:1px solid #eef2f7;vertical-align: middle;}
 table tr:hover td{background:#fafbfd;}
@@ -164,8 +164,8 @@ table tr:hover td{background:#fafbfd;}
 .toast.success{background:var(--success);}
 
 @media (max-width:900px){
-  .topbar{padding:10px 20px;}
-  nav ul{gap:14px;font-size:14px;}
+  .topbar{padding:10px 20px; justify-content: center;}
+  nav{display: none;}
   .school-name h1{font-size:16px;}
   .hero{padding:70px 20px;}
   .hero h2{font-size:28px;}
@@ -173,20 +173,15 @@ table tr:hover td{background:#fafbfd;}
   .section-title{font-size:24px;}
   .vm-grid{grid-template-columns:1fr;}
   
-  .dash-wrap{grid-template-columns:1fr;}
+  .dash-wrap{grid-template-columns:1fr; display: block;}
   .sidebar{position:fixed;inset:0 auto 0 0;width:260px;transform:translateX(-100%);z-index:1500;overflow-y:auto;}
   .sidebar.open{transform:translateX(0);}
   .sidebar-overlay.show{display:block;}
   .mobile-topbar{display:flex;}
   
-  .main{padding:20px;}
+  .main{padding:20px 15px;}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}
-}
-@media (max-width:600px){
-  nav{display:none;}
-  .logo{width:48px;height:48px;font-size:10px;}
-  .school-name h1{font-size:14px;}
-  .school-name p{font-size:11px;}
+  .page-head { flex-direction: column; align-items: flex-start; }
 }
 </style>
 </head>
@@ -292,9 +287,7 @@ table tr:hover td{background:#fafbfd;}
     <div class="divider"></div>
     <h2 class="section-title">الكادر التدريسي والإداري</h2>
     <p class="section-sub">من يقف خلف رسالتنا التربوية</p>
-    <div class="staff" id="publicStaff">
-      <!-- سيتم تعبئتها ديناميكياً من قاعدة البيانات -->
-    </div>
+    <div class="staff" id="publicStaff"></div>
   </div>
 </section>
 
@@ -341,6 +334,7 @@ table tr:hover td{background:#fafbfd;}
 
 <!-- ============ DASHBOARD ============ -->
 <div id="dashboard" class="dash-wrap" style="display:none">
+  
   <div class="mobile-topbar">
     <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
     <span style="font-weight:bold; font-size:16px;">لوحة التحكم</span>
@@ -355,9 +349,9 @@ table tr:hover td{background:#fafbfd;}
       <h3>مدارس الإمام أحمد<br/>للأيتام</h3>
     </div>
     <div class="user-info">
-      <div id="uAvatar" style="width:36px;height:36px;border-radius:50%;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:bold;overflow:hidden;"></div>
+      <div id="uAvatar" style="width:36px;height:36px;border-radius:50%;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:bold;overflow:hidden; flex-shrink: 0;"></div>
       <div class="info-text">
-        <div id="uName">—</div>
+        <div id="uName" style="font-size: 13px;">—</div>
         <div class="role" id="uRole">—</div>
       </div>
       <div class="notif-bell" onclick="renderView('notifications')">
@@ -384,6 +378,7 @@ table tr:hover td{background:#fafbfd;}
 <!-- ============ SUPABASE ============ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ⚠️ ضع هنا روابط Supabase الخاصة بك
 const SUPABASE_URL  = "https://msewuspuarnifzfvouik.supabase.co";
 const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zZXd1c3B1YXJuaWZ6ZnZvdWlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNjU2NzAsImV4cCI6MjEwNzc0MTY3MH0.TrjVBM6PEfHsp9IXobJsFU7i9OGpY8J7GE-TOujMm4A";
 const BUCKET_NAME   = "lesson-plans";
@@ -401,7 +396,7 @@ function toast(msg, type=''){
   const t = $('toast');
   t.textContent = msg;
   t.className = 'toast show ' + type;
-  setTimeout(()=>t.className='toast '+type, 2600);
+  setTimeout(()=>t.className='toast '+type, 3000);
 }
 function openModal(html){ $('modalBody').innerHTML = html; $('modalOverlay').classList.add('show'); }
 function closeModal(){ $('modalOverlay').classList.remove('show'); }
@@ -512,6 +507,7 @@ function buildNav(){
     links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
     links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
     links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
+    links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
     links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
     links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
   }
@@ -519,12 +515,14 @@ function buildNav(){
     links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
     links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
     links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
+    links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
     links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
     links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
   }
   if(currentUser.role === 'teacher'){
     links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
     links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
+    links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
     links.push({ key:'myPlans',    label:'📄 دفتري' });
   }
 
@@ -551,6 +549,7 @@ async function renderView(key){
     if(key==='students')      return renderStudents();
     if(key==='teacherAtt')    return renderTeacherAtt();
     if(key==='studentAtt')    return renderStudentAtt();
+    if(key==='grades')        return renderGrades();
     if(key==='plans')         return renderPlans();
     if(key==='myPlans')       return renderMyPlans();
     if(key==='reports')       return renderReports();
@@ -620,7 +619,7 @@ async function renderUsers(){
       <div><h2>إدارة الحسابات</h2><p>إنشاء وتعديل حسابات الأساتذة والموجهين</p></div>
       <button class="btn btn-primary" onclick="openCreateUser()">➕ إضافة حساب</button>
     </div>
-    <div class="card" style="overflow-x:auto;">
+    <div class="card">
       <table>
         <thead><tr><th>الصورة</th><th>الاسم</th><th>البريد</th><th>الدور</th><th>إجراءات</th></tr></thead>
         <tbody>
@@ -634,7 +633,7 @@ async function renderUsers(){
               <td>${esc(u.full_name)}</td>
               <td>${esc(u.email)}</td>
               <td><span class="badge badge-info">${roleLabel(u.role)}</span></td>
-              <td>
+              <td style="white-space:nowrap;">
                 <button class="btn btn-sm btn-gold" onclick="openUploadAvatar('${u.id}', '${esc(u.full_name)}')">📸 صورة</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">حذف</button>
               </td>
@@ -726,7 +725,6 @@ async function uploadAvatar(userId) {
   const fileExt = file.name.split('.').pop();
   const path = `${userId}_${Date.now()}.${fileExt}`;
 
-  // رفع الصورة للـ Bucket العام
   const { error: upErr } = await sb.storage.from(STAFF_BUCKET).upload(path, file);
   if(upErr) { 
     btn.disabled = false; btn.textContent = 'رفع الصورة'; 
@@ -734,11 +732,9 @@ async function uploadAvatar(userId) {
     return; 
   }
 
-  // الحصول على الرابط العام
   const { data: urlData } = sb.storage.from(STAFF_BUCKET).getPublicUrl(path);
-
-  // تحديث البروفايل
   const { error: dbErr } = await sb.from('profiles').update({ avatar_url: urlData.publicUrl }).eq('id', userId);
+  
   if(dbErr) {
     btn.disabled = false; btn.textContent = 'رفع الصورة'; 
     toast('فشل حفظ الرابط: ' + dbErr.message, 'error'); 
@@ -758,7 +754,7 @@ async function renderStudents(){
       <div><h2>إدارة الطلاب</h2><p>سجل الطلاب وتوزيعهم على الصفوف</p></div>
       <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
     </div>
-    <div class="card" style="overflow-x:auto;">
+    <div class="card">
       <table>
         <thead><tr><th>اسم الطالب</th><th>الصف</th><th>تاريخ التسجيل</th><th>إجراء</th></tr></thead>
         <tbody>
@@ -821,7 +817,7 @@ async function renderTeacherAtt(){
     <div class="page-head">
       <div><h2>دوام الأساتذة</h2><p>تاريخ اليوم: ${fmt(date)}</p></div>
     </div>
-    <div class="card" style="overflow-x:auto;">
+    <div class="card">
       <table>
         <thead><tr><th>الأستاذ</th><th>الحالة</th><th>إجراء</th></tr></thead>
         <tbody>
@@ -830,7 +826,7 @@ async function renderTeacherAtt(){
             return `<tr>
               <td>${esc(t.full_name)}</td>
               <td>${a? attBadge(a.status) : '<span class="badge badge-warn">لم يُسجّل</span>'}</td>
-              <td>
+              <td style="white-space:nowrap;">
                 <button class="btn btn-sm btn-success" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','present')">حاضر</button>
                 <button class="btn btn-sm btn-gold" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','late')">متأخر</button>
                 <button class="btn btn-sm btn-danger" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','absent')">غائب</button>
@@ -882,7 +878,7 @@ async function renderStudentAtt(){
       <div><h2>دوام الطلاب</h2><p>سجل الحضور والغياب الفردي — تاريخ اليوم: ${fmt(date)}</p></div>
       <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
     </div>
-    <div class="card" style="overflow-x:auto;">
+    <div class="card">
       <table>
         <thead><tr><th>اسم الطالب</th><th>الصف</th><th>الحالة</th><th>تسجيل سريع</th></tr></thead>
         <tbody>
@@ -892,7 +888,7 @@ async function renderStudentAtt(){
               <td>${esc(s.full_name)}</td>
               <td><span class="badge badge-info">${esc(s.class_name)}</span></td>
               <td>${a ? attBadge(a.status) : attBadge('none')}</td>
-              <td>
+              <td style="white-space:nowrap;">
                 <button class="btn btn-sm btn-success" onclick="saveStudentAtt(${s.id}, 'present')">حاضر</button>
                 <button class="btn btn-sm btn-gold" onclick="saveStudentAtt(${s.id}, 'late')">متأخر</button>
                 <button class="btn btn-sm btn-danger" onclick="saveStudentAtt(${s.id}, 'absent')">غائب</button>
@@ -914,12 +910,108 @@ async function saveStudentAtt(studentId, status){
     recorded_by: currentUser.id
   }, { onConflict: 'student_id,date' });
   
-  if(error){ 
-    toast('فشل الحفظ: '+error.message,'error'); 
-    return; 
-  }
+  if(error){ toast('فشل الحفظ: '+error.message,'error'); return; }
   toast('تم التسجيل بنجاح','success'); 
   renderStudentAtt();
+}
+
+/* ========== STUDENT GRADES ========== */
+async function renderGrades(){
+  const { data: grades } = await sb.from('student_grades').select('*, students(full_name, class_name)').order('date', {ascending:false});
+  
+  $('mainContent').innerHTML = `
+    <div class="page-head">
+      <div><h2>العلامات والمذاكرات</h2><p>سجل علامات الطلاب وتقديمهم للمذاكرات</p></div>
+      <button class="btn btn-primary" onclick="openAddGrade()">➕ إضافة علامة</button>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>المادة</th><th>اسم المذاكرة</th><th>الحالة</th><th>العلامة</th><th>إجراء</th></tr></thead>
+        <tbody>
+          ${(grades||[]).map(g=>`
+            <tr>
+              <td>${fmt(g.date)}</td>
+              <td>${esc(g.students?.full_name || '—')}</td>
+              <td><span class="badge badge-info">${esc(g.students?.class_name || '—')}</span></td>
+              <td>${esc(g.subject)}</td>
+              <td>${esc(g.exam_name)}</td>
+              <td>${g.status === 'submitted' ? '<span class="badge badge-success">تم التقديم</span>' : '<span class="badge badge-danger">لم يقدم</span>'}</td>
+              <td>${g.status === 'submitted' ? `<b style="color:var(--success); font-size:16px;">${esc(g.score)}</b>` : '—'}</td>
+              <td><button class="btn btn-sm btn-danger" onclick="deleteGrade(${g.id})">حذف</button></td>
+            </tr>`).join('') || '<tr><td colspan="8" class="empty">لا توجد علامات مسجلة</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+async function openAddGrade(){
+  const { data: students } = await sb.from('students').select('*').order('class_name').order('full_name');
+  if(!students || students.length === 0) { toast('لا يوجد طلاب مسجلين. أضف طلاباً أولاً.', 'error'); return; }
+
+  openModal(`
+    <h3>إضافة علامة / مذاكرة</h3>
+    <div class="form-group">
+      <label>الطالب</label>
+      <select id="grStudent">
+        ${students.map(s => `<option value="${s.id}">${esc(s.full_name)} (${esc(s.class_name)})</option>`).join('')}
+      </select>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label>المادة</label><input id="grSubject" placeholder="مثال: رياضيات" /></div>
+      <div class="form-group"><label>اسم المذاكرة</label><input id="grExamName" placeholder="مثال: مذاكرة الوحدة الأولى" /></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label>التاريخ</label><input type="date" id="grDate" value="${today()}" /></div>
+      <div class="form-group">
+        <label>الحالة</label>
+        <select id="grStatus" onchange="toggleGradeScore()">
+          <option value="submitted">تم التقديم</option>
+          <option value="missing">لم يقدم</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" id="scoreInputs">
+      <label>العلامة (مثال: 10/10)</label>
+      <input type="text" id="grScore" placeholder="10/10" />
+    </div>
+    <div class="actions">
+      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveGrade()">حفظ</button>
+    </div>
+  `);
+}
+
+function toggleGradeScore(){
+  $('scoreInputs').style.display = $('grStatus').value === 'submitted' ? 'block' : 'none';
+}
+
+async function saveGrade(){
+  const student_id = $('grStudent').value;
+  const subject = $('grSubject').value.trim();
+  const exam_name = $('grExamName').value.trim();
+  const date = $('grDate').value;
+  const status = $('grStatus').value;
+  const score = status === 'submitted' ? $('grScore').value.trim() : '0';
+
+  if(!subject || !exam_name){ toast('يرجى ملء اسم المادة واسم المذاكرة', 'error'); return; }
+  if(status === 'submitted' && !score) { toast('يرجى كتابة العلامة', 'error'); return; }
+
+  const { error } = await sb.from('student_grades').insert({
+    student_id, subject, exam_name, date, status, score, recorded_by: currentUser.id
+  });
+
+  if(error){ toast('فشل الحفظ: '+error.message, 'error'); return; }
+  closeModal(); 
+  toast('تم حفظ العلامة بنجاح', 'success'); 
+  renderGrades();
+}
+
+async function deleteGrade(id){
+  if(!confirm('تأكيد حذف هذه العلامة؟')) return;
+  const { error } = await sb.from('student_grades').delete().eq('id', id);
+  if(error){ toast('فشل الحذف: '+error.message, 'error'); return; }
+  toast('تم الحذف', 'success'); renderGrades();
 }
 
 /* ========== LESSON PLANS ========== */
@@ -934,7 +1026,7 @@ async function renderPlans(){
 
   $('mainContent').innerHTML = `
     <div class="page-head"><div><h2>دفاتر التحضير</h2></div></div>
-    <div class="card" style="overflow-x:auto;">
+    <div class="card">
       <table>
         <thead><tr><th>الأستاذ</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th></tr></thead>
         <tbody>
@@ -974,7 +1066,7 @@ async function renderMyPlans(){
       <div><h2>دفتر التحضير</h2></div>
       <button class="btn btn-primary" onclick="openUploadPlan()">➕ رفع دفتر</button>
     </div>
-    <div class="card" style="overflow-x:auto;">
+    <div class="card">
       <table>
         <thead><tr><th>التاريخ</th><th>الحالة</th><th>الملف</th></tr></thead>
         <tbody>
