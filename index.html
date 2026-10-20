@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>مدارس الإمام أحمد للأيتام في الشمال السوري</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet" />
-<!-- مكتبة الرسوم البيانية -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{
@@ -28,11 +27,13 @@ header{position:sticky;top:0;z-index:1000;background:var(--white);box-shadow:0 2
 .school-name{text-align:center;}
 .school-name h1{font-size:20px;color:var(--primary);font-weight:900;}
 .school-name p{font-size:13px;color:var(--muted);margin-top:2px;}
-nav ul{display:flex;list-style:none;gap:26px;align-items:center;}
-nav a{font-weight:500;color:var(--text);font-size:15px;transition:.2s;position:relative;}
-nav a:hover{color:var(--primary);}
-nav a::after{content:"";position:absolute;bottom:-6px;right:0;width:0;height:2px;background:var(--gold);transition:.3s;}
-nav a:hover::after{width:100%;}
+
+/* تخصيص شريط التنقل العلوي فقط (عشان ما يتعارض مع السايدبار) */
+header nav ul{display:flex;list-style:none;gap:26px;align-items:center;}
+header nav a{font-weight:500;color:var(--text);font-size:15px;transition:.2s;position:relative;}
+header nav a:hover{color:var(--primary);}
+header nav a::after{content:"";position:absolute;bottom:-6px;right:0;width:0;height:2px;background:var(--gold);transition:.3s;}
+header nav a:hover::after{width:100%;}
 
 /* ==== Buttons ==== */
 .btn{display:inline-block;padding:10px 22px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.25s;text-align:center;}
@@ -114,17 +115,20 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .sidebar .user-info{background:#0d3b66;padding:12px;border-radius:10px;margin-bottom:20px;font-size:13px;position:relative;display:flex;align-items:center;gap:10px;}
 .sidebar .user-info .info-text{flex-grow:1;}
 .sidebar .user-info .role{color:var(--gold);font-weight:700;margin-top:4px;font-size:12px;}
-.sidebar nav ul{display:flex;flex-direction:column;gap:4px;list-style:none;}
-.sidebar nav a{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:8px;color:#c9d6e5;font-size:14.5px;transition:.2s;cursor:pointer;}
+
+/* تخصيص روابط السايدبار (عشان ما تتعارض مع الهيدر) */
+.sidebar nav { flex-grow: 1; overflow-y: auto; margin-bottom: 10px; }
+.sidebar nav ul{display:flex;flex-direction:column;gap:6px;list-style:none;}
+.sidebar nav a{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:8px;color:#fff;font-size:15px;font-weight:500;transition:.2s;cursor:pointer; background: rgba(255,255,255,0.05);}
 .sidebar nav a:hover,.sidebar nav a.active{background:var(--primary);color:#fff;}
-.sidebar nav a::after{display:none;}
-.sidebar .logout{margin-top:auto;padding-top:20px;border-top:1px solid #1c3b5c;}
+.sidebar .logout{margin-top:auto;padding-top:15px;border-top:1px solid #1c3b5c;}
+
 .main{padding:30px 40px;overflow-x:auto;}
 
 /* شريط الموبايل */
 .mobile-topbar {display: none; background: var(--primary-dark); color: white; padding: 12px 20px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);}
 .mobile-menu-btn {background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px;}
-.sidebar-overlay {display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1400; backdrop-filter: blur(2px);}
+.sidebar-overlay {display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1400; backdrop-filter: blur(2px);}
 
 .page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;flex-wrap:wrap;gap:12px;}
 .page-head h2{color:var(--primary);font-size:26px;}
@@ -165,12 +169,11 @@ table tr:hover td{background:#fafbfd;}
 .toast.error{background:var(--danger);}
 .toast.success{background:var(--success);}
 
-/* Chart Container */
 .chart-container { position: relative; height: 250px; width: 100%; }
 
 @media (max-width:900px){
   .topbar{padding:10px 20px; justify-content: center;}
-  nav{display: none;}
+  header nav{display: none;}
   .school-name h1{font-size:16px;}
   .hero{padding:70px 20px;}
   .hero h2{font-size:28px;}
@@ -179,10 +182,23 @@ table tr:hover td{background:#fafbfd;}
   .vm-grid{grid-template-columns:1fr;}
   
   .dash-wrap{grid-template-columns:1fr; display: block;}
-  .sidebar{position:fixed;inset:0 auto 0 0;width:260px;transform:translateX(-100%);z-index:1500;overflow-y:auto;}
-  .sidebar.open{transform:translateX(0);}
-  .sidebar-overlay.show{display:block;}
-  .mobile-topbar{display:flex;}
+  
+  /* إصلاح السايدبار للموبايل (يفتح من اليمين) */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: auto;
+    bottom: 0;
+    width: 260px;
+    transform: translateX(100%);
+    z-index: 1500;
+    overflow-y: auto;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.show { display: block; }
+  .mobile-topbar { display: flex; }
   
   .main{padding:20px 15px;}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}
@@ -230,7 +246,7 @@ table tr:hover td{background:#fafbfd;}
     <h2 class="section-title">من نحن</h2>
     <p class="section-sub">تعريف بالمدرسة ورسالتها التربوية</p>
     <p class="about-text" id="site-about-text">
-      مدارس الإمام أحمد للأيتام...
+      مدارس الإمام أحمد للأيتام في الشمال السوري مؤسسة تعليمية تربوية تُعنى برعاية الأيتام وتقديم تعليم نوعي متوازن يجمع بين التحصيل الأكاديمي وبناء الشخصية والقيم. نسعى إلى تهيئة بيئة تعليمية آمنة ومحفزة، بإشراف كادر تعليمي وإداري مؤهل، وبشراكة فاعلة مع الأسرة والمجتمع.
     </p>
   </div>
 </section>
@@ -255,7 +271,6 @@ table tr:hover td{background:#fafbfd;}
   </div>
 </section>
 
-<!-- (باقي أقسام الصفحة الرئيسية كما هي) -->
 <section id="values">
   <div class="container">
     <div class="divider"></div>
@@ -351,7 +366,7 @@ table tr:hover td{background:#fafbfd;}
 
   <aside class="sidebar" id="sidebar">
     <div class="brand-sm">
-      <div class="logo">🏫</div>
+      <div class="logo"></div>
       <h3>مدارس الإمام أحمد<br/>للأيتام</h3>
     </div>
     <div class="user-info">
@@ -394,7 +409,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 let currentUser  = null;
 let currentView  = 'overview';
-let charts = {}; // لحفظ الرسوم البيانية
+let charts = {}; 
 
 function $(id){ return document.getElementById(id); }
 function show(el){ el.style.display=''; }
@@ -433,20 +448,17 @@ function exportTableToCSV(filename) {
   
   for (let i = 0; i < rows.length; i++) {
     let row = [], cols = rows[i].querySelectorAll("td, th");
-    
-    // تخطي العمود الأخير (الإجراءات) إذا كان موجوداً
     let limit = cols.length;
     if (i === 0 && cols[cols.length - 1].innerText.includes("إجراء")) limit--;
     if (i > 0 && rows[i].cells.length > 1 && rows[i].cells[rows[i].cells.length-1].querySelector("button")) limit--;
 
     for (let j = 0; j < limit; j++) {
-      let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/,/g, "،"); // استبدال الفاصلة لتفادي مشاكل CSV
+      let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/,/g, "،"); 
       row.push('"' + data + '"');
     }
     csv.push(row.join(","));
   }
 
-  // إضافة BOM لدعم اللغة العربية في Excel
   const csvFile = new Blob(["\uFEFF" + csv.join("\n")], { type: 'text/csv;charset=utf-8;' });
   const downloadLink = document.createElement("a");
   downloadLink.href = URL.createObjectURL(csvFile);
@@ -508,7 +520,6 @@ async function loadUserAndDashboard(authUser){
 }
 
 (async function init(){
-  // تحميل إعدادات الموقع (النصوص)
   const { data: settings } = await sb.from('site_settings').select('*');
   if(settings) {
     const s = {};
@@ -520,7 +531,6 @@ async function loadUserAndDashboard(authUser){
     if(s.mission_text) $('site-mission').textContent = s.mission_text;
   }
 
-  // تحميل الكادر للصفحة الرئيسية
   const { data: staff } = await sb.from('profiles').select('*').order('role').order('full_name');
   if(staff && staff.length > 0) {
     $('publicStaff').innerHTML = staff.map(s => `
@@ -549,37 +559,43 @@ async function loadNotifications(){
 
 /* ========== Build Navigation ========== */
 function buildNav(){
-  const links = [];
-  links.push({ key:'overview',   label:'🏠 نظرة عامة' });
-  links.push({ key:'notifications', label:'🔔 الإشعارات' });
+  try {
+    const links = [];
+    links.push({ key:'overview',   label:'🏠 نظرة عامة' });
+    links.push({ key:'notifications', label:'🔔 الإشعارات' });
 
-  if(currentUser.role === 'admin'){
-    links.push({ key:'users',      label:'👥 إدارة الحسابات' });
-    links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
-    links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
-    links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
-    links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
-    links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
-    links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
-    links.push({ key:'settings',   label:'⚙️ إعدادات الموقع' });
-  }
-  if(currentUser.role === 'supervisor'){
-    links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
-    links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
-    links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
-    links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
-    links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
-    links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
-  }
-  if(currentUser.role === 'teacher'){
-    links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
-    links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
-    links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
-    links.push({ key:'myPlans',    label:'📄 دفتري' });
-  }
+    if(currentUser.role === 'admin'){
+      links.push({ key:'users',      label:'👥 إدارة الحسابات' });
+      links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
+      links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
+      links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
+      links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
+      links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
+      links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
+      links.push({ key:'settings',   label:'⚙️ إعدادات الموقع' });
+    }
+    if(currentUser.role === 'supervisor'){
+      links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
+      links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
+      links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
+      links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
+      links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
+      links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
+    }
+    if(currentUser.role === 'teacher'){
+      links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
+      links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
+      links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
+      links.push({ key:'myPlans',    label:'📄 دفتري' });
+    }
 
-  const ul = $('navLinks');
-  ul.innerHTML = links.map(l => `<li><a data-view="${l.key}" onclick="renderView('${l.key}'); if(window.innerWidth <= 900) toggleSidebar();">${l.label}</a></li>`).join('');
+    const ul = $('navLinks');
+    if(ul) {
+      ul.innerHTML = links.map(l => `<li><a data-view="${l.key}" onclick="renderView('${l.key}'); if(window.innerWidth <= 900) toggleSidebar();">${l.label}</a></li>`).join('');
+    }
+  } catch(e) {
+    console.error("Error building nav:", e);
+  }
 }
 
 function setActiveNav(key){
@@ -595,7 +611,6 @@ async function renderView(key){
   const main = $('mainContent');
   main.innerHTML = '<div class="empty">⏳ جاري التحميل...</div>';
   
-  // تدمير الرسوم البيانية القديمة إن وجدت
   if(charts.teacher) { charts.teacher.destroy(); charts.teacher = null; }
   if(charts.student) { charts.student.destroy(); charts.student = null; }
 
@@ -622,7 +637,6 @@ async function renderOverview(){
   const main = $('mainContent');
   const month = new Date().toISOString().slice(0, 7); 
 
-  // جلب الإحصائيات
   const { count: cTeachers } = await sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','teacher');
   const { count: cStudents } = await sb.from('students').select('*',{count:'exact',head:true});
   
@@ -658,7 +672,6 @@ async function renderOverview(){
     </div>
   `;
 
-  // رسم المخططات
   const ctxT = document.getElementById('teacherChart').getContext('2d');
   charts.teacher = new Chart(ctxT, {
     type: 'doughnut',
@@ -730,11 +743,8 @@ async function saveSettings(){
     { key: 'mission_text', value: $('setMission').value },
   ];
 
-  for (let u of updates) {
-    await sb.from('site_settings').upsert(u);
-  }
+  for (let u of updates) { await sb.from('site_settings').upsert(u); }
   
-  // تحديث النصوص فوراً في الصفحة الرئيسية
   $('site-hero-title').textContent = $('setHeroTitle').value;
   $('site-hero-desc').textContent = $('setHeroDesc').value;
   $('site-about-text').textContent = $('setAbout').value;
@@ -877,7 +887,6 @@ async function uploadAvatar(userId) {
 async function openTeacherProfile(id, name){
   openModal('<h3>جاري تحميل بيانات الأستاذ...</h3>');
   
-  // جلب دوام الأستاذ
   const { data: att } = await sb.from('teacher_attendance').select('status').eq('teacher_id', id);
   let present = 0, absent = 0, late = 0;
   (att||[]).forEach(a => {
@@ -886,7 +895,6 @@ async function openTeacherProfile(id, name){
     else if(a.status==='late') late++;
   });
 
-  // جلب دفاتر التحضير
   const { data: plans } = await sb.from('lesson_plans').select('status').eq('teacher_id', id);
   let approved = 0, rejected = 0, pending = 0;
   (plans||[]).forEach(p => {
