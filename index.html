@@ -28,7 +28,7 @@ header{position:sticky;top:0;z-index:1000;background:var(--white);box-shadow:0 2
 .school-name h1{font-size:20px;color:var(--primary);font-weight:900;}
 .school-name p{font-size:13px;color:var(--muted);margin-top:2px;}
 
-/* تخصيص شريط التنقل العلوي فقط (عشان ما يتعارض مع السايدبار) */
+/* تخصيص شريط التنقل العلوي فقط */
 header nav ul{display:flex;list-style:none;gap:26px;align-items:center;}
 header nav a{font-weight:500;color:var(--text);font-size:15px;transition:.2s;position:relative;}
 header nav a:hover{color:var(--primary);}
@@ -109,14 +109,15 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 
 .dash-wrap{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
 .sidebar{background:var(--primary-dark);color:#c9d6e5;padding:24px 18px;display:flex;flex-direction:column;transition: transform 0.3s ease; z-index: 1500;}
-.sidebar .brand-sm{display:flex;align-items:center;gap:10px;padding-bottom:18px;border-bottom:1px solid #1c3b5c;margin-bottom:20px;}
-.sidebar .brand-sm .logo{width:44px;height:44px;font-size:10px;border-width:2px;}
-.sidebar .brand-sm h3{color:#fff;font-size:14px;line-height:1.3;}
+
+/* تعديل السايدبار (إزالة الشعار وتوسيط الاسم) */
+.sidebar .brand-sm{display:flex;align-items:center;justify-content:center;text-align:center;padding-bottom:18px;border-bottom:1px solid #1c3b5c;margin-bottom:20px;}
+.sidebar .brand-sm h3{color:#fff;font-size:16px;line-height:1.4; font-weight: 700;}
+
 .sidebar .user-info{background:#0d3b66;padding:12px;border-radius:10px;margin-bottom:20px;font-size:13px;position:relative;display:flex;align-items:center;gap:10px;}
 .sidebar .user-info .info-text{flex-grow:1;}
 .sidebar .user-info .role{color:var(--gold);font-weight:700;margin-top:4px;font-size:12px;}
 
-/* تخصيص روابط السايدبار (عشان ما تتعارض مع الهيدر) */
 .sidebar nav { flex-grow: 1; overflow-y: auto; margin-bottom: 10px; }
 .sidebar nav ul{display:flex;flex-direction:column;gap:6px;list-style:none;}
 .sidebar nav a{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:8px;color:#fff;font-size:15px;font-weight:500;transition:.2s;cursor:pointer; background: rgba(255,255,255,0.05);}
@@ -171,6 +172,14 @@ table tr:hover td{background:#fafbfd;}
 
 .chart-container { position: relative; height: 250px; width: 100%; }
 
+/* تصميم طباعة كشف العلامات */
+@media print {
+  body * { visibility: hidden; }
+  #print-section, #print-section * { visibility: visible; }
+  #print-section { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
+  .no-print { display: none !important; }
+}
+
 @media (max-width:900px){
   .topbar{padding:10px 20px; justify-content: center;}
   header nav{display: none;}
@@ -183,19 +192,7 @@ table tr:hover td{background:#fafbfd;}
   
   .dash-wrap{grid-template-columns:1fr; display: block;}
   
-  /* إصلاح السايدبار للموبايل (يفتح من اليمين) */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: auto;
-    bottom: 0;
-    width: 260px;
-    transform: translateX(100%);
-    z-index: 1500;
-    overflow-y: auto;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
-  }
+  .sidebar {position: fixed; top: 0; right: 0; left: auto; bottom: 0; width: 260px; transform: translateX(100%); z-index: 1500; overflow-y: auto; box-shadow: -5px 0 15px rgba(0,0,0,0.2);}
   .sidebar.open { transform: translateX(0); }
   .sidebar-overlay.show { display: block; }
   .mobile-topbar { display: flex; }
@@ -365,9 +362,9 @@ table tr:hover td{background:#fafbfd;}
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
   <aside class="sidebar" id="sidebar">
+    <!-- تم إزالة الشعار الصغير وتوسيط اسم المدرسة -->
     <div class="brand-sm">
-      <div class="logo"></div>
-      <h3>مدارس الإمام أحمد<br/>للأيتام</h3>
+      <h3>مدارس الإمام أحمد للأيتام</h3>
     </div>
     <div class="user-info">
       <div id="uAvatar" style="width:36px;height:36px;border-radius:50%;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:bold;overflow:hidden; flex-shrink: 0;"></div>
@@ -438,7 +435,24 @@ function attBadge(s){
   return '<span class="badge badge-info">لم يُسجل</span>';
 }
 
-/* ========== Export to Excel (CSV) ========== */
+/* ========== Search & Export Functions ========== */
+function filterTable() {
+  const input = document.getElementById("tableSearch");
+  if (!input) return;
+  const filter = input.value.toLowerCase();
+  const table = document.querySelector("#mainContent table");
+  if (!table) return;
+  const tr = table.getElementsByTagName("tr");
+  for (let i = 1; i < tr.length; i++) {
+    let textContent = tr[i].textContent || tr[i].innerText;
+    if (textContent.toLowerCase().indexOf(filter) > -1) {
+      tr[i].style.display = "";
+    } else {
+      tr[i].style.display = "none";
+    }
+  }
+}
+
 function exportTableToCSV(filename) {
   const table = document.querySelector("#mainContent table");
   if (!table) { toast('لا يوجد جدول لتصديره', 'error'); return; }
@@ -632,7 +646,7 @@ async function renderView(key){
   }
 }
 
-/* ========== OVERVIEW (With Charts) ========== */
+/* ========== OVERVIEW (With Charts & New Welcome Text) ========== */
 async function renderOverview(){
   const main = $('mainContent');
   const month = new Date().toISOString().slice(0, 7); 
@@ -651,7 +665,10 @@ async function renderOverview(){
 
   main.innerHTML = `
     <div class="page-head">
-      <div><h2>مرحباً ${esc(currentUser.full_name)} 👋</h2><p>نظرة عامة — ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p></div>
+      <div>
+        <h2>مدارس الإمام أحمد للأيتام</h2>
+        <p>مرحباً بك، ${esc(currentUser.full_name)} — ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
+      </div>
     </div>
     <div class="grid-4" style="margin-bottom:20px;">
       <div class="stat"><div class="num">${cTeachers||0}</div><div class="lbl">عدد الأساتذة</div></div>
@@ -766,6 +783,7 @@ async function renderUsers(){
       </div>
     </div>
     <div class="card">
+      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم أو البريد..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
         <thead><tr><th>الصورة</th><th>الاسم</th><th>البريد</th><th>الدور</th><th>إجراءات</th></tr></thead>
         <tbody>
@@ -937,6 +955,7 @@ async function renderStudents(){
       </div>
     </div>
     <div class="card">
+      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم أو الصف..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
         <thead><tr><th>اسم الطالب</th><th>الصف</th><th>تاريخ التسجيل</th><th>إجراءات</th></tr></thead>
         <tbody>
@@ -946,7 +965,7 @@ async function renderStudents(){
               <td><span class="badge badge-info">${esc(s.class_name)}</span></td>
               <td>${fmt(s.created_at)}</td>
               <td style="white-space:nowrap;">
-                <button class="btn btn-sm btn-primary" onclick="openStudentProfile(${s.id}, '${esc(s.full_name)}')">📊 بطاقة</button>
+                <button class="btn btn-sm btn-primary" onclick="openStudentProfile(${s.id}, '${esc(s.full_name)}', '${esc(s.class_name)}')">📊 بطاقة</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">حذف</button>
               </td>
             </tr>
@@ -957,8 +976,8 @@ async function renderStudents(){
   `;
 }
 
-/* ========== STUDENT PROFILE CARD ========== */
-async function openStudentProfile(id, name){
+/* ========== STUDENT PROFILE CARD + PRINT ========== */
+async function openStudentProfile(id, name, className){
   openModal('<h3>جاري تحميل بيانات الطالب...</h3>');
   
   const { data: att } = await sb.from('student_attendance').select('status').eq('student_id', id);
@@ -981,7 +1000,7 @@ async function openStudentProfile(id, name){
     </div>
 
     <h4 style="color:var(--primary); margin-bottom:10px;">آخر العلامات (${grades?.length || 0}):</h4>
-    <div style="max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px;">
+    <div style="max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px; margin-bottom:20px;">
       <table style="min-width:100%;">
         <thead><tr><th>التاريخ</th><th>المادة</th><th>المذاكرة</th><th>العلامة</th></tr></thead>
         <tbody>
@@ -999,8 +1018,77 @@ async function openStudentProfile(id, name){
 
     <div class="actions" style="margin-top:20px;">
       <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إغلاق</button>
+      <button class="btn btn-primary" onclick="printStudentReportCard(${id}, '${esc(name)}', '${esc(className)}')">🖨️ طباعة كشف العلامات</button>
     </div>
   `);
+}
+
+async function printStudentReportCard(id, name, className) {
+  toast('جاري تجهيز الكشف للطباعة...', 'success');
+  const { data: grades } = await sb.from('student_grades').select('*').eq('student_id', id).order('date', {ascending:true});
+  
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html dir="rtl" lang="ar">
+    <head>
+      <title>كشف علامات - ${name}</title>
+      <style>
+        body { font-family: 'Tajawal', Arial, sans-serif; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #0d3b66; padding-bottom: 15px; }
+        .header h1 { margin: 0; color: #0d3b66; font-size: 24px; }
+        .header h2 { margin: 5px 0 0; color: #555; font-size: 18px; }
+        .info { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 16px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #999; padding: 10px; text-align: right; font-size: 15px; }
+        th { background: #eef2f7; color: #0d3b66; }
+        .footer { margin-top: 50px; display: flex; justify-content: space-between; font-size: 16px; font-weight: bold; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>مدارس الإمام أحمد للأيتام في الشمال السوري</h1>
+        <h2>كشف العلامات المدرسية</h2>
+      </div>
+      <div class="info">
+        <span>اسم الطالب: ${name}</span>
+        <span>الصف: ${className}</span>
+        <span>التاريخ: ${new Date().toLocaleDateString('ar-EG')}</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>التاريخ</th>
+            <th>المادة</th>
+            <th>اسم المذاكرة</th>
+            <th>الحالة</th>
+            <th>العلامة</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(grades||[]).map((g, i) => `
+            <tr>
+              <td>${i+1}</td>
+              <td>${fmt(g.date)}</td>
+              <td>${esc(g.subject)}</td>
+              <td>${esc(g.exam_name)}</td>
+              <td>${g.status === 'submitted' ? 'تم التقديم' : 'غائب/لم يقدم'}</td>
+              <td><b>${g.status === 'submitted' ? esc(g.score) : '—'}</b></td>
+            </tr>
+          `).join('') || '<tr><td colspan="6" style="text-align:center;">لا توجد علامات مسجلة</td></tr>'}
+        </tbody>
+      </table>
+      <div class="footer">
+        <span>توقيع الأستاذ: ...........................</span>
+        <span>توقيع المدير: ...........................</span>
+      </div>
+      <script>
+        window.onload = function() { window.print(); }
+      <\/script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
 }
 
 function openAddStudent(){
@@ -1050,6 +1138,7 @@ async function renderTeacherAtt(){
       <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الأساتذة')">📥 تصدير</button>
     </div>
     <div class="card">
+      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث باسم الأستاذ..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
         <thead><tr><th>الأستاذ</th><th>الحالة</th><th>إجراء</th></tr></thead>
         <tbody>
@@ -1115,6 +1204,7 @@ async function renderStudentAtt(){
       </div>
     </div>
     <div class="card">
+      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث باسم الطالب أو الصف..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
         <thead><tr><th>اسم الطالب</th><th>الصف</th><th>الحالة</th><th>تسجيل سريع</th></tr></thead>
         <tbody>
@@ -1164,6 +1254,7 @@ async function renderGrades(){
       </div>
     </div>
     <div class="card">
+      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالطالب أو المادة..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
         <thead><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>المادة</th><th>اسم المذاكرة</th><th>الحالة</th><th>العلامة</th><th>إجراء</th></tr></thead>
         <tbody>
@@ -1269,6 +1360,7 @@ async function renderPlans(){
       <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دفاتر_التحضير')">📥 تصدير</button>
     </div>
     <div class="card">
+      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث باسم الأستاذ..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
         <thead><tr><th>الأستاذ</th><th>التاريخ</th><th>الحالة</th><th>الملاحظات</th><th>إجراءات</th></tr></thead>
         <tbody>
