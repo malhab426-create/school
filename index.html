@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>مدارس الإمام أحمد للأيتام في الشمال السوري</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<!-- مكتبة الرسوم البيانية -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{
   --primary:#0d3b66; --primary-dark:#082a4a; --gold:#d4a017; --gold-light:#f0c14b;
@@ -137,7 +139,7 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .stat{background:#fff;padding:22px;border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.05);border-right:5px solid var(--gold);}
 .stat .num{font-size:30px;font-weight:900;color:var(--primary);}
 .stat .lbl{color:var(--muted);font-size:14px;margin-top:6px;}
-table{width:100%;border-collapse:collapse;font-size:14px; min-width: 600px; /* عشان يسمح بالسحب أفقياً */ }
+table{width:100%;border-collapse:collapse;font-size:14px; min-width: 600px; }
 table th{background:#f0f4f9;padding:12px;text-align:right;color:var(--primary);font-weight:700;border-bottom:2px solid #e2e8f0;}
 table td{padding:11px 12px;border-bottom:1px solid #eef2f7;vertical-align: middle;}
 table tr:hover td{background:#fafbfd;}
@@ -155,13 +157,16 @@ table tr:hover td{background:#fafbfd;}
 /* ==== Modal & Toast ==== */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;}
 .modal-overlay.show{display:flex;}
-.modal{background:#fff;border-radius:14px;padding:28px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;}
-.modal h3{color:var(--primary);margin-bottom:20px;}
+.modal{background:#fff;border-radius:14px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal h3{color:var(--primary);margin-bottom:20px;font-size: 22px; border-bottom: 2px solid #eee; padding-bottom: 10px;}
 .modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--primary);color:#fff;padding:12px 22px;border-radius:10px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:.3s;z-index:3000;opacity:0;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 .toast.error{background:var(--danger);}
 .toast.success{background:var(--success);}
+
+/* Chart Container */
+.chart-container { position: relative; height: 250px; width: 100%; }
 
 @media (max-width:900px){
   .topbar{padding:10px 20px; justify-content: center;}
@@ -213,8 +218,8 @@ table tr:hover td{background:#fafbfd;}
 </header>
 
 <section class="hero">
-  <h2>بيئة تعليمية آمنة تبني جيلاً مبدعاً ومسؤولاً</h2>
-  <p>مدارس الإمام أحمد للأيتام في الشمال السوري — رسالة تربوية وتعليمية تُعنى برعاية الأيتام وتنشئتهم على العلم والقيم.</p>
+  <h2 id="site-hero-title">بيئة تعليمية آمنة تبني جيلاً مبدعاً ومسؤولاً</h2>
+  <p id="site-hero-desc">مدارس الإمام أحمد للأيتام في الشمال السوري — رسالة تربوية وتعليمية تُعنى برعاية الأيتام وتنشئتهم على العلم والقيم.</p>
   <a href="#about" class="btn btn-gold">تعرّف علينا</a>
   <button class="btn btn-outline" onclick="showLogin()">تسجيل الدخول</button>
 </section>
@@ -224,8 +229,8 @@ table tr:hover td{background:#fafbfd;}
     <div class="divider"></div>
     <h2 class="section-title">من نحن</h2>
     <p class="section-sub">تعريف بالمدرسة ورسالتها التربوية</p>
-    <p class="about-text">
-      مدارس الإمام أحمد للأيتام في الشمال السوري مؤسسة تعليمية تربوية تُعنى برعاية الأيتام وتقديم تعليم نوعي متوازن يجمع بين التحصيل الأكاديمي وبناء الشخصية والقيم. نسعى إلى تهيئة بيئة تعليمية آمنة ومحفزة، بإشراف كادر تعليمي وإداري مؤهل، وبشراكة فاعلة مع الأسرة والمجتمع.
+    <p class="about-text" id="site-about-text">
+      مدارس الإمام أحمد للأيتام...
     </p>
   </div>
 </section>
@@ -239,17 +244,18 @@ table tr:hover td{background:#fafbfd;}
       <div class="vm-card">
         <div class="icon">🎯</div>
         <h3>رؤيتنا</h3>
-        <p>أن نكون مؤسسة تعليمية رائدة في رعاية الأيتام وتعليمهم، ونموذجاً في إعداد جيل مبدع، متمسك بقيمه، قادر على خدمة مجتمعه وبناء مستقبله.</p>
+        <p id="site-vision">أن نكون مؤسسة تعليمية رائدة...</p>
       </div>
       <div class="vm-card">
         <div class="icon">📚</div>
         <h3>رسالتنا</h3>
-        <p>تقديم تعليم متكامل يرتكز على المعرفة والمهارات والقيم، في بيئة آمنة ومحفزة، بكادر مؤهل ومناهج حديثة، وبشراكة فاعلة مع الأسرة والمجتمع.</p>
+        <p id="site-mission">تقديم تعليم متكامل...</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- (باقي أقسام الصفحة الرئيسية كما هي) -->
 <section id="values">
   <div class="container">
     <div class="divider"></div>
@@ -345,7 +351,7 @@ table tr:hover td{background:#fafbfd;}
 
   <aside class="sidebar" id="sidebar">
     <div class="brand-sm">
-      <div class="logo"></div>
+      <div class="logo">🏫</div>
       <h3>مدارس الإمام أحمد<br/>للأيتام</h3>
     </div>
     <div class="user-info">
@@ -388,6 +394,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 let currentUser  = null;
 let currentView  = 'overview';
+let charts = {}; // لحفظ الرسوم البيانية
 
 function $(id){ return document.getElementById(id); }
 function show(el){ el.style.display=''; }
@@ -405,7 +412,7 @@ function fmt(d){ return d ? new Date(d).toLocaleDateString('ar-EG') : ''; }
 function esc(s){ return (s??'').toString().replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function roleLabel(r){ return r==='admin'?'مدير':r==='supervisor'?'موجّه':r==='teacher'?'أستاذ':'—'; }
 function statusBadge(s){
-  if(s==='approved') return '<span class="badge badge-success">معتمد</span>';
+  if(s==='approved') return '<span class="badge badge-success">مقبول</span>';
   if(s==='rejected') return '<span class="badge badge-danger">مرفوض</span>';
   return '<span class="badge badge-warn">قيد المراجعة</span>';
 }
@@ -414,6 +421,38 @@ function attBadge(s){
   if(s==='absent')  return '<span class="badge badge-danger">غائب</span>';
   if(s==='late')    return '<span class="badge badge-warn">متأخر</span>';
   return '<span class="badge badge-info">لم يُسجل</span>';
+}
+
+/* ========== Export to Excel (CSV) ========== */
+function exportTableToCSV(filename) {
+  const table = document.querySelector("#mainContent table");
+  if (!table) { toast('لا يوجد جدول لتصديره', 'error'); return; }
+  
+  let csv = [];
+  const rows = table.querySelectorAll("tr");
+  
+  for (let i = 0; i < rows.length; i++) {
+    let row = [], cols = rows[i].querySelectorAll("td, th");
+    
+    // تخطي العمود الأخير (الإجراءات) إذا كان موجوداً
+    let limit = cols.length;
+    if (i === 0 && cols[cols.length - 1].innerText.includes("إجراء")) limit--;
+    if (i > 0 && rows[i].cells.length > 1 && rows[i].cells[rows[i].cells.length-1].querySelector("button")) limit--;
+
+    for (let j = 0; j < limit; j++) {
+      let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/,/g, "،"); // استبدال الفاصلة لتفادي مشاكل CSV
+      row.push('"' + data + '"');
+    }
+    csv.push(row.join(","));
+  }
+
+  // إضافة BOM لدعم اللغة العربية في Excel
+  const csvFile = new Blob(["\uFEFF" + csv.join("\n")], { type: 'text/csv;charset=utf-8;' });
+  const downloadLink = document.createElement("a");
+  downloadLink.href = URL.createObjectURL(csvFile);
+  downloadLink.download = filename + "_" + today() + ".csv";
+  downloadLink.click();
+  toast('تم تصدير الملف بنجاح', 'success');
 }
 
 /* ========== Navigation ========== */
@@ -469,6 +508,18 @@ async function loadUserAndDashboard(authUser){
 }
 
 (async function init(){
+  // تحميل إعدادات الموقع (النصوص)
+  const { data: settings } = await sb.from('site_settings').select('*');
+  if(settings) {
+    const s = {};
+    settings.forEach(item => s[item.key] = item.value);
+    if(s.hero_title) $('site-hero-title').textContent = s.hero_title;
+    if(s.hero_desc) $('site-hero-desc').textContent = s.hero_desc;
+    if(s.about_text) $('site-about-text').textContent = s.about_text;
+    if(s.vision_text) $('site-vision').textContent = s.vision_text;
+    if(s.mission_text) $('site-mission').textContent = s.mission_text;
+  }
+
   // تحميل الكادر للصفحة الرئيسية
   const { data: staff } = await sb.from('profiles').select('*').order('role').order('full_name');
   if(staff && staff.length > 0) {
@@ -510,6 +561,7 @@ function buildNav(){
     links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
     links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
     links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
+    links.push({ key:'settings',   label:'⚙️ إعدادات الموقع' });
   }
   if(currentUser.role === 'supervisor'){
     links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
@@ -542,6 +594,10 @@ async function renderView(key){
   setActiveNav(key);
   const main = $('mainContent');
   main.innerHTML = '<div class="empty">⏳ جاري التحميل...</div>';
+  
+  // تدمير الرسوم البيانية القديمة إن وجدت
+  if(charts.teacher) { charts.teacher.destroy(); charts.teacher = null; }
+  if(charts.student) { charts.student.destroy(); charts.student = null; }
 
   try{
     if(key==='overview')      return renderOverview();
@@ -554,38 +610,74 @@ async function renderView(key){
     if(key==='myPlans')       return renderMyPlans();
     if(key==='reports')       return renderReports();
     if(key==='notifications') return renderNotifications();
+    if(key==='settings')      return renderSettings();
   }catch(e){
     console.error(e);
     main.innerHTML = '<div class="empty">حدث خطأ: '+esc(e.message)+'</div>';
   }
 }
 
-/* ========== OVERVIEW ========== */
+/* ========== OVERVIEW (With Charts) ========== */
 async function renderOverview(){
   const main = $('mainContent');
-  let stats = { teachers:0, students:0, todayTeachers:0, todayStudents:0 };
+  const month = new Date().toISOString().slice(0, 7); 
 
+  // جلب الإحصائيات
   const { count: cTeachers } = await sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','teacher');
   const { count: cStudents } = await sb.from('students').select('*',{count:'exact',head:true});
-  const { count: cTAtt }     = await sb.from('teacher_attendance').select('*',{count:'exact',head:true}).eq('date', today());
-  const { count: cSAtt }     = await sb.from('student_attendance').select('*',{count:'exact',head:true}).eq('date', today());
+  
+  const { data: tAtt } = await sb.from('teacher_attendance').select('status').gte('date', month + '-01');
+  const { data: sAtt } = await sb.from('student_attendance').select('status').gte('date', month + '-01');
 
-  stats.teachers = cTeachers||0;
-  stats.students = cStudents||0;
-  stats.todayTeachers = cTAtt||0;
-  stats.todayStudents = cSAtt||0;
+  let tP=0, tA=0, tL=0;
+  (tAtt||[]).forEach(a => { if(a.status==='present') tP++; else if(a.status==='absent') tA++; else if(a.status==='late') tL++; });
+
+  let sP=0, sA=0, sL=0;
+  (sAtt||[]).forEach(a => { if(a.status==='present') sP++; else if(a.status==='absent') sA++; else if(a.status==='late') sL++; });
 
   main.innerHTML = `
     <div class="page-head">
       <div><h2>مرحباً ${esc(currentUser.full_name)} 👋</h2><p>نظرة عامة — ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p></div>
     </div>
-    <div class="grid-4">
-      <div class="stat"><div class="num">${stats.teachers}</div><div class="lbl">عدد الأساتذة</div></div>
-      <div class="stat"><div class="num">${stats.students}</div><div class="lbl">إجمالي الطلاب</div></div>
-      <div class="stat"><div class="num">${stats.todayTeachers}</div><div class="lbl">أساتذة تم تحضيرهم اليوم</div></div>
-      <div class="stat"><div class="num">${stats.todayStudents}</div><div class="lbl">طلاب تم تحضيرهم اليوم</div></div>
+    <div class="grid-4" style="margin-bottom:20px;">
+      <div class="stat"><div class="num">${cTeachers||0}</div><div class="lbl">عدد الأساتذة</div></div>
+      <div class="stat"><div class="num">${cStudents||0}</div><div class="lbl">إجمالي الطلاب</div></div>
+      <div class="stat"><div class="num">${tP + tL}</div><div class="lbl">حضور الأساتذة (هذا الشهر)</div></div>
+      <div class="stat"><div class="num">${sP + sL}</div><div class="lbl">حضور الطلاب (هذا الشهر)</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>إحصائيات دوام الأساتذة</h3>
+        <div class="chart-container"><canvas id="teacherChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>إحصائيات دوام الطلاب</h3>
+        <div class="chart-container"><canvas id="studentChart"></canvas></div>
+      </div>
     </div>
   `;
+
+  // رسم المخططات
+  const ctxT = document.getElementById('teacherChart').getContext('2d');
+  charts.teacher = new Chart(ctxT, {
+    type: 'doughnut',
+    data: {
+      labels: ['حاضر', 'متأخر', 'غائب'],
+      datasets: [{ data: [tP, tL, tA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+  });
+
+  const ctxS = document.getElementById('studentChart').getContext('2d');
+  charts.student = new Chart(ctxS, {
+    type: 'doughnut',
+    data: {
+      labels: ['حاضر', 'متأخر', 'غائب'],
+      datasets: [{ data: [sP, sL, sA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+  });
 }
 
 /* ========== NOTIFICATIONS ========== */
@@ -611,13 +703,57 @@ async function renderNotifications(){
   `;
 }
 
+/* ========== SETTINGS ========== */
+async function renderSettings(){
+  const { data } = await sb.from('site_settings').select('*');
+  const s = {}; (data||[]).forEach(item => s[item.key] = item.value);
+
+  $('mainContent').innerHTML = `
+    <div class="page-head"><div><h2>إعدادات الموقع</h2><p>تعديل نصوص الصفحة الرئيسية</p></div></div>
+    <div class="card">
+      <div class="form-group"><label>عنوان الصفحة الرئيسية (Hero)</label><textarea id="setHeroTitle" rows="2">${esc(s.hero_title||'')}</textarea></div>
+      <div class="form-group"><label>وصف الصفحة الرئيسية (Hero)</label><textarea id="setHeroDesc" rows="2">${esc(s.hero_desc||'')}</textarea></div>
+      <div class="form-group"><label>نص "من نحن"</label><textarea id="setAbout" rows="4">${esc(s.about_text||'')}</textarea></div>
+      <div class="form-group"><label>نص "الرؤية"</label><textarea id="setVision" rows="3">${esc(s.vision_text||'')}</textarea></div>
+      <div class="form-group"><label>نص "الرسالة"</label><textarea id="setMission" rows="3">${esc(s.mission_text||'')}</textarea></div>
+      <button class="btn btn-primary" onclick="saveSettings()">حفظ التعديلات</button>
+    </div>
+  `;
+}
+
+async function saveSettings(){
+  const updates = [
+    { key: 'hero_title', value: $('setHeroTitle').value },
+    { key: 'hero_desc', value: $('setHeroDesc').value },
+    { key: 'about_text', value: $('setAbout').value },
+    { key: 'vision_text', value: $('setVision').value },
+    { key: 'mission_text', value: $('setMission').value },
+  ];
+
+  for (let u of updates) {
+    await sb.from('site_settings').upsert(u);
+  }
+  
+  // تحديث النصوص فوراً في الصفحة الرئيسية
+  $('site-hero-title').textContent = $('setHeroTitle').value;
+  $('site-hero-desc').textContent = $('setHeroDesc').value;
+  $('site-about-text').textContent = $('setAbout').value;
+  $('site-vision').textContent = $('setVision').value;
+  $('site-mission').textContent = $('setMission').value;
+
+  toast('تم حفظ الإعدادات وتحديث الموقع', 'success');
+}
+
 /* ========== USERS MANAGEMENT ========== */
 async function renderUsers(){
   const { data } = await sb.from('profiles').select('*').order('created_at',{ascending:false});
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>إدارة الحسابات</h2><p>إنشاء وتعديل حسابات الأساتذة والموجهين</p></div>
-      <button class="btn btn-primary" onclick="openCreateUser()">➕ إضافة حساب</button>
+      <div style="display:flex; gap:10px;">
+        <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('الحسابات')">📥 تصدير</button>
+        <button class="btn btn-primary" onclick="openCreateUser()">➕ إضافة حساب</button>
+      </div>
     </div>
     <div class="card">
       <table>
@@ -634,7 +770,8 @@ async function renderUsers(){
               <td>${esc(u.email)}</td>
               <td><span class="badge badge-info">${roleLabel(u.role)}</span></td>
               <td style="white-space:nowrap;">
-                <button class="btn btn-sm btn-gold" onclick="openUploadAvatar('${u.id}', '${esc(u.full_name)}')">📸 صورة</button>
+                <button class="btn btn-sm btn-primary" onclick="openTeacherProfile('${u.id}', '${esc(u.full_name)}')">📊 بطاقة</button>
+                <button class="btn btn-sm btn-gold" onclick="openUploadAvatar('${u.id}', '${esc(u.full_name)}')">📸</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">حذف</button>
               </td>
             </tr>`).join('')}
@@ -658,7 +795,7 @@ function openCreateUser(){
       </select>
     </div>
     <div class="actions">
-      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="createUser()">إنشاء</button>
     </div>
   `);
@@ -688,17 +825,10 @@ async function createUser(){
 }
 
 async function deleteUser(id){
-  if(!confirm('تأكيد حذف الحساب نهائياً؟ (لن تتمكن من استعادته)')) return;
-  
+  if(!confirm('تأكيد حذف الحساب نهائياً؟')) return;
   const { error } = await sb.rpc('delete_user_admin', { user_id: id });
-  
-  if(error){ 
-    toast('فشل الحذف: '+error.message,'error'); 
-    return; 
-  }
-  
-  toast('تم حذف الحساب نهائياً','success'); 
-  renderUsers();
+  if(error){ toast('فشل الحذف: '+error.message,'error'); return; }
+  toast('تم حذف الحساب نهائياً','success'); renderUsers();
 }
 
 function openUploadAvatar(userId, name) {
@@ -709,7 +839,7 @@ function openUploadAvatar(userId, name) {
       <input type="file" id="avatarFile" accept="image/*" />
     </div>
     <div class="actions">
-      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" id="upAvatarBtn" onclick="uploadAvatar('${userId}')">رفع الصورة</button>
     </div>
   `);
@@ -740,10 +870,51 @@ async function uploadAvatar(userId) {
     toast('فشل حفظ الرابط: ' + dbErr.message, 'error'); 
     return;
   }
+  closeModal(); toast('تم رفع الصورة بنجاح', 'success'); renderUsers();
+}
 
-  closeModal();
-  toast('تم رفع الصورة بنجاح', 'success');
-  renderUsers();
+/* ========== TEACHER PROFILE CARD ========== */
+async function openTeacherProfile(id, name){
+  openModal('<h3>جاري تحميل بيانات الأستاذ...</h3>');
+  
+  // جلب دوام الأستاذ
+  const { data: att } = await sb.from('teacher_attendance').select('status').eq('teacher_id', id);
+  let present = 0, absent = 0, late = 0;
+  (att||[]).forEach(a => {
+    if(a.status==='present') present++;
+    else if(a.status==='absent') absent++;
+    else if(a.status==='late') late++;
+  });
+
+  // جلب دفاتر التحضير
+  const { data: plans } = await sb.from('lesson_plans').select('status').eq('teacher_id', id);
+  let approved = 0, rejected = 0, pending = 0;
+  (plans||[]).forEach(p => {
+    if(p.status==='approved') approved++;
+    else if(p.status==='rejected') rejected++;
+    else pending++;
+  });
+
+  openModal(`
+    <h3>بطاقة الأستاذ: ${esc(name)}</h3>
+    
+    <div class="grid-3" style="margin-bottom:20px;">
+      <div class="stat" style="border-right-color:var(--success)"><div class="num" style="font-size:22px">${present}</div><div class="lbl">حاضر</div></div>
+      <div class="stat" style="border-right-color:var(--warn)"><div class="num" style="font-size:22px">${late}</div><div class="lbl">متأخر</div></div>
+      <div class="stat" style="border-right-color:var(--danger)"><div class="num" style="font-size:22px">${absent}</div><div class="lbl">غائب</div></div>
+    </div>
+
+    <h4 style="color:var(--primary); margin-bottom:10px;">حالة دفاتر التحضير (${plans?.length || 0}):</h4>
+    <div class="grid-3">
+      <div class="stat" style="border-right-color:var(--success)"><div class="num" style="font-size:22px; color:var(--success)">${approved}</div><div class="lbl">مقبول</div></div>
+      <div class="stat" style="border-right-color:var(--danger)"><div class="num" style="font-size:22px; color:var(--danger)">${rejected}</div><div class="lbl">مرفوض</div></div>
+      <div class="stat" style="border-right-color:var(--warn)"><div class="num" style="font-size:22px; color:var(--warn)">${pending}</div><div class="lbl">قيد المراجعة</div></div>
+    </div>
+
+    <div class="actions" style="margin-top:25px;">
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إغلاق</button>
+    </div>
+  `);
 }
 
 /* ========== STUDENTS MANAGEMENT ========== */
@@ -752,18 +923,24 @@ async function renderStudents(){
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>إدارة الطلاب</h2><p>سجل الطلاب وتوزيعهم على الصفوف</p></div>
-      <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+      <div style="display:flex; gap:10px;">
+        <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('الطلاب')">📥 تصدير</button>
+        <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+      </div>
     </div>
     <div class="card">
       <table>
-        <thead><tr><th>اسم الطالب</th><th>الصف</th><th>تاريخ التسجيل</th><th>إجراء</th></tr></thead>
+        <thead><tr><th>اسم الطالب</th><th>الصف</th><th>تاريخ التسجيل</th><th>إجراءات</th></tr></thead>
         <tbody>
           ${(data||[]).map(s=>`
             <tr>
               <td>${esc(s.full_name)}</td>
               <td><span class="badge badge-info">${esc(s.class_name)}</span></td>
               <td>${fmt(s.created_at)}</td>
-              <td><button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">حذف</button></td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-sm btn-primary" onclick="openStudentProfile(${s.id}, '${esc(s.full_name)}')">📊 بطاقة</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">حذف</button>
+              </td>
             </tr>
           `).join('') || '<tr><td colspan="4" class="empty">لا يوجد طلاب مسجلين</td></tr>'}
         </tbody>
@@ -772,13 +949,59 @@ async function renderStudents(){
   `;
 }
 
+/* ========== STUDENT PROFILE CARD ========== */
+async function openStudentProfile(id, name){
+  openModal('<h3>جاري تحميل بيانات الطالب...</h3>');
+  
+  const { data: att } = await sb.from('student_attendance').select('status').eq('student_id', id);
+  let present = 0, absent = 0, late = 0;
+  (att||[]).forEach(a => {
+    if(a.status==='present') present++;
+    else if(a.status==='absent') absent++;
+    else if(a.status==='late') late++;
+  });
+
+  const { data: grades } = await sb.from('student_grades').select('*').eq('student_id', id).order('date', {ascending:false});
+
+  openModal(`
+    <h3>بطاقة الطالب: ${esc(name)}</h3>
+    
+    <div class="grid-3" style="margin-bottom:20px;">
+      <div class="stat" style="border-right-color:var(--success)"><div class="num" style="font-size:22px">${present}</div><div class="lbl">حاضر</div></div>
+      <div class="stat" style="border-right-color:var(--warn)"><div class="num" style="font-size:22px">${late}</div><div class="lbl">متأخر</div></div>
+      <div class="stat" style="border-right-color:var(--danger)"><div class="num" style="font-size:22px">${absent}</div><div class="lbl">غائب</div></div>
+    </div>
+
+    <h4 style="color:var(--primary); margin-bottom:10px;">آخر العلامات (${grades?.length || 0}):</h4>
+    <div style="max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px;">
+      <table style="min-width:100%;">
+        <thead><tr><th>التاريخ</th><th>المادة</th><th>المذاكرة</th><th>العلامة</th></tr></thead>
+        <tbody>
+          ${(grades||[]).map(g=>`
+            <tr>
+              <td>${fmt(g.date)}</td>
+              <td>${esc(g.subject)}</td>
+              <td>${esc(g.exam_name)}</td>
+              <td>${g.status==='submitted' ? `<b style="color:var(--success)">${esc(g.score)}</b>` : '<span class="badge badge-danger">غائب</span>'}</td>
+            </tr>
+          `).join('') || '<tr><td colspan="4" class="empty">لا توجد علامات مسجلة</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="actions" style="margin-top:20px;">
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إغلاق</button>
+    </div>
+  `);
+}
+
 function openAddStudent(){
   openModal(`
     <h3>إضافة طالب جديد</h3>
     <div class="form-group"><label>اسم الطالب الثلاثي</label><input id="stName" placeholder="مثال: أحمد محمد علي" /></div>
     <div class="form-group"><label>الصف / الشعبة</label><input id="stClass" placeholder="مثال: الصف الخامس - أ" /></div>
     <div class="actions">
-      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="saveStudent()">حفظ</button>
     </div>
   `);
@@ -816,6 +1039,7 @@ async function renderTeacherAtt(){
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>دوام الأساتذة</h2><p>تاريخ اليوم: ${fmt(date)}</p></div>
+      <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الأساتذة')">📥 تصدير</button>
     </div>
     <div class="card">
       <table>
@@ -850,6 +1074,7 @@ function openTeacherAtt(teacherId, name, status){
       </select>
     </div>
     <div class="actions">
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="saveTeacherAtt('${teacherId}')">حفظ</button>
     </div>
   `);
@@ -876,7 +1101,10 @@ async function renderStudentAtt(){
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>دوام الطلاب</h2><p>سجل الحضور والغياب الفردي — تاريخ اليوم: ${fmt(date)}</p></div>
-      <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+      <div style="display:flex; gap:10px;">
+        <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الطلاب')">📥 تصدير</button>
+        <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+      </div>
     </div>
     <div class="card">
       <table>
@@ -922,7 +1150,10 @@ async function renderGrades(){
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>العلامات والمذاكرات</h2><p>سجل علامات الطلاب وتقديمهم للمذاكرات</p></div>
-      <button class="btn btn-primary" onclick="openAddGrade()">➕ إضافة علامة</button>
+      <div style="display:flex; gap:10px;">
+        <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('العلامات')">📥 تصدير</button>
+        <button class="btn btn-primary" onclick="openAddGrade()">➕ إضافة علامة</button>
+      </div>
     </div>
     <div class="card">
       <table>
@@ -976,7 +1207,7 @@ async function openAddGrade(){
       <input type="text" id="grScore" placeholder="10/10" />
     </div>
     <div class="actions">
-      <button class="btn btn-outline" style="color:#555;border-color:#ccc" onclick="closeModal()">إلغاء</button>
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="saveGrade()">حفظ</button>
     </div>
   `);
@@ -1025,18 +1256,22 @@ async function renderPlans(){
   }
 
   $('mainContent').innerHTML = `
-    <div class="page-head"><div><h2>دفاتر التحضير</h2></div></div>
+    <div class="page-head">
+      <div><h2>دفاتر التحضير</h2><p>مراجعة واعتماد دفاتر الأساتذة</p></div>
+      <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دفاتر_التحضير')">📥 تصدير</button>
+    </div>
     <div class="card">
       <table>
-        <thead><tr><th>الأستاذ</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+        <thead><tr><th>الأستاذ</th><th>التاريخ</th><th>الحالة</th><th>الملاحظات</th><th>إجراءات</th></tr></thead>
         <tbody>
           ${(data||[]).map(d=>`
             <tr>
               <td>${esc(names[d.teacher_id]||'—')}</td>
               <td>${fmt(d.plan_date)}</td>
               <td>${statusBadge(d.status)}</td>
+              <td style="font-size:13px; color:#555;">${esc(d.supervisor_notes || d.admin_notes || '—')}</td>
               <td><button class="btn btn-sm btn-gold" onclick="openPlanReview(${d.id})">مراجعة</button></td>
-            </tr>`).join('')}
+            </tr>`).join('') || '<tr><td colspan="5" class="empty">لا توجد دفاتر</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -1045,17 +1280,60 @@ async function renderPlans(){
 
 async function openPlanReview(planId){
   const { data } = await sb.from('lesson_plans').select('*').eq('id', planId).single();
-  if(!data){ toast('خطأ','error'); return; }
+  if(!data){ toast('خطأ في جلب البيانات','error'); return; }
 
   let signedUrl = null;
   const { data: su } = await sb.storage.from(BUCKET_NAME).createSignedUrl(data.file_url, 300);
   if(su) signedUrl = su.signedUrl;
 
+  const isSupervisor = currentUser.role === 'supervisor';
+
   openModal(`
-    <h3>مراجعة الدفتر</h3>
-    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank">📄 فتح الملف</a>` : ''}
-    <div class="actions"><button class="btn btn-outline" onclick="closeModal()">إغلاق</button></div>
+    <h3>مراجعة دفتر التحضير</h3>
+    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank" style="margin-bottom:15px; display:inline-block;">📄 فتح الملف (PDF)</a>` : '<p class="empty" style="margin-bottom:15px;">لا يمكن فتح الملف</p>'}
+    
+    ${data.supervisor_notes && !isSupervisor ? `<p style="font-size:13px; color:#555; margin-bottom:10px; background:#f1f5f9; padding:8px; border-radius:5px;"><b>ملاحظات الموجّه:</b> ${esc(data.supervisor_notes)}</p>` : ''}
+    ${data.admin_notes && isSupervisor ? `<p style="font-size:13px; color:#555; margin-bottom:10px; background:#f1f5f9; padding:8px; border-radius:5px;"><b>ملاحظات المدير:</b> ${esc(data.admin_notes)}</p>` : ''}
+
+    <div class="form-group">
+      <label>القرار</label>
+      <select id="prStatus">
+        <option value="pending" ${data.status==='pending'?'selected':''}>قيد المراجعة</option>
+        <option value="approved" ${data.status==='approved'?'selected':''}>مقبول (معتمد)</option>
+        <option value="rejected" ${data.status==='rejected'?'selected':''}>مرفوض</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>إضافة ملاحظاتك</label>
+      <textarea id="prNotes" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="btn" style="background:#e2e8f0; color:#333; font-weight:bold;" onclick="closeModal()">إغلاق</button>
+      <button class="btn btn-primary" onclick="savePlanReview(${planId}, ${isSupervisor})">حفظ القرار</button>
+    </div>
   `);
+}
+
+async function savePlanReview(planId, isSupervisor){
+  const status = $('prStatus').value;
+  const notes = $('prNotes').value.trim();
+  
+  const updates = { status: status };
+  
+  if(isSupervisor) {
+    updates.supervisor_notes = notes;
+  } else {
+    updates.admin_notes = notes;
+  }
+
+  const { error } = await sb.from('lesson_plans').update(updates).eq('id', planId);
+  if(error){ toast('فشل الحفظ: '+error.message,'error'); return; }
+  
+  closeModal(); 
+  toast('تم حفظ المراجعة بنجاح','success'); 
+  renderPlans();
 }
 
 /* ========== MY PLANS (Teacher) ========== */
@@ -1088,6 +1366,7 @@ function openUploadPlan(){
     <div class="form-group"><label>التاريخ</label><input type="date" id="upDate" value="${today()}" /></div>
     <div class="form-group"><label>ملف PDF</label><input type="file" id="upFile" accept="application/pdf" /></div>
     <div class="actions">
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="uploadPlan()">رفع</button>
     </div>
   `);
