@@ -18,6 +18,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);lin
 a{text-decoration:none;color:inherit;}
 button,input,select,textarea{font-family:inherit;}
 
+/* ==== Header ==== */
 header{position:sticky;top:0;z-index:1000;background:var(--white);box-shadow:0 2px 12px rgba(0,0,0,.06);}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;gap:20px;flex-wrap:wrap;}
 .brand{display:flex;align-items:center;gap:18px;}
@@ -27,12 +28,14 @@ header{position:sticky;top:0;z-index:1000;background:var(--white);box-shadow:0 2
 .school-name h1{font-size:20px;color:var(--primary);font-weight:900;}
 .school-name p{font-size:13px;color:var(--muted);margin-top:2px;}
 
+/* تخصيص شريط التنقل العلوي فقط */
 header nav ul{display:flex;list-style:none;gap:26px;align-items:center;}
 header nav a{font-weight:500;color:var(--text);font-size:15px;transition:.2s;position:relative;}
 header nav a:hover{color:var(--primary);}
 header nav a::after{content:"";position:absolute;bottom:-6px;right:0;width:0;height:2px;background:var(--gold);transition:.3s;}
 header nav a:hover::after{width:100%;}
 
+/* ==== Buttons ==== */
 .btn{display:inline-block;padding:10px 22px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.25s;text-align:center;}
 .btn-primary{background:var(--primary);color:#fff;}
 .btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);}
@@ -44,6 +47,7 @@ header nav a:hover::after{width:100%;}
 .btn-success{background:var(--success);color:#fff;}
 .btn-sm{padding:6px 14px;font-size:13px;}
 
+/* ==== Hero & Sections ==== */
 .hero{background:linear-gradient(rgba(13,59,102,.85),rgba(13,59,102,.85)),linear-gradient(135deg,#0d3b66,#082a4a);color:#fff;padding:100px 40px;text-align:center;}
 .hero h2{font-size:42px;font-weight:900;margin-bottom:20px;line-height:1.4;}
 .hero p{font-size:19px;max-width:700px;margin:0 auto 35px;color:#e6eef7;}
@@ -72,6 +76,7 @@ section{padding:80px 40px;}
 .program-card h4{color:var(--primary);font-size:19px;margin-bottom:10px;}
 .program-card p{color:#555;font-size:15px;line-height:1.8;}
 
+/* ==== Staff ==== */
 .staff{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;}
 .staff-card{background:#fff;padding:26px 18px;border-radius:14px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.05);transition:.3s;}
 .staff-card:hover{transform:translateY(-5px);}
@@ -90,9 +95,11 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .footer-grid a:hover{color:var(--gold);}
 .footer-bottom{border-top:1px solid #1c3b5c;text-align:center;padding-top:18px;font-size:13px;color:#8fa3ba;max-width:1150px;margin:0 auto;}
 
+/* ==== Login & Dashboard ==== */
 .auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:50px;padding:40px 20px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));flex-wrap:wrap;}
 .auth-card{background:#fff;padding:45px 40px;border-radius:18px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
 
+/* تنسيق لوغوهات صفحة الدخول */
 .login-logos { display: flex; flex-direction: column; gap: 20px; }
 .login-logos img {
   width: 140px; height: 140px; object-fit: contain;
@@ -110,8 +117,9 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .auth-card .btn{width:100%;padding:12px;font-size:16px;}
 .auth-error{background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:16px;display:none;}
 
-.dash-wrap{display:grid;grid-template-columns:260px 1fr;min-height:100vh; height: 100vh; overflow: hidden;}
-.sidebar{background:var(--primary-dark);color:#c9d6e5;padding:24px 18px;display:flex;flex-direction:column;transition: transform 0.3s ease; z-index: 1500;}
+/* تنسيق لوحة التحكم - تم إصلاح السكرول */
+.dash-wrap{display:flex; height:100vh; overflow:hidden; width: 100%;}
+.sidebar{background:var(--primary-dark);color:#c9d6e5;padding:24px 18px;display:flex;flex-direction:column;width: 260px; flex-shrink: 0; height: 100vh; overflow-y: auto;}
 
 .sidebar .brand-sm{display:flex;align-items:center;justify-content:center;text-align:center;padding-bottom:18px;border-bottom:1px solid #1c3b5c;margin-bottom:20px;}
 .sidebar .brand-sm h3{color:#fff;font-size:16px;line-height:1.4; font-weight: 700;}
@@ -126,22 +134,25 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .sidebar nav a:hover,.sidebar nav a.active{background:var(--primary);color:#fff;}
 .sidebar .logout{margin-top:auto;padding-top:15px;border-top:1px solid #1c3b5c;}
 
-
+/* حاوية المحتوى الأساسي - تم إصلاح السكرول */
 .main-wrapper {
+  flex: 1;
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
+  min-height: 0;
 }
 
-
+/* الشريط العلوي للوغوهات في لوحة التحكم */
 .desktop-header {
   display: flex;
-  justify-content: flex-end; 
+  justify-content: flex-end; /* لدفع اللوغوهات إلى أقصى اليسار */
   align-items: center;
   padding: 10px 40px;
   background: #fff;
   border-bottom: 2px solid #eef2f7;
+  flex-shrink: 0;
 }
 .dash-logos {
   display: flex;
@@ -152,8 +163,15 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
   object-fit: contain;
 }
 
-.main{padding:30px 40px;overflow-y:auto; flex-grow: 1;}
+/* المحتوى - تم إصلاح السكرول */
+.main {
+  padding: 30px 40px;
+  overflow-y: auto;
+  flex-grow: 1;
+  min-height: 0;
+}
 
+/* شريط الموبايل */
 .mobile-topbar {display: none; background: var(--primary-dark); color: white; padding: 12px 20px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);}
 .mobile-menu-btn {background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px;}
 .sidebar-overlay {display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1400; backdrop-filter: blur(2px);}
@@ -162,6 +180,7 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .page-head h2{color:var(--primary);font-size:26px;}
 .page-head p{color:var(--muted);font-size:14px;}
 
+/* ==== Cards & Tables ==== */
 .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 18px rgba(0,0,0,.05);margin-bottom:22px; overflow-x: auto;}
 .card h3{color:var(--primary);margin-bottom:16px;font-size:19px;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
@@ -181,9 +200,11 @@ table tr:hover td{background:#fafbfd;}
 .badge-info{background:#dbeafe;color:#1e40af;}
 .empty{text-align:center;padding:40px;color:var(--muted);font-size:14px;}
 
+/* ==== Notifications ==== */
 .notif-bell{position:relative;cursor:pointer;font-size:20px;}
 .notif-badge{position:absolute;top:-5px;right:-5px;background:var(--danger);color:#fff;font-size:10px;font-weight:bold;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;}
 
+/* ==== Modal & Toast ==== */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;}
 .modal-overlay.show{display:flex;}
 .modal{background:#fff;border-radius:14px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;}
@@ -196,6 +217,7 @@ table tr:hover td{background:#fafbfd;}
 
 .chart-container { position: relative; height: 250px; width: 100%; }
 
+/* تصميم طباعة كشف العلامات */
 @media print {
   body * { visibility: hidden; }
   #print-section, #print-section * { visibility: visible; }
@@ -203,6 +225,7 @@ table tr:hover td{background:#fafbfd;}
   .no-print { display: none !important; }
 }
 
+/* الموبايل */
 @media (max-width:900px){
   .topbar{padding:10px 20px; justify-content: center;}
   header nav{display: none;}
@@ -218,7 +241,7 @@ table tr:hover td{background:#fafbfd;}
   .login-logos { flex-direction: row; }
   .login-logos img { width: 80px; height: 80px; padding: 4px; border-width: 2px; }
 
-  .dash-wrap{grid-template-columns:1fr; display: block; height: auto; overflow: visible;}
+  .dash-wrap{display:block; height:auto; overflow:visible;}
   .main-wrapper { height: auto; overflow: visible; }
   .desktop-header { display: none; } /* إخفاء الشريط العلوي للموبايل */
   
@@ -227,7 +250,7 @@ table tr:hover td{background:#fafbfd;}
   .sidebar-overlay.show { display: block; }
   .mobile-topbar { display: flex; }
   
-  .main{padding:20px 15px;}
+  .main {padding:20px 15px; overflow-y: visible; min-height: auto;}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}
   .page-head { flex-direction: column; align-items: flex-start; }
 }
@@ -235,6 +258,7 @@ table tr:hover td{background:#fafbfd;}
 </head>
 <body>
 
+<!-- ============ LANDING PAGE ============ -->
 <div id="landing">
 <header>
   <div class="topbar">
@@ -362,6 +386,7 @@ table tr:hover td{background:#fafbfd;}
 </footer>
 </div>
 
+<!-- ============ LOGIN PAGE ============ -->
 <div id="loginPage" class="auth-page" style="display:none">
   <!-- تم وضع الكارد أولاً لتكون اللوغوهات على اليسار في الـ RTL -->
   <div class="auth-card">
@@ -383,7 +408,7 @@ table tr:hover td{background:#fafbfd;}
   </div>
 </div>
 
-
+<!-- ============ DASHBOARD ============ -->
 <div id="dashboard" class="dash-wrap" style="display:none">
   
   <div class="mobile-topbar">
@@ -416,13 +441,13 @@ table tr:hover td{background:#fafbfd;}
     </div>
   </aside>
 
-  
+  <!-- حاوية المحتوى الأساسي -->
   <div class="main-wrapper">
-   
+    <!-- شريط اللوغوهات في لوحة التحكم (على اليسار) -->
     <div class="desktop-header">
       <div class="dash-logos">
-        <img src="logo1.png" alt="الشعار 1">
-        <img src="logo2.png" alt="الشعار 2">
+        <img src="logo1.jpg" alt="الشعار 1">
+        <img src="logo2.jpg" alt="الشعار 2">
       </div>
     </div>
     
@@ -431,15 +456,16 @@ table tr:hover td{background:#fafbfd;}
 
 </div>
 
-
+<!-- ============ MODAL & TOAST ============ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modalBody"></div>
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- ============ SUPABASE ============ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-
+// ⚠️ ضع هنا روابط Supabase الخاصة بك
 const SUPABASE_URL  = "https://msewuspuarnifzfvouik.supabase.co";
 const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zZXd1c3B1YXJuaWZ6ZnZvdWlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNjU2NzAsImV4cCI6MjEwNzc0MTY3MH0.TrjVBM6PEfHsp9IXobJsFU7i9OGpY8J7GE-TOujMm4A";
 const BUCKET_NAME   = "lesson-plans";
@@ -524,7 +550,7 @@ function exportTableToCSV(filename) {
   toast('تم تصدير الملف بنجاح', 'success');
 }
 
-
+/* ========== Navigation ========== */
 function showLanding(){ hide($('loginPage')); hide($('dashboard')); show($('landing')); window.scrollTo(0,0); }
 function showLogin(){ hide($('landing')); hide($('dashboard')); show($('loginPage')); }
 function showDashboard(){ hide($('landing')); hide($('loginPage')); show($('dashboard')); }
@@ -534,7 +560,7 @@ function toggleSidebar(){
   $('sidebarOverlay').classList.toggle('show');
 }
 
-
+/* ========== Auth & Init ========== */
 $('loginForm').addEventListener('submit', handleLogin);
 
 async function handleLogin(e){
@@ -606,7 +632,7 @@ async function loadUserAndDashboard(authUser){
   else showLanding();
 })();
 
-
+/* ========== Notifications ========== */
 async function loadNotifications(){
   const { data, count } = await sb.from('notifications').select('*', {count: 'exact'}).eq('user_id', currentUser.id).eq('is_read', false);
   const badge = $('notifCount');
@@ -614,7 +640,7 @@ async function loadNotifications(){
   else { badge.style.display = 'none'; }
 }
 
-
+/* ========== Build Navigation ========== */
 function buildNav(){
   try {
     const links = [];
@@ -661,7 +687,7 @@ function setActiveNav(key){
   });
 }
 
-
+/* ========== View Router ========== */
 async function renderView(key){
   currentView = key;
   setActiveNav(key);
@@ -689,7 +715,7 @@ async function renderView(key){
   }
 }
 
-
+/* ========== OVERVIEW (With Charts & New Welcome Text) ========== */
 async function renderOverview(){
   const main = $('mainContent');
   const month = new Date().toISOString().slice(0, 7); 
@@ -753,6 +779,7 @@ async function renderOverview(){
   });
 }
 
+/* ========== NOTIFICATIONS ========== */
 async function renderNotifications(){
   const { data } = await sb.from('notifications').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false});
   
@@ -775,7 +802,7 @@ async function renderNotifications(){
   `;
 }
 
-
+/* ========== SETTINGS ========== */
 async function renderSettings(){
   const { data } = await sb.from('site_settings').select('*');
   const s = {}; (data||[]).forEach(item => s[item.key] = item.value);
@@ -813,7 +840,7 @@ async function saveSettings(){
   toast('تم حفظ الإعدادات وتحديث الموقع', 'success');
 }
 
-
+/* ========== USERS MANAGEMENT ========== */
 async function renderUsers(){
   const { data } = await sb.from('profiles').select('*').order('created_at',{ascending:false});
   $('mainContent').innerHTML = `
@@ -943,7 +970,7 @@ async function uploadAvatar(userId) {
   closeModal(); toast('تم رفع الصورة بنجاح', 'success'); renderUsers();
 }
 
-
+/* ========== TEACHER PROFILE CARD ========== */
 async function openTeacherProfile(id, name){
   openModal('<h3>جاري تحميل بيانات الأستاذ...</h3>');
   
@@ -985,7 +1012,7 @@ async function openTeacherProfile(id, name){
   `);
 }
 
-
+/* ========== STUDENTS MANAGEMENT ========== */
 async function renderStudents(){
   const { data } = await sb.from('students').select('*').order('class_name').order('full_name');
   $('mainContent').innerHTML = `
@@ -1018,7 +1045,7 @@ async function renderStudents(){
   `;
 }
 
-
+/* ========== STUDENT PROFILE CARD + PRINT ========== */
 async function openStudentProfile(id, name, className){
   openModal('<h3>جاري تحميل بيانات الطالب...</h3>');
   
@@ -1167,7 +1194,7 @@ async function deleteStudent(id){
   toast('تم حذف الطالب', 'success'); renderStudents();
 }
 
-
+/* ========== TEACHER ATTENDANCE ========== */
 async function renderTeacherAtt(){
   const date = today();
   const { data: teachers } = await sb.from('profiles').select('*').eq('role','teacher').order('full_name');
@@ -1283,7 +1310,7 @@ async function saveStudentAtt(studentId, status){
   renderStudentAtt();
 }
 
-
+/* ========== STUDENT GRADES ========== */
 async function renderGrades(){
   const { data: grades } = await sb.from('student_grades').select('*, students(full_name, class_name)').order('date', {ascending:false});
   
@@ -1386,7 +1413,7 @@ async function deleteGrade(id){
   toast('تم الحذف', 'success'); renderGrades();
 }
 
-
+/* ========== LESSON PLANS ========== */
 async function renderPlans(){
   const { data } = await sb.from('lesson_plans').select('*').order('created_at',{ascending:false});
   const ids = [...new Set((data||[]).map(d=>d.teacher_id))];
@@ -1478,7 +1505,7 @@ async function savePlanReview(planId, isSupervisor){
   renderPlans();
 }
 
-
+/* ========== MY PLANS (Teacher) ========== */
 async function renderMyPlans(){
   const { data } = await sb.from('lesson_plans').select('*').eq('teacher_id', currentUser.id).order('created_at',{ascending:false});
   $('mainContent').innerHTML = `
@@ -1532,6 +1559,7 @@ async function openMyPlanFile(path){
   if(data) window.open(data.signedUrl, '_blank');
 }
 
+/* ========== MONTHLY REPORTS ========== */
 async function renderReports(){
   const currentMonth = new Date().toISOString().slice(0, 7); 
   
