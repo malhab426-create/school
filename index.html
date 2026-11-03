@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>مدارس الإمام أحمد للأيتام في الشمال السوري</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<!-- مكتبة الرسوم البيانية -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- مكتبة قراءة الإكسل -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
   --primary:#0d3b66; --primary-dark:#082a4a; --gold:#d4a017; --gold-light:#f0c14b;
@@ -18,6 +21,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);lin
 a{text-decoration:none;color:inherit;}
 button,input,select,textarea{font-family:inherit;}
 
+/* ==== Header ==== */
 header{position:sticky;top:0;z-index:1000;background:var(--white);box-shadow:0 2px 12px rgba(0,0,0,.06);}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;gap:20px;flex-wrap:wrap;}
 .brand{display:flex;align-items:center;gap:18px;}
@@ -33,6 +37,7 @@ header nav a:hover{color:var(--primary);}
 header nav a::after{content:"";position:absolute;bottom:-6px;right:0;width:0;height:2px;background:var(--gold);transition:.3s;}
 header nav a:hover::after{width:100%;}
 
+/* ==== Buttons ==== */
 .btn{display:inline-block;padding:10px 22px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.25s;text-align:center;}
 .btn-primary{background:var(--primary);color:#fff;}
 .btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);}
@@ -44,6 +49,7 @@ header nav a:hover::after{width:100%;}
 .btn-success{background:var(--success);color:#fff;}
 .btn-sm{padding:6px 14px;font-size:13px;}
 
+/* ==== Hero & Sections ==== */
 .hero{background:linear-gradient(rgba(13,59,102,.85),rgba(13,59,102,.85)),linear-gradient(135deg,#0d3b66,#082a4a);color:#fff;padding:100px 40px;text-align:center;}
 .hero h2{font-size:42px;font-weight:900;margin-bottom:20px;line-height:1.4;}
 .hero p{font-size:19px;max-width:700px;margin:0 auto 35px;color:#e6eef7;}
@@ -72,6 +78,7 @@ section{padding:80px 40px;}
 .program-card h4{color:var(--primary);font-size:19px;margin-bottom:10px;}
 .program-card p{color:#555;font-size:15px;line-height:1.8;}
 
+/* ==== Staff ==== */
 .staff{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;}
 .staff-card{background:#fff;padding:26px 18px;border-radius:14px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.05);transition:.3s;}
 .staff-card:hover{transform:translateY(-5px);}
@@ -90,9 +97,11 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .footer-grid a:hover{color:var(--gold);}
 .footer-bottom{border-top:1px solid #1c3b5c;text-align:center;padding-top:18px;font-size:13px;color:#8fa3ba;max-width:1150px;margin:0 auto;}
 
+/* ==== Login & Dashboard ==== */
 .auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:50px;padding:40px 20px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));flex-wrap:wrap;}
 .auth-card{background:#fff;padding:45px 40px;border-radius:18px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
 
+/* تنسيق لوغوهات صفحة الدخول */
 .login-logos { display: flex; flex-direction: column; gap: 20px; }
 .login-logos img {
   width: 140px; height: 140px; object-fit: contain;
@@ -110,6 +119,7 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .auth-card .btn{width:100%;padding:12px;font-size:16px;}
 .auth-error{background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:16px;display:none;}
 
+/* تنسيق لوحة التحكم */
 .dash-wrap{display:flex; height:100vh; overflow:hidden; width: 100%;}
 .sidebar{background:var(--primary-dark);color:#c9d6e5;padding:24px 18px;display:flex;flex-direction:column;width: 260px; flex-shrink: 0; height: 100vh; overflow-y: auto;}
 
@@ -126,40 +136,15 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .sidebar nav a:hover,.sidebar nav a.active{background:var(--primary);color:#fff;}
 .sidebar .logout{margin-top:auto;padding-top:15px;border-top:1px solid #1c3b5c;}
 
-.main-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  min-height: 0;
-}
+.main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; min-height: 0; }
 
-.desktop-header {
-  display: flex;
-  justify-content: flex-end; 
-  align-items: center;
-  padding: 10px 40px;
-  background: #fff;
-  border-bottom: 2px solid #eef2f7;
-  flex-shrink: 0;
-}
-.dash-logos {
-  display: flex;
-  gap: 15px;
-}
-.dash-logos img {
-  height: 55px;
-  object-fit: contain;
-}
+.desktop-header { display: flex; justify-content: flex-end; align-items: center; padding: 10px 40px; background: #fff; border-bottom: 2px solid #eef2f7; flex-shrink: 0; }
+.dash-logos { display: flex; gap: 15px; }
+.dash-logos img { height: 55px; object-fit: contain; }
 
-.main {
-  padding: 30px 40px;
-  overflow-y: auto;
-  flex-grow: 1;
-  min-height: 0;
-}
+.main { padding: 30px 40px; overflow-y: auto; flex-grow: 1; min-height: 0; }
 
+/* شريط الموبايل */
 .mobile-topbar {display: none; background: var(--primary-dark); color: white; padding: 12px 20px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);}
 .mobile-menu-btn {background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px;}
 .sidebar-overlay {display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1400; backdrop-filter: blur(2px);}
@@ -168,6 +153,7 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .page-head h2{color:var(--primary);font-size:26px;}
 .page-head p{color:var(--muted);font-size:14px;}
 
+/* ==== Cards & Tables ==== */
 .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 18px rgba(0,0,0,.05);margin-bottom:22px; overflow-x: auto;}
 .card h3{color:var(--primary);margin-bottom:16px;font-size:19px;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
@@ -187,9 +173,11 @@ table tr:hover td{background:#fafbfd;}
 .badge-info{background:#dbeafe;color:#1e40af;}
 .empty{text-align:center;padding:40px;color:var(--muted);font-size:14px;}
 
+/* ==== Notifications ==== */
 .notif-bell{position:relative;cursor:pointer;font-size:20px;}
 .notif-badge{position:absolute;top:-5px;right:-5px;background:var(--danger);color:#fff;font-size:10px;font-weight:bold;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;}
 
+/* ==== Modal & Toast ==== */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;}
 .modal-overlay.show{display:flex;}
 .modal{background:#fff;border-radius:14px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;}
@@ -202,6 +190,7 @@ table tr:hover td{background:#fafbfd;}
 
 .chart-container { position: relative; height: 250px; width: 100%; }
 
+/* تصميم طباعة كشف العلامات */
 @media print {
   body * { visibility: hidden; }
   #print-section, #print-section * { visibility: visible; }
@@ -209,6 +198,7 @@ table tr:hover td{background:#fafbfd;}
   .no-print { display: none !important; }
 }
 
+/* الموبايل */
 @media (max-width:900px){
   .topbar{padding:10px 20px; justify-content: center;}
   header nav{display: none;}
@@ -225,7 +215,7 @@ table tr:hover td{background:#fafbfd;}
 
   .dash-wrap{display:block; height:auto; overflow:visible;}
   .main-wrapper { height: auto; overflow: visible; }
-  .desktop-header { display: none; } 
+  .desktop-header { display: none; }
   
   .sidebar {position: fixed; top: 0; right: 0; left: auto; bottom: 0; width: 260px; transform: translateX(100%); z-index: 1500; overflow-y: auto; box-shadow: -5px 0 15px rgba(0,0,0,0.2);}
   .sidebar.open { transform: translateX(0); }
@@ -240,6 +230,7 @@ table tr:hover td{background:#fafbfd;}
 </head>
 <body>
 
+<!-- ============ LANDING PAGE ============ -->
 <div id="landing">
 <header>
   <div class="topbar">
@@ -361,12 +352,13 @@ table tr:hover td{background:#fafbfd;}
       <a href="#staff">الكادر</a>
       <a href="#" onclick="showLogin();return false;">تسجيل الدخول</a>
     </div>
-    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0947909804</p><p>✉️ K.haroush@zeyd.org</p></div>
+    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0000 000 000</p><p>✉️ info@school.com</p></div>
   </div>
   <div class="footer-bottom">© 2025 مدارس الإمام أحمد للأيتام في الشمال السوري — جميع الحقوق محفوظة</div>
 </footer>
 </div>
 
+<!-- ============ LOGIN PAGE ============ -->
 <div id="loginPage" class="auth-page" style="display:none">
   <div class="auth-card">
     <h2>تسجيل الدخول</h2>
@@ -387,6 +379,7 @@ table tr:hover td{background:#fafbfd;}
   </div>
 </div>
 
+<!-- ============ DASHBOARD ============ -->
 <div id="dashboard" class="dash-wrap" style="display:none">
   
   <div class="mobile-topbar">
@@ -432,11 +425,13 @@ table tr:hover td{background:#fafbfd;}
 
 </div>
 
+<!-- ============ MODAL & TOAST ============ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modalBody"></div>
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- ============ SUPABASE ============ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL  = "https://msewuspuarnifzfvouik.supabase.co";
@@ -698,6 +693,9 @@ async function renderOverview(){
   let sP=0, sA=0, sL=0;
   (sAtt||[]).forEach(a => { if(a.status==='present') sP++; else if(a.status==='absent') sA++; else if(a.status==='late') sL++; });
 
+  const hasTeacherData = (tP + tL + tA) > 0;
+  const hasStudentData = (sP + sL + sA) > 0;
+
   main.innerHTML = `
     <div class="page-head">
       <div>
@@ -715,34 +713,42 @@ async function renderOverview(){
     <div class="grid-2">
       <div class="card">
         <h3>إحصائيات دوام الأساتذة</h3>
-        <div class="chart-container"><canvas id="teacherChart"></canvas></div>
+        <div class="chart-container">
+          ${hasTeacherData ? '<canvas id="teacherChart"></canvas>' : '<div class="empty" style="height:100%; display:flex; align-items:center; justify-content:center;">لا توجد بيانات مسجلة لهذا الشهر</div>'}
+        </div>
       </div>
       <div class="card">
         <h3>إحصائيات دوام الطلاب</h3>
-        <div class="chart-container"><canvas id="studentChart"></canvas></div>
+        <div class="chart-container">
+          ${hasStudentData ? '<canvas id="studentChart"></canvas>' : '<div class="empty" style="height:100%; display:flex; align-items:center; justify-content:center;">لا توجد بيانات مسجلة لهذا الشهر</div>'}
+        </div>
       </div>
     </div>
   `;
 
-  const ctxT = document.getElementById('teacherChart').getContext('2d');
-  charts.teacher = new Chart(ctxT, {
-    type: 'doughnut',
-    data: {
-      labels: ['حاضر', 'متأخر', 'غائب'],
-      datasets: [{ data: [tP, tL, tA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-  });
+  if (hasTeacherData) {
+    const ctxT = document.getElementById('teacherChart').getContext('2d');
+    charts.teacher = new Chart(ctxT, {
+      type: 'doughnut',
+      data: {
+        labels: ['حاضر', 'متأخر', 'غائب'],
+        datasets: [{ data: [tP, tL, tA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { position: 'bottom' } } }
+    });
+  }
 
-  const ctxS = document.getElementById('studentChart').getContext('2d');
-  charts.student = new Chart(ctxS, {
-    type: 'doughnut',
-    data: {
-      labels: ['حاضر', 'متأخر', 'غائب'],
-      datasets: [{ data: [sP, sL, sA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-  });
+  if (hasStudentData) {
+    const ctxS = document.getElementById('studentChart').getContext('2d');
+    charts.student = new Chart(ctxS, {
+      type: 'doughnut',
+      data: {
+        labels: ['حاضر', 'متأخر', 'غائب'],
+        datasets: [{ data: [sP, sL, sA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { position: 'bottom' } } }
+    });
+  }
 }
 
 async function renderNotifications(){
@@ -979,15 +985,16 @@ async function renderStudents(){
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>إدارة الطلاب</h2><p>سجل الطلاب وتوزيعهم على الصفوف</p></div>
-      <div style="display:flex; gap:10px;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('الطلاب')">📥 تصدير</button>
+        <button class="btn btn-success" onclick="openExcelUpload()">📊 رفع ملف إكسل</button>
         <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
       </div>
     </div>
     <div class="card">
       <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم أو الصف..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
-        <thead><tr><th>اسم الطالب</th><th>الصف</th><th>تاريخ التسجيل</th><th>إجراءات</th></tr></thead>
+        <thead><tr><th>اسم الطالب</th><th>الصف والشعبة</th><th>تاريخ التسجيل</th><th>إجراءات</th></tr></thead>
         <tbody>
           ${(data||[]).map(s=>`
             <tr>
@@ -1004,6 +1011,76 @@ async function renderStudents(){
       </table>
     </div>
   `;
+}
+
+function openExcelUpload() {
+  openModal(`
+    <h3>رفع ملف إكسل (Excel)</h3>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:15px;">
+      تأكد أن العمود الأول <b>الاسم</b>، والثاني <b>الصف</b>، والثالث <b>الشعبة</b>.<br>
+      سيتم دمج الصف والشعبة تلقائياً (مثال: الأول - الأولى).
+    </p>
+    <div class="form-group">
+      <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" style="padding:10px; border:1px dashed #ccc;" />
+    </div>
+    <div class="actions">
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-success" id="excelBtn" onclick="processExcel()">رفع ومعالجة</button>
+    </div>
+  `);
+}
+
+function processExcel() {
+  const fileInput = document.getElementById('excelFile');
+  const file = fileInput.files[0];
+  if (!file) { toast('يرجى اختيار ملف', 'error'); return; }
+
+  const btn = document.getElementById('excelBtn');
+  btn.disabled = true; btn.textContent = 'جاري المعالجة...';
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, {type: 'array'});
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    
+    const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+    let studentsToInsert = [];
+    
+    for (let i = 1; i < json.length; i++) {
+      const row = json[i];
+      if (row[0] && row[1]) {
+        const fullName = row[0].toString().trim();
+        const grade = row[1].toString().trim();
+        const section = row[2] ? row[2].toString().trim() : '';
+        const className = section ? `${grade} - ${section}` : grade;
+        
+        studentsToInsert.push({
+          full_name: fullName,
+          class_name: className
+        });
+      }
+    }
+
+    if (studentsToInsert.length === 0) {
+      toast('لم يتم العثور على بيانات صالحة في الملف', 'error');
+      btn.disabled = false; btn.textContent = 'رفع ومعالجة';
+      return;
+    }
+
+    const { error } = await sb.from('students').insert(studentsToInsert);
+    
+    if (error) {
+      toast('فشل حفظ البيانات: ' + error.message, 'error');
+      btn.disabled = false; btn.textContent = 'رفع ومعالجة';
+    } else {
+      closeModal();
+      toast('تم إضافة ' + studentsToInsert.length + ' طالبة بنجاح!', 'success');
+      renderStudents();
+    }
+  };
+  reader.readAsArrayBuffer(file);
 }
 
 async function openStudentProfile(id, name, className){
@@ -1124,7 +1201,7 @@ function openAddStudent(){
   openModal(`
     <h3>إضافة طالب جديد</h3>
     <div class="form-group"><label>اسم الطالب الثلاثي</label><input id="stName" placeholder="مثال: أحمد محمد علي" /></div>
-    <div class="form-group"><label>الصف / الشعبة</label><input id="stClass" placeholder="مثال: الصف الخامس - أ" /></div>
+    <div class="form-group"><label>الصف / الشعبة</label><input id="stClass" placeholder="مثال: الأول - الأولى" /></div>
     <div class="actions">
       <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="saveStudent()">حفظ</button>
@@ -1395,12 +1472,28 @@ async function renderPlans(){
               <td>${fmt(d.plan_date)}</td>
               <td>${statusBadge(d.status)}</td>
               <td style="font-size:13px; color:#555;">${esc(d.supervisor_notes || d.admin_notes || '—')}</td>
-              <td><button class="btn btn-sm btn-gold" onclick="openPlanReview(${d.id})">مراجعة</button></td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-sm btn-gold" onclick="openPlanReview(${d.id})">مراجعة</button>
+                ${currentUser.role === 'admin' ? `<button class="btn btn-sm btn-danger" onclick="deletePlan(${d.id}, '${esc(d.file_url)}')">حذف</button>` : ''}
+              </td>
             </tr>`).join('') || '<tr><td colspan="5" class="empty">لا توجد دفاتر</td></tr>'}
         </tbody>
       </table>
     </div>
   `;
+}
+
+async function deletePlan(id, fileUrl) {
+  if(!confirm('هل أنت متأكد من حذف هذا الدفتر نهائياً؟ (سيتم توفير مساحة)')) return;
+  
+  const { error: storageErr } = await sb.storage.from(BUCKET_NAME).remove([fileUrl]);
+  if(storageErr) { toast('فشل حذف الملف من التخزين: ' + storageErr.message, 'error'); return; }
+
+  const { error: dbErr } = await sb.from('lesson_plans').delete().eq('id', id);
+  if(dbErr) { toast('فشل حذف السجل: ' + dbErr.message, 'error'); return; }
+
+  toast('تم حذف الدفتر وتوفير مساحة', 'success');
+  renderPlans();
 }
 
 async function openPlanReview(planId){
@@ -1500,6 +1593,11 @@ async function uploadPlan(){
   const date = $('upDate').value;
   const file = $('upFile').files[0];
   if(!file) return;
+
+  if (file.size > 2 * 1024 * 1024) {
+    toast('حجم الملف كبير جداً! يجب أن يكون أقل من 2 ميجابايت. يرجى ضغط الملف أولاً.', 'error');
+    return;
+  }
 
   const path = `${currentUser.id}/${date}_${Date.now()}.pdf`;
   const { error: upErr } = await sb.storage.from(BUCKET_NAME).upload(path, file);
