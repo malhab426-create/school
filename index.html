@@ -352,7 +352,7 @@ table tr:hover td{background:#fafbfd;}
       <a href="#staff">الكادر</a>
       <a href="#" onclick="showLogin();return false;">تسجيل الدخول</a>
     </div>
-    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0947909804</p><p>✉️K.haroush@zeyd.org</p></div>
+    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞0947909804 </p><p>✉️ k.haroush@zeyd.org</p></div>
   </div>
   <div class="footer-bottom">© 2025 مدارس الإمام أحمد للأيتام في الشمال السوري — جميع الحقوق محفوظة</div>
 </footer>
@@ -629,7 +629,7 @@ function buildNav(){
       links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
     }
     if(currentUser.role === 'teacher'){
-      links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
+      // تم إزالة رابط "إدارة الطلاب" للأستاذ
       links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
       links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
       links.push({ key:'myPlans',    label:'📄 دفتري' });
@@ -1304,7 +1304,8 @@ async function renderStudentAtt(){
       <div><h2>دوام الطلاب</h2><p>سجل الحضور والغياب الفردي — تاريخ اليوم: ${fmt(date)}</p></div>
       <div style="display:flex; gap:10px;">
         <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الطلاب')">📥 تصدير</button>
-        <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+        <!-- إخفاء زر الإضافة إذا كان المستخدم أستاذ -->
+        ${currentUser.role !== 'teacher' ? `<button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>` : ''}
       </div>
     </div>
     <div class="card">
@@ -1508,7 +1509,7 @@ async function openPlanReview(planId){
 
   openModal(`
     <h3>مراجعة دفتر التحضير</h3>
-    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank" style="margin-bottom:15px; display:inline-block;">📄 فتح الملف (PDF)</a>` : '<p class="empty" style="margin-bottom:15px;">لا يمكن فتح الملف</p>'}
+    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank" style="margin-bottom:15px; display:inline-block;">📄 عرض الملف</a>` : '<p class="empty" style="margin-bottom:15px;">لا يمكن فتح الملف</p>'}
     
     ${data.supervisor_notes && !isSupervisor ? `<p style="font-size:13px; color:#555; margin-bottom:10px; background:#f1f5f9; padding:8px; border-radius:5px;"><b>ملاحظات الموجّه:</b> ${esc(data.supervisor_notes)}</p>` : ''}
     ${data.admin_notes && isSupervisor ? `<p style="font-size:13px; color:#555; margin-bottom:10px; background:#f1f5f9; padding:8px; border-radius:5px;"><b>ملاحظات المدير:</b> ${esc(data.admin_notes)}</p>` : ''}
@@ -1581,7 +1582,10 @@ function openUploadPlan(){
   openModal(`
     <h3>رفع دفتر</h3>
     <div class="form-group"><label>التاريخ</label><input type="date" id="upDate" value="${today()}" /></div>
-    <div class="form-group"><label>ملف PDF</label><input type="file" id="upFile" accept="application/pdf" /></div>
+    <div class="form-group">
+      <label>الملف (PDF أو صورة)</label>
+      <input type="file" id="upFile" accept="application/pdf, image/*" />
+    </div>
     <div class="actions">
       <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="uploadPlan()">رفع</button>
@@ -1594,12 +1598,22 @@ async function uploadPlan(){
   const file = $('upFile').files[0];
   if(!file) return;
 
-  if (file.size > 2 * 1024 * 1024) {
-    toast('حجم الملف كبير جداً! يجب أن يكون أقل من 2 ميجابايت. يرجى ضغط الملف أولاً.', 'error');
+  // التحقق من النوع
+  const isPdf = file.type === 'application/pdf';
+  const isImage = file.type.startsWith('image/');
+  if (!isPdf && !isImage) {
+    toast('يجب أن يكون الملف PDF أو صورة (JPG, PNG)', 'error'); 
     return;
   }
 
-  const path = `${currentUser.id}/${date}_${Date.now()}.pdf`;
+  if (file.size > 2 * 1024 * 1024) {
+    toast('حجم الملف كبير جداً! يجب أن يكون أقل من 2 ميجابايت.', 'error');
+    return;
+  }
+
+  const fileExt = file.name.split('.').pop();
+  const path = `${currentUser.id}/${date}_${Date.now()}.${fileExt}`;
+  
   const { error: upErr } = await sb.storage.from(BUCKET_NAME).upload(path, file);
   if(upErr){ toast('فشل الرفع: '+upErr.message,'error'); return; }
 
