@@ -352,7 +352,7 @@ table tr:hover td{background:#fafbfd;}
       <a href="#staff">الكادر</a>
       <a href="#" onclick="showLogin();return false;">تسجيل الدخول</a>
     </div>
-    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞0947909804 </p><p>✉️ k.haroush@zeyd.org</p></div>
+    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0947909804 </p><p>✉️ k.haroush@zeyd.org</p></div>
   </div>
   <div class="footer-bottom">© 2025 مدارس الإمام أحمد للأيتام في الشمال السوري — جميع الحقوق محفوظة</div>
 </footer>
@@ -470,6 +470,24 @@ function attBadge(s){
   if(s==='absent')  return '<span class="badge badge-danger">غائب</span>';
   if(s==='late')    return '<span class="badge badge-warn">متأخر</span>';
   return '<span class="badge badge-info">لم يُسجل</span>';
+}
+
+// دالة لفلترة البيانات حسب نطاق الموجه (Scope)
+function filterByScope(data) {
+  if (!data) return [];
+  if (currentUser.role !== 'supervisor' || !currentUser.scope || currentUser.scope === 'all') return data;
+  
+  const grade1to4 = ['الأول', 'الثاني', 'الثالث', 'الرابع'];
+  const grade5to9 = ['الخامس', 'السادس', 'السابع', 'الثامن', 'التاسع'];
+  
+  return data.filter(item => {
+    const className = item.class_name || (item.students && item.students.class_name) || '';
+    const gradeName = className.split(' - ')[0].trim();
+    
+    if (currentUser.scope === '1-4') return grade1to4.includes(gradeName);
+    if (currentUser.scope === '5-9') return grade5to9.includes(gradeName);
+    return true;
+  });
 }
 
 function filterTable() {
@@ -621,15 +639,19 @@ function buildNav(){
       links.push({ key:'settings',   label:'⚙️ إعدادات الموقع' });
     }
     if(currentUser.role === 'supervisor'){
-      links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
-      links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
-      links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
-      links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
-      links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
+      const dept = currentUser.department || 'all'; 
+      if (dept === 'all' || dept === 'students') {
+        links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
+        links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
+        links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
+      }
+      if (dept === 'all' || dept === 'teachers') {
+        links.push({ key:'teacherAtt', label:'🗓️ دوام الأساتذة' });
+        links.push({ key:'plans',      label:'📄 دفاتر التحضير' });
+      }
       links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
     }
     if(currentUser.role === 'teacher'){
-      // تم إزالة رابط "إدارة الطلاب" للأستاذ
       links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
       links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
       links.push({ key:'myPlans',    label:'📄 دفتري' });
@@ -639,9 +661,7 @@ function buildNav(){
     if(ul) {
       ul.innerHTML = links.map(l => `<li><a data-view="${l.key}" onclick="renderView('${l.key}'); if(window.innerWidth <= 900) toggleSidebar();">${l.label}</a></li>`).join('');
     }
-  } catch(e) {
-    console.error("Error building nav:", e);
-  }
+  } catch(e) { console.error(e); }
 }
 
 function setActiveNav(key){
@@ -660,6 +680,14 @@ async function renderView(key){
   if(charts.student) { charts.student.destroy(); charts.student = null; }
 
   try{
+    const dept = currentUser.role === 'supervisor' ? (currentUser.department || 'all') : 'all';
+    if(dept === 'teachers' && ['students', 'studentAtt', 'grades'].includes(key)) { 
+      toast('ليس لديك صلاحية للوصول لهذه الصفحة', 'error'); return renderOverview(); 
+    }
+    if(dept === 'students' && ['teacherAtt', 'plans'].includes(key)) { 
+      toast('ليس لديك صلاحية للوصول لهذه الصفحة', 'error'); return renderOverview(); 
+    }
+
     if(key==='overview')      return renderOverview();
     if(key==='users')         return renderUsers();
     if(key==='students')      return renderStudents();
@@ -823,7 +851,7 @@ async function renderUsers(){
     <div class="card">
       <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم أو البريد..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
-        <thead><tr><th>الصورة</th><th>الاسم</th><th>البريد</th><th>الدور</th><th>إجراءات</th></tr></thead>
+        <thead><tr><th>الصورة</th><th>الاسم</th><th>البريد</th><th>الدور / الصلاحيات</th><th>إجراءات</th></tr></thead>
         <tbody>
           ${(data||[]).map(u=>`
             <tr>
@@ -834,7 +862,12 @@ async function renderUsers(){
               </td>
               <td>${esc(u.full_name)}</td>
               <td>${esc(u.email)}</td>
-              <td><span class="badge badge-info">${roleLabel(u.role)}</span></td>
+              <td>
+                <span class="badge badge-info">${roleLabel(u.role)}</span>
+                ${u.role === 'supervisor' ? 
+                  `<br><span class="badge badge-warn" style="margin-top:4px; font-size:10px; display:block;">${u.department === 'teachers' ? 'أساتذة' : u.department === 'students' ? 'طلاب' : 'الكل'} | ${u.scope === '1-4' ? 'صفوف 1-4' : u.scope === '5-9' ? 'صفوف 5-9' : 'كل الصفوف'}</span>` 
+                  : ''}
+              </td>
               <td style="white-space:nowrap;">
                 <button class="btn btn-sm btn-primary" onclick="openTeacherProfile('${u.id}', '${esc(u.full_name)}')">📊 بطاقة</button>
                 <button class="btn btn-sm btn-gold" onclick="openUploadAvatar('${u.id}', '${esc(u.full_name)}')">📸</button>
@@ -854,12 +887,32 @@ function openCreateUser(){
     <div class="form-group"><label>البريد الإلكتروني</label><input id="cuEmail" type="email" /></div>
     <div class="form-group"><label>كلمة المرور</label><input id="cuPass" type="password" /></div>
     <div class="form-group"><label>الدور</label>
-      <select id="cuRole">
+      <select id="cuRole" onchange="toggleSupervisorFields()">
         <option value="teacher">أستاذ</option>
         <option value="supervisor">موجّه</option>
         <option value="admin">مدير</option>
       </select>
     </div>
+    
+    <div id="supervisorFields" style="display:none; background:#f0f8ff; padding:15px; border-radius:8px; border:1px solid #dbeafe; margin-bottom:15px;">
+      <div class="form-group">
+        <label style="color:var(--primary)">نوع الإشراف (الصلاحيات)</label>
+        <select id="cuDept">
+          <option value="all">الكل (أساتذة وطلاب)</option>
+          <option value="teachers">الأساتذة فقط (دوام ودفاتر)</option>
+          <option value="students">الطلاب فقط (دوام وعلامات)</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label style="color:var(--primary)">نطاق الصفوف</label>
+        <select id="cuScope">
+          <option value="all">جميع الصفوف</option>
+          <option value="1-4">من الصف الأول حتى الرابع</option>
+          <option value="5-9">من الصف الخامس حتى التاسع</option>
+        </select>
+      </div>
+    </div>
+
     <div class="actions">
       <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="createUser()">إنشاء</button>
@@ -867,11 +920,24 @@ function openCreateUser(){
   `);
 }
 
+function toggleSupervisorFields() {
+  const role = document.getElementById('cuRole').value;
+  document.getElementById('supervisorFields').style.display = role === 'supervisor' ? 'block' : 'none';
+}
+
 async function createUser(){
   const full_name = $('cuName').value.trim();
   const email = $('cuEmail').value.trim();
   const password = $('cuPass').value;
   const role = $('cuRole').value;
+  
+  let department = null;
+  let scope = 'all';
+  
+  if (role === 'supervisor') {
+    department = $('cuDept').value;
+    scope = $('cuScope').value;
+  }
 
   if(!full_name || !email || !password){ toast('املأ كل الحقول','error'); return; }
   if(password.length < 6){ toast('كلمة المرور 6 أحرف على الأقل','error'); return; }
@@ -884,7 +950,7 @@ async function createUser(){
 
   await new Promise(resolve => setTimeout(resolve, 500));
 
-  const { error: pErr } = await sb.from('profiles').insert({ id: uid, full_name, email, role });
+  const { error: pErr } = await sb.from('profiles').insert({ id: uid, full_name, email, role, department, scope });
   if(pErr){ toast('فشل حفظ البروفايل: '+pErr.message,'error'); return; }
 
   closeModal(); toast('تم إنشاء الحساب بنجاح','success'); renderUsers();
@@ -982,13 +1048,15 @@ async function openTeacherProfile(id, name){
 
 async function renderStudents(){
   const { data } = await sb.from('students').select('*').order('class_name').order('full_name');
+  const filteredData = filterByScope(data);
+  
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>إدارة الطلاب</h2><p>سجل الطلاب وتوزيعهم على الصفوف</p></div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('الطلاب')">📥 تصدير</button>
-        <button class="btn btn-success" onclick="openExcelUpload()">📊 رفع ملف إكسل</button>
-        <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+        ${currentUser.role !== 'teacher' ? `<button class="btn btn-success" onclick="openExcelUpload()">📊 رفع ملف إكسل</button>` : ''}
+        ${currentUser.role !== 'teacher' ? `<button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>` : ''}
       </div>
     </div>
     <div class="card">
@@ -996,14 +1064,14 @@ async function renderStudents(){
       <table>
         <thead><tr><th>اسم الطالب</th><th>الصف والشعبة</th><th>تاريخ التسجيل</th><th>إجراءات</th></tr></thead>
         <tbody>
-          ${(data||[]).map(s=>`
+          ${(filteredData||[]).map(s=>`
             <tr>
               <td>${esc(s.full_name)}</td>
               <td><span class="badge badge-info">${esc(s.class_name)}</span></td>
               <td>${fmt(s.created_at)}</td>
               <td style="white-space:nowrap;">
                 <button class="btn btn-sm btn-primary" onclick="openStudentProfile(${s.id}, '${esc(s.full_name)}', '${esc(s.class_name)}')">📊 بطاقة</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">حذف</button>
+                ${currentUser.role !== 'teacher' ? `<button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">حذف</button>` : ''}
               </td>
             </tr>
           `).join('') || '<tr><td colspan="4" class="empty">لا يوجد طلاب مسجلين</td></tr>'}
@@ -1295,8 +1363,9 @@ async function saveTeacherAtt(teacherId){
 async function renderStudentAtt(){
   const date = today();
   const { data: students } = await sb.from('students').select('*').order('class_name').order('full_name');
-  const { data: att } = await sb.from('student_attendance').select('*').eq('date', date);
+  const filteredData = filterByScope(students);
   
+  const { data: att } = await sb.from('student_attendance').select('*').eq('date', date);
   const map = {}; (att||[]).forEach(a=> map[a.student_id] = a);
 
   $('mainContent').innerHTML = `
@@ -1304,7 +1373,6 @@ async function renderStudentAtt(){
       <div><h2>دوام الطلاب</h2><p>سجل الحضور والغياب الفردي — تاريخ اليوم: ${fmt(date)}</p></div>
       <div style="display:flex; gap:10px;">
         <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الطلاب')">📥 تصدير</button>
-        <!-- إخفاء زر الإضافة إذا كان المستخدم أستاذ -->
         ${currentUser.role !== 'teacher' ? `<button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>` : ''}
       </div>
     </div>
@@ -1313,7 +1381,7 @@ async function renderStudentAtt(){
       <table>
         <thead><tr><th>اسم الطالب</th><th>الصف</th><th>الحالة</th><th>تسجيل سريع</th></tr></thead>
         <tbody>
-          ${(students||[]).map(s=>{
+          ${(filteredData||[]).map(s=>{
             const a = map[s.id];
             return `<tr>
               <td>${esc(s.full_name)}</td>
@@ -1347,7 +1415,8 @@ async function saveStudentAtt(studentId, status){
 }
 
 async function renderGrades(){
-  const { data: grades } = await sb.from('student_grades').select('*, students(full_name, class_name)').order('date', {ascending:false});
+  const { data } = await sb.from('student_grades').select('*, students(full_name, class_name)').order('date', {ascending:false});
+  const filteredData = filterByScope(data);
   
   $('mainContent').innerHTML = `
     <div class="page-head">
@@ -1362,7 +1431,7 @@ async function renderGrades(){
       <table>
         <thead><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>المادة</th><th>اسم المذاكرة</th><th>الحالة</th><th>العلامة</th><th>إجراء</th></tr></thead>
         <tbody>
-          ${(grades||[]).map(g=>`
+          ${(filteredData||[]).map(g=>`
             <tr>
               <td>${fmt(g.date)}</td>
               <td>${esc(g.students?.full_name || '—')}</td>
@@ -1381,14 +1450,16 @@ async function renderGrades(){
 
 async function openAddGrade(){
   const { data: students } = await sb.from('students').select('*').order('class_name').order('full_name');
-  if(!students || students.length === 0) { toast('لا يوجد طلاب مسجلين. أضف طلاباً أولاً.', 'error'); return; }
+  const filteredStudents = filterByScope(students);
+  
+  if(!filteredStudents || filteredStudents.length === 0) { toast('لا يوجد طلاب مسجلين في نطاقك. أضف طلاباً أولاً.', 'error'); return; }
 
   openModal(`
     <h3>إضافة علامة / مذاكرة</h3>
     <div class="form-group">
       <label>الطالب</label>
       <select id="grStudent">
-        ${students.map(s => `<option value="${s.id}">${esc(s.full_name)} (${esc(s.class_name)})</option>`).join('')}
+        ${filteredStudents.map(s => `<option value="${s.id}">${esc(s.full_name)} (${esc(s.class_name)})</option>`).join('')}
       </select>
     </div>
     <div class="grid-2">
@@ -1475,7 +1546,7 @@ async function renderPlans(){
               <td style="font-size:13px; color:#555;">${esc(d.supervisor_notes || d.admin_notes || '—')}</td>
               <td style="white-space:nowrap;">
                 <button class="btn btn-sm btn-gold" onclick="openPlanReview(${d.id})">مراجعة</button>
-                ${currentUser.role === 'admin' ? `<button class="btn btn-sm btn-danger" onclick="deletePlan(${d.id}, '${esc(d.file_url)}')">حذف</button>` : ''}
+                ${(currentUser.role === 'admin' || currentUser.role === 'supervisor') ? `<button class="btn btn-sm btn-danger" onclick="deletePlan(${d.id}, '${esc(d.file_url)}')">حذف</button>` : ''}
               </td>
             </tr>`).join('') || '<tr><td colspan="5" class="empty">لا توجد دفاتر</td></tr>'}
         </tbody>
@@ -1598,7 +1669,6 @@ async function uploadPlan(){
   const file = $('upFile').files[0];
   if(!file) return;
 
-  // التحقق من النوع
   const isPdf = file.type === 'application/pdf';
   const isImage = file.type.startsWith('image/');
   if (!isPdf && !isImage) {
