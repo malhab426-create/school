@@ -352,7 +352,7 @@ table tr:hover td{background:#fafbfd;}
       <a href="#staff">الكادر</a>
       <a href="#" onclick="showLogin();return false;">تسجيل الدخول</a>
     </div>
-    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0947909804 </p><p>✉️ k.haroush@zeyd.org</p></div>
+    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0000 000 000</p><p>✉️ info@school.com</p></div>
   </div>
   <div class="footer-bottom">© 2025 مدارس الإمام أحمد للأيتام في الشمال السوري — جميع الحقوق محفوظة</div>
 </footer>
@@ -441,6 +441,19 @@ const STAFF_BUCKET  = "staff-photos";
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
+// قائمة الشعب المعتمدة
+const SECTIONS_LIST = [
+  "أول أولى", "أول ثانية", "أول ثالثة",
+  "ثاني أولى", "ثاني ثانية", "ثاني ثالثة",
+  "ثالث أولى", "ثالث ثانية", "ثالث ثالثة",
+  "رابع أولى", "رابع ثانية", "رابع ثالثة",
+  "خامس أولى", "خامس ثانية", "خامس ثالثة", "خامس رابعة",
+  "سادس أولى", "سادس ثانية", "سادس ثالثة", "سادس رابعة",
+  "سابع أولى", "سابع ثانية", "سابع ثالثة",
+  "ثامن أولى", "ثامن ثانية",
+  "تاسع أولى", "تاسع ثانية"
+];
+
 let currentUser  = null;
 let currentView  = 'overview';
 let charts = {}; 
@@ -477,32 +490,58 @@ function filterByScope(data) {
   if (!data) return [];
   if (currentUser.role !== 'supervisor' || !currentUser.scope || currentUser.scope === 'all') return data;
   
-  const grade1to4 = ['الأول', 'الثاني', 'الثالث', 'الرابع'];
-  const grade5to9 = ['الخامس', 'السادس', 'السابع', 'الثامن', 'التاسع'];
+  const grade1to4 = ['أول', 'ثاني', 'ثالث', 'رابع', 'الأول', 'الثاني', 'الثالث', 'الرابع'];
+  const grade5to9 = ['خامس', 'سادس', 'سابع', 'ثامن', 'تاسع', 'الخامس', 'السادس', 'السابع', 'الثامن', 'التاسع'];
   
   return data.filter(item => {
     const className = item.class_name || (item.students && item.students.class_name) || '';
-    const gradeName = className.split(' - ')[0].trim();
     
-    if (currentUser.scope === '1-4') return grade1to4.includes(gradeName);
-    if (currentUser.scope === '5-9') return grade5to9.includes(gradeName);
+    if (currentUser.scope === '1-4') return grade1to4.some(g => className.includes(g));
+    if (currentUser.scope === '5-9') return grade5to9.some(g => className.includes(g));
     return true;
   });
 }
 
+// دالة لإنشاء القائمة المنسدلة للشعب
+function getSectionFilterHTML() {
+  return `
+    <select id="sectionFilter" onchange="filterTable()" style="padding:10px; border:1px solid #ccc; border-radius:8px; flex-grow:1; max-width:250px;">
+      <option value="">جميع الشعب</option>
+      ${SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('')}
+    </select>
+  `;
+}
+
+// دالة البحث والفلترة (تشتغل مع الاسم والشعبة)
 function filterTable() {
-  const input = document.getElementById("tableSearch");
-  if (!input) return;
-  const filter = input.value.toLowerCase();
+  const textInput = document.getElementById("tableSearch");
+  const filterText = textInput ? textInput.value.toLowerCase() : "";
+  
+  const sectionSelect = document.getElementById("sectionFilter");
+  const filterSection = sectionSelect ? sectionSelect.value : "";
+
   const table = document.querySelector("#mainContent table");
   if (!table) return;
   const tr = table.getElementsByTagName("tr");
+
   for (let i = 1; i < tr.length; i++) {
-    let textContent = tr[i].textContent || tr[i].innerText;
-    if (textContent.toLowerCase().indexOf(filter) > -1) {
-      tr[i].style.display = "";
+    const row = tr[i];
+    const textContent = (row.textContent || row.innerText).toLowerCase();
+    const rowClass = (row.getAttribute('data-class') || "").toLowerCase();
+
+    const matchesText = textContent.indexOf(filterText) > -1;
+    let matchesSection = true;
+
+    if (filterSection) {
+      // البحث عن الكلمات المفتاحية للشعبة داخل اسم الصف
+      const parts = filterSection.split(' '); 
+      matchesSection = parts.every(p => rowClass.includes(p));
+    }
+
+    if (matchesText && matchesSection) {
+      row.style.display = "";
     } else {
-      tr[i].style.display = "none";
+      row.style.display = "none";
     }
   }
 }
@@ -1060,12 +1099,15 @@ async function renderStudents(){
       </div>
     </div>
     <div class="card">
-      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم أو الصف..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم..." style="flex-grow:1; max-width:300px; padding:10px; border:1px solid #ccc; border-radius:8px;">
+        ${getSectionFilterHTML()}
+      </div>
       <table>
         <thead><tr><th>اسم الطالب</th><th>الصف والشعبة</th><th>تاريخ التسجيل</th><th>إجراءات</th></tr></thead>
         <tbody>
           ${(filteredData||[]).map(s=>`
-            <tr>
+            <tr data-class="${esc(s.class_name)}">
               <td>${esc(s.full_name)}</td>
               <td><span class="badge badge-info">${esc(s.class_name)}</span></td>
               <td>${fmt(s.created_at)}</td>
@@ -1269,7 +1311,13 @@ function openAddStudent(){
   openModal(`
     <h3>إضافة طالب جديد</h3>
     <div class="form-group"><label>اسم الطالب الثلاثي</label><input id="stName" placeholder="مثال: أحمد محمد علي" /></div>
-    <div class="form-group"><label>الصف / الشعبة</label><input id="stClass" placeholder="مثال: الأول - الأولى" /></div>
+    <div class="form-group">
+      <label>الصف / الشعبة</label>
+      <select id="stClass">
+        <option value="">-- اختر الشعبة --</option>
+        ${SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('')}
+      </select>
+    </div>
     <div class="actions">
       <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="saveStudent()">حفظ</button>
@@ -1279,7 +1327,7 @@ function openAddStudent(){
 
 async function saveStudent(){
   const full_name = $('stName').value.trim();
-  const class_name = $('stClass').value.trim();
+  const class_name = $('stClass').value;
   if(!full_name || !class_name){ toast('يرجى ملء جميع الحقول', 'error'); return; }
 
   const { error } = await sb.from('students').insert({ full_name, class_name });
@@ -1377,13 +1425,16 @@ async function renderStudentAtt(){
       </div>
     </div>
     <div class="card">
-      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث باسم الطالب أو الصف..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم..." style="flex-grow:1; max-width:300px; padding:10px; border:1px solid #ccc; border-radius:8px;">
+        ${getSectionFilterHTML()}
+      </div>
       <table>
         <thead><tr><th>اسم الطالب</th><th>الصف</th><th>الحالة</th><th>تسجيل سريع</th></tr></thead>
         <tbody>
           ${(filteredData||[]).map(s=>{
             const a = map[s.id];
-            return `<tr>
+            return `<tr data-class="${esc(s.class_name)}">
               <td>${esc(s.full_name)}</td>
               <td><span class="badge badge-info">${esc(s.class_name)}</span></td>
               <td>${a ? attBadge(a.status) : attBadge('none')}</td>
