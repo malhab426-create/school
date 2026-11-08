@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>مدارس الإمام أحمد للأيتام في الشمال السوري</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet" />
-<!-- مكتبة الرسوم البيانية -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- مكتبة قراءة الإكسل -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
@@ -21,7 +19,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);lin
 a{text-decoration:none;color:inherit;}
 button,input,select,textarea{font-family:inherit;}
 
-/* ==== Header ==== */
 header{position:sticky;top:0;z-index:1000;background:var(--white);box-shadow:0 2px 12px rgba(0,0,0,.06);}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;gap:20px;flex-wrap:wrap;}
 .brand{display:flex;align-items:center;gap:18px;}
@@ -37,7 +34,6 @@ header nav a:hover{color:var(--primary);}
 header nav a::after{content:"";position:absolute;bottom:-6px;right:0;width:0;height:2px;background:var(--gold);transition:.3s;}
 header nav a:hover::after{width:100%;}
 
-/* ==== Buttons ==== */
 .btn{display:inline-block;padding:10px 22px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.25s;text-align:center;}
 .btn-primary{background:var(--primary);color:#fff;}
 .btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);}
@@ -49,7 +45,6 @@ header nav a:hover::after{width:100%;}
 .btn-success{background:var(--success);color:#fff;}
 .btn-sm{padding:6px 14px;font-size:13px;}
 
-/* ==== Hero & Sections ==== */
 .hero{background:linear-gradient(rgba(13,59,102,.85),rgba(13,59,102,.85)),linear-gradient(135deg,#0d3b66,#082a4a);color:#fff;padding:100px 40px;text-align:center;}
 .hero h2{font-size:42px;font-weight:900;margin-bottom:20px;line-height:1.4;}
 .hero p{font-size:19px;max-width:700px;margin:0 auto 35px;color:#e6eef7;}
@@ -78,7 +73,6 @@ section{padding:80px 40px;}
 .program-card h4{color:var(--primary);font-size:19px;margin-bottom:10px;}
 .program-card p{color:#555;font-size:15px;line-height:1.8;}
 
-/* ==== Staff ==== */
 .staff{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;}
 .staff-card{background:#fff;padding:26px 18px;border-radius:14px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.05);transition:.3s;}
 .staff-card:hover{transform:translateY(-5px);}
@@ -97,19 +91,10 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .footer-grid a:hover{color:var(--gold);}
 .footer-bottom{border-top:1px solid #1c3b5c;text-align:center;padding-top:18px;font-size:13px;color:#8fa3ba;max-width:1150px;margin:0 auto;}
 
-/* ==== Login & Dashboard ==== */
 .auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:50px;padding:40px 20px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));flex-wrap:wrap;}
 .auth-card{background:#fff;padding:45px 40px;border-radius:18px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
-
-/* تنسيق لوغوهات صفحة الدخول */
 .login-logos { display: flex; flex-direction: column; gap: 20px; }
-.login-logos img {
-  width: 140px; height: 140px; object-fit: contain;
-  border-radius: 50%; border: 4px solid var(--gold);
-  background: #fff; padding: 8px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-}
-
+.login-logos img { width: 140px; height: 140px; object-fit: contain; border-radius: 50%; border: 4px solid var(--gold); background: #fff; padding: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
 .auth-card h2{color:var(--primary);text-align:center;font-size:26px;margin-bottom:8px;}
 .auth-card .sub{text-align:center;color:var(--muted);margin-bottom:30px;font-size:14px;}
 .form-group{margin-bottom:18px;}
@@ -119,17 +104,13 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .auth-card .btn{width:100%;padding:12px;font-size:16px;}
 .auth-error{background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:16px;display:none;}
 
-/* تنسيق لوحة التحكم */
 .dash-wrap{display:flex; height:100vh; overflow:hidden; width: 100%;}
 .sidebar{background:var(--primary-dark);color:#c9d6e5;padding:24px 18px;display:flex;flex-direction:column;width: 260px; flex-shrink: 0; height: 100vh; overflow-y: auto;}
-
 .sidebar .brand-sm{display:flex;align-items:center;justify-content:center;text-align:center;padding-bottom:18px;border-bottom:1px solid #1c3b5c;margin-bottom:20px;}
 .sidebar .brand-sm h3{color:#fff;font-size:16px;line-height:1.4; font-weight: 700;}
-
 .sidebar .user-info{background:#0d3b66;padding:12px;border-radius:10px;margin-bottom:20px;font-size:13px;position:relative;display:flex;align-items:center;gap:10px;}
 .sidebar .user-info .info-text{flex-grow:1;}
 .sidebar .user-info .role{color:var(--gold);font-weight:700;margin-top:4px;font-size:12px;}
-
 .sidebar nav { flex-grow: 1; overflow-y: auto; margin-bottom: 10px; }
 .sidebar nav ul{display:flex;flex-direction:column;gap:6px;list-style:none;}
 .sidebar nav a{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:8px;color:#fff;font-size:15px;font-weight:500;transition:.2s;cursor:pointer; background: rgba(255,255,255,0.05);}
@@ -137,14 +118,11 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .sidebar .logout{margin-top:auto;padding-top:15px;border-top:1px solid #1c3b5c;}
 
 .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; min-height: 0; }
-
 .desktop-header { display: flex; justify-content: flex-end; align-items: center; padding: 10px 40px; background: #fff; border-bottom: 2px solid #eef2f7; flex-shrink: 0; }
 .dash-logos { display: flex; gap: 15px; }
 .dash-logos img { height: 55px; object-fit: contain; }
-
 .main { padding: 30px 40px; overflow-y: auto; flex-grow: 1; min-height: 0; }
 
-/* شريط الموبايل */
 .mobile-topbar {display: none; background: var(--primary-dark); color: white; padding: 12px 20px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);}
 .mobile-menu-btn {background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px;}
 .sidebar-overlay {display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1400; backdrop-filter: blur(2px);}
@@ -153,7 +131,6 @@ footer{background:#08243f;color:#c9d6e5;padding:50px 40px 20px;margin-top:80px;}
 .page-head h2{color:var(--primary);font-size:26px;}
 .page-head p{color:var(--muted);font-size:14px;}
 
-/* ==== Cards & Tables ==== */
 .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 18px rgba(0,0,0,.05);margin-bottom:22px; overflow-x: auto;}
 .card h3{color:var(--primary);margin-bottom:16px;font-size:19px;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
@@ -173,11 +150,9 @@ table tr:hover td{background:#fafbfd;}
 .badge-info{background:#dbeafe;color:#1e40af;}
 .empty{text-align:center;padding:40px;color:var(--muted);font-size:14px;}
 
-/* ==== Notifications ==== */
 .notif-bell{position:relative;cursor:pointer;font-size:20px;}
 .notif-badge{position:absolute;top:-5px;right:-5px;background:var(--danger);color:#fff;font-size:10px;font-weight:bold;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;}
 
-/* ==== Modal & Toast ==== */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;}
 .modal-overlay.show{display:flex;}
 .modal{background:#fff;border-radius:14px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;}
@@ -190,7 +165,11 @@ table tr:hover td{background:#fafbfd;}
 
 .chart-container { position: relative; height: 250px; width: 100%; }
 
-/* تصميم طباعة كشف العلامات */
+/* Custom Checkbox Grid */
+.checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; max-height: 250px; overflow-y: auto; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; }
+.checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
+
 @media print {
   body * { visibility: hidden; }
   #print-section, #print-section * { visibility: visible; }
@@ -198,7 +177,6 @@ table tr:hover td{background:#fafbfd;}
   .no-print { display: none !important; }
 }
 
-/* الموبايل */
 @media (max-width:900px){
   .topbar{padding:10px 20px; justify-content: center;}
   header nav{display: none;}
@@ -208,20 +186,16 @@ table tr:hover td{background:#fafbfd;}
   section{padding:60px 20px;}
   .section-title{font-size:24px;}
   .vm-grid{grid-template-columns:1fr;}
-  
   .auth-page { flex-direction: column-reverse; gap: 20px; }
   .login-logos { flex-direction: row; }
   .login-logos img { width: 80px; height: 80px; padding: 4px; border-width: 2px; }
-
   .dash-wrap{display:block; height:auto; overflow:visible;}
   .main-wrapper { height: auto; overflow: visible; }
   .desktop-header { display: none; }
-  
   .sidebar {position: fixed; top: 0; right: 0; left: auto; bottom: 0; width: 260px; transform: translateX(100%); z-index: 1500; overflow-y: auto; box-shadow: -5px 0 15px rgba(0,0,0,0.2);}
   .sidebar.open { transform: translateX(0); }
   .sidebar-overlay.show { display: block; }
   .mobile-topbar { display: flex; }
-  
   .main {padding:20px 15px; overflow-y: visible; min-height: auto;}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}
   .page-head { flex-direction: column; align-items: flex-start; }
@@ -267,9 +241,7 @@ table tr:hover td{background:#fafbfd;}
     <div class="divider"></div>
     <h2 class="section-title">من نحن</h2>
     <p class="section-sub">تعريف بالمدرسة ورسالتها التربوية</p>
-    <p class="about-text" id="site-about-text">
-      مدارس الإمام أحمد للأيتام في الشمال السوري مؤسسة تعليمية تربوية تُعنى برعاية الأيتام وتقديم تعليم نوعي متوازن يجمع بين التحصيل الأكاديمي وبناء الشخصية والقيم. نسعى إلى تهيئة بيئة تعليمية آمنة ومحفزة، بإشراف كادر تعليمي وإداري مؤهل، وبشراكة فاعلة مع الأسرة والمجتمع.
-    </p>
+    <p class="about-text" id="site-about-text">...</p>
   </div>
 </section>
 
@@ -279,16 +251,8 @@ table tr:hover td{background:#fafbfd;}
     <h2 class="section-title">الرؤية والرسالة</h2>
     <p class="section-sub">ما نطمح إليه وما نعمل من أجله</p>
     <div class="vm-grid">
-      <div class="vm-card">
-        <div class="icon">🎯</div>
-        <h3>رؤيتنا</h3>
-        <p id="site-vision">أن نكون مؤسسة تعليمية رائدة...</p>
-      </div>
-      <div class="vm-card">
-        <div class="icon">📚</div>
-        <h3>رسالتنا</h3>
-        <p id="site-mission">تقديم تعليم متكامل...</p>
-      </div>
+      <div class="vm-card"><div class="icon">🎯</div><h3>رؤيتنا</h3><p id="site-vision">...</p></div>
+      <div class="vm-card"><div class="icon">📚</div><h3>رسالتنا</h3><p id="site-mission">...</p></div>
     </div>
   </div>
 </section>
@@ -352,7 +316,7 @@ table tr:hover td{background:#fafbfd;}
       <a href="#staff">الكادر</a>
       <a href="#" onclick="showLogin();return false;">تسجيل الدخول</a>
     </div>
-    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0000 000 000</p><p>✉️ info@school.com</p></div>
+    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0947909804</p><p>✉️ k.haroush@zeyd.org</p></div>
   </div>
   <div class="footer-bottom">© 2025 مدارس الإمام أحمد للأيتام في الشمال السوري — جميع الحقوق محفوظة</div>
 </footer>
@@ -381,7 +345,6 @@ table tr:hover td{background:#fafbfd;}
 
 <!-- ============ DASHBOARD ============ -->
 <div id="dashboard" class="dash-wrap" style="display:none">
-  
   <div class="mobile-topbar">
     <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
     <span style="font-weight:bold; font-size:16px;">لوحة التحكم</span>
@@ -391,9 +354,7 @@ table tr:hover td{background:#fafbfd;}
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
   <aside class="sidebar" id="sidebar">
-    <div class="brand-sm">
-      <h3>مدارس الإمام أحمد للأيتام</h3>
-    </div>
+    <div class="brand-sm"><h3>مدارس الإمام أحمد للأيتام</h3></div>
     <div class="user-info">
       <div id="uAvatar" style="width:36px;height:36px;border-radius:50%;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:bold;overflow:hidden; flex-shrink: 0;"></div>
       <div class="info-text">
@@ -404,9 +365,7 @@ table tr:hover td{background:#fafbfd;}
         🔔 <span id="notifCount" class="notif-badge" style="display:none">0</span>
       </div>
     </div>
-    <nav>
-      <ul id="navLinks"></ul>
-    </nav>
+    <nav><ul id="navLinks"></ul></nav>
     <div class="logout">
       <button class="btn btn-danger btn-sm" style="width:100%" onclick="handleLogout()">🚪 تسجيل الخروج</button>
     </div>
@@ -419,10 +378,8 @@ table tr:hover td{background:#fafbfd;}
         <img src="logo2.jpg" alt="الشعار 2">
       </div>
     </div>
-    
     <main class="main" id="mainContent"></main>
   </div>
-
 </div>
 
 <!-- ============ MODAL & TOAST ============ -->
@@ -441,7 +398,6 @@ const STAFF_BUCKET  = "staff-photos";
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-// قائمة الشعب المعتمدة
 const SECTIONS_LIST = [
   "أول أولى", "أول ثانية", "أول ثالثة",
   "ثاني أولى", "ثاني ثانية", "ثاني ثالثة",
@@ -473,6 +429,7 @@ function today(){ return new Date().toISOString().slice(0,10); }
 function fmt(d){ return d ? new Date(d).toLocaleDateString('ar-EG') : ''; }
 function esc(s){ return (s??'').toString().replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function roleLabel(r){ return r==='admin'?'مدير':r==='supervisor'?'موجّه':r==='teacher'?'أستاذ':'—'; }
+
 function statusBadge(s){
   if(s==='approved') return '<span class="badge badge-success">مقبول</span>';
   if(s==='rejected') return '<span class="badge badge-danger">مرفوض</span>';
@@ -485,38 +442,42 @@ function attBadge(s){
   return '<span class="badge badge-info">لم يُسجل</span>';
 }
 
-// دالة لفلترة البيانات حسب نطاق الموجه (Scope)
-function filterByScope(data) {
+// دالة الفلترة للطلاب (حسب الأستاذ أو نطاق الموجه)
+function filterStudentDataByRole(data) {
   if (!data) return [];
-  if (currentUser.role !== 'supervisor' || !currentUser.scope || currentUser.scope === 'all') return data;
-  
-  const grade1to4 = ['أول', 'ثاني', 'ثالث', 'رابع', 'الأول', 'الثاني', 'الثالث', 'الرابع'];
-  const grade5to9 = ['خامس', 'سادس', 'سابع', 'ثامن', 'تاسع', 'الخامس', 'السادس', 'السابع', 'الثامن', 'التاسع'];
-  
-  return data.filter(item => {
-    const className = item.class_name || (item.students && item.students.class_name) || '';
-    
-    if (currentUser.scope === '1-4') return grade1to4.some(g => className.includes(g));
-    if (currentUser.scope === '5-9') return grade5to9.some(g => className.includes(g));
-    return true;
-  });
+  if (currentUser.role === 'admin') return data;
+
+  if (currentUser.role === 'teacher') {
+    if (!currentUser.assigned_classes || currentUser.assigned_classes.length === 0) return []; 
+    return data.filter(item => currentUser.assigned_classes.includes(item.class_name || (item.students && item.students.class_name)));
+  }
+
+  if (currentUser.role === 'supervisor') {
+    const scope = currentUser.scope || 'all';
+    if (scope === 'all') return data;
+    const grade1to4 = ['أول', 'ثاني', 'ثالث', 'رابع', 'الأول', 'الثاني', 'الثالث', 'الرابع'];
+    const grade5to9 = ['خامس', 'سادس', 'سابع', 'ثامن', 'تاسع', 'الخامس', 'السادس', 'السابع', 'الثامن', 'التاسع'];
+    return data.filter(item => {
+      const className = item.class_name || (item.students && item.students.class_name) || '';
+      if (scope === '1-4') return grade1to4.some(g => className.includes(g));
+      if (scope === '5-9') return grade5to9.some(g => className.includes(g));
+      return true;
+    });
+  }
+  return data;
 }
 
-// دالة لإنشاء القائمة المنسدلة للشعب
-function getSectionFilterHTML() {
-  return `
-    <select id="sectionFilter" onchange="filterTable()" style="padding:10px; border:1px solid #ccc; border-radius:8px; flex-grow:1; max-width:250px;">
-      <option value="">جميع الشعب</option>
-      ${SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('')}
-    </select>
-  `;
+// دالة الفلترة للأساتذة (حسب تخصيص الموجه)
+function filterTeacherDataByRole(data) {
+  if (!data) return [];
+  if (currentUser.role !== 'supervisor') return data;
+  if (!currentUser.assigned_teachers || currentUser.assigned_teachers.length === 0) return data; 
+  return data.filter(item => currentUser.assigned_teachers.includes(item.id));
 }
 
-// دالة البحث والفلترة (تشتغل مع الاسم والشعبة)
 function filterTable() {
   const textInput = document.getElementById("tableSearch");
   const filterText = textInput ? textInput.value.toLowerCase() : "";
-  
   const sectionSelect = document.getElementById("sectionFilter");
   const filterSection = sectionSelect ? sectionSelect.value : "";
 
@@ -533,7 +494,6 @@ function filterTable() {
     let matchesSection = true;
 
     if (filterSection) {
-      // البحث عن الكلمات المفتاحية للشعبة داخل اسم الصف
       const parts = filterSection.split(' '); 
       matchesSection = parts.every(p => rowClass.includes(p));
     }
@@ -549,23 +509,19 @@ function filterTable() {
 function exportTableToCSV(filename) {
   const table = document.querySelector("#mainContent table");
   if (!table) { toast('لا يوجد جدول لتصديره', 'error'); return; }
-  
   let csv = [];
   const rows = table.querySelectorAll("tr");
-  
   for (let i = 0; i < rows.length; i++) {
     let row = [], cols = rows[i].querySelectorAll("td, th");
     let limit = cols.length;
     if (i === 0 && cols[cols.length - 1].innerText.includes("إجراء")) limit--;
     if (i > 0 && rows[i].cells.length > 1 && rows[i].cells[rows[i].cells.length-1].querySelector("button")) limit--;
-
     for (let j = 0; j < limit; j++) {
       let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/,/g, "،"); 
       row.push('"' + data + '"');
     }
     csv.push(row.join(","));
   }
-
   const csvFile = new Blob(["\uFEFF" + csv.join("\n")], { type: 'text/csv;charset=utf-8;' });
   const downloadLink = document.createElement("a");
   downloadLink.href = URL.createObjectURL(csvFile);
@@ -591,13 +547,10 @@ async function handleLogin(e){
   const err = $('loginError');
   err.style.display='none';
   btn.disabled = true; btn.textContent='جاري الدخول...';
-
   const email = $('loginEmail').value.trim();
   const password = $('loginPassword').value;
-
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
   btn.disabled = false; btn.textContent='دخول';
-
   if(error){ err.textContent = 'فشل تسجيل الدخول: ' + error.message; err.style.display='block'; return; }
   await loadUserAndDashboard(data.user);
 }
@@ -608,16 +561,9 @@ async function loadUserAndDashboard(authUser){
   const { data: prof, error } = await sb.from('profiles').select('*').eq('id', authUser.id).single();
   if(error || !prof){ toast('لا يوجد بروفايل مرتبط بهذا الحساب.','error'); await sb.auth.signOut(); return; }
   currentUser = prof;
-  
-  if(prof.avatar_url) {
-    $('uAvatar').innerHTML = `<img src="${prof.avatar_url}" style="width:100%;height:100%;object-fit:cover;">`;
-  } else {
-    $('uAvatar').textContent = (prof.full_name || 'U')[0];
-  }
-  
+  if(prof.avatar_url) { $('uAvatar').innerHTML = `<img src="${prof.avatar_url}" style="width:100%;height:100%;object-fit:cover;">`; } else { $('uAvatar').textContent = (prof.full_name || 'U')[0]; }
   $('uName').textContent = prof.full_name || prof.email;
   $('uRole').textContent = roleLabel(prof.role);
-  
   showDashboard();
   buildNav();
   renderView('overview');
@@ -627,28 +573,22 @@ async function loadUserAndDashboard(authUser){
 (async function init(){
   const { data: settings } = await sb.from('site_settings').select('*');
   if(settings) {
-    const s = {};
-    settings.forEach(item => s[item.key] = item.value);
+    const s = {}; settings.forEach(item => s[item.key] = item.value);
     if(s.hero_title) $('site-hero-title').textContent = s.hero_title;
     if(s.hero_desc) $('site-hero-desc').textContent = s.hero_desc;
     if(s.about_text) $('site-about-text').textContent = s.about_text;
     if(s.vision_text) $('site-vision').textContent = s.vision_text;
     if(s.mission_text) $('site-mission').textContent = s.mission_text;
   }
-
   const { data: staff } = await sb.from('profiles').select('*').order('role').order('full_name');
   if(staff && staff.length > 0) {
     $('publicStaff').innerHTML = staff.map(s => `
       <div class="staff-card">
-        <div class="staff-avatar">
-          ${s.avatar_url ? `<img src="${s.avatar_url}" alt="${esc(s.full_name)}">` : (s.full_name||'U')[0]}
-        </div>
-        <h4>${esc(s.full_name)}</h4>
-        <p>${roleLabel(s.role)}</p>
+        <div class="staff-avatar">${s.avatar_url ? `<img src="${s.avatar_url}" alt="${esc(s.full_name)}">` : (s.full_name||'U')[0]}</div>
+        <h4>${esc(s.full_name)}</h4><p>${roleLabel(s.role)}</p>
       </div>
     `).join('');
   }
-
   const { data:{ session } } = await sb.auth.getSession();
   if(session) await loadUserAndDashboard(session.user);
   else showLanding();
@@ -657,8 +597,7 @@ async function loadUserAndDashboard(authUser){
 async function loadNotifications(){
   const { data, count } = await sb.from('notifications').select('*', {count: 'exact'}).eq('user_id', currentUser.id).eq('is_read', false);
   const badge = $('notifCount');
-  if(count > 0) { badge.textContent = count; badge.style.display = 'flex'; }
-  else { badge.style.display = 'none'; }
+  if(count > 0) { badge.textContent = count; badge.style.display = 'flex'; } else { badge.style.display = 'none'; }
 }
 
 function buildNav(){
@@ -666,7 +605,6 @@ function buildNav(){
     const links = [];
     links.push({ key:'overview',   label:'🏠 نظرة عامة' });
     links.push({ key:'notifications', label:'🔔 الإشعارات' });
-
     if(currentUser.role === 'admin'){
       links.push({ key:'users',      label:'👥 إدارة الحسابات' });
       links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
@@ -695,18 +633,13 @@ function buildNav(){
       links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
       links.push({ key:'myPlans',    label:'📄 دفتري' });
     }
-
     const ul = $('navLinks');
-    if(ul) {
-      ul.innerHTML = links.map(l => `<li><a data-view="${l.key}" onclick="renderView('${l.key}'); if(window.innerWidth <= 900) toggleSidebar();">${l.label}</a></li>`).join('');
-    }
+    if(ul) ul.innerHTML = links.map(l => `<li><a data-view="${l.key}" onclick="renderView('${l.key}'); if(window.innerWidth <= 900) toggleSidebar();">${l.label}</a></li>`).join('');
   } catch(e) { console.error(e); }
 }
 
 function setActiveNav(key){
-  document.querySelectorAll('#navLinks a').forEach(a=>{
-    a.classList.toggle('active', a.dataset.view === key);
-  });
+  document.querySelectorAll('#navLinks a').forEach(a=>{ a.classList.toggle('active', a.dataset.view === key); });
 }
 
 async function renderView(key){
@@ -714,18 +647,13 @@ async function renderView(key){
   setActiveNav(key);
   const main = $('mainContent');
   main.innerHTML = '<div class="empty">⏳ جاري التحميل...</div>';
-  
   if(charts.teacher) { charts.teacher.destroy(); charts.teacher = null; }
   if(charts.student) { charts.student.destroy(); charts.student = null; }
 
   try{
     const dept = currentUser.role === 'supervisor' ? (currentUser.department || 'all') : 'all';
-    if(dept === 'teachers' && ['students', 'studentAtt', 'grades'].includes(key)) { 
-      toast('ليس لديك صلاحية للوصول لهذه الصفحة', 'error'); return renderOverview(); 
-    }
-    if(dept === 'students' && ['teacherAtt', 'plans'].includes(key)) { 
-      toast('ليس لديك صلاحية للوصول لهذه الصفحة', 'error'); return renderOverview(); 
-    }
+    if(dept === 'teachers' && ['students', 'studentAtt', 'grades'].includes(key)) { toast('ليس لديك صلاحية', 'error'); return renderOverview(); }
+    if(dept === 'students' && ['teacherAtt', 'plans'].includes(key)) { toast('ليس لديك صلاحية', 'error'); return renderOverview(); }
 
     if(key==='overview')      return renderOverview();
     if(key==='users')         return renderUsers();
@@ -739,116 +667,62 @@ async function renderView(key){
     if(key==='notifications') return renderNotifications();
     if(key==='settings')      return renderSettings();
   }catch(e){
-    console.error(e);
-    main.innerHTML = '<div class="empty">حدث خطأ: '+esc(e.message)+'</div>';
+    console.error(e); main.innerHTML = '<div class="empty">حدث خطأ: '+esc(e.message)+'</div>';
   }
 }
 
 async function renderOverview(){
   const main = $('mainContent');
   const month = new Date().toISOString().slice(0, 7); 
-
   const { count: cTeachers } = await sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','teacher');
   const { count: cStudents } = await sb.from('students').select('*',{count:'exact',head:true});
-  
   const { data: tAtt } = await sb.from('teacher_attendance').select('status').gte('date', month + '-01');
   const { data: sAtt } = await sb.from('student_attendance').select('status').gte('date', month + '-01');
 
   let tP=0, tA=0, tL=0;
   (tAtt||[]).forEach(a => { if(a.status==='present') tP++; else if(a.status==='absent') tA++; else if(a.status==='late') tL++; });
-
   let sP=0, sA=0, sL=0;
   (sAtt||[]).forEach(a => { if(a.status==='present') sP++; else if(a.status==='absent') sA++; else if(a.status==='late') sL++; });
 
-  const hasTeacherData = (tP + tL + tA) > 0;
-  const hasStudentData = (sP + sL + sA) > 0;
-
   main.innerHTML = `
     <div class="page-head">
-      <div>
-        <h2>مدارس الإمام أحمد للأيتام</h2>
-        <p>مرحباً بك، ${esc(currentUser.full_name)} — ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
-      </div>
+      <div><h2>مدارس الإمام أحمد للأيتام</h2><p>مرحباً بك، ${esc(currentUser.full_name)} — ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p></div>
     </div>
     <div class="grid-4" style="margin-bottom:20px;">
       <div class="stat"><div class="num">${cTeachers||0}</div><div class="lbl">عدد الأساتذة</div></div>
       <div class="stat"><div class="num">${cStudents||0}</div><div class="lbl">إجمالي الطلاب</div></div>
-      <div class="stat"><div class="num">${tP + tL}</div><div class="lbl">حضور الأساتذة (هذا الشهر)</div></div>
-      <div class="stat"><div class="num">${sP + sL}</div><div class="lbl">حضور الطلاب (هذا الشهر)</div></div>
+      <div class="stat"><div class="num">${tP + tL}</div><div class="lbl">حضور الأساتذة (الشهر)</div></div>
+      <div class="stat"><div class="num">${sP + sL}</div><div class="lbl">حضور الطلاب (الشهر)</div></div>
     </div>
-
     <div class="grid-2">
-      <div class="card">
-        <h3>إحصائيات دوام الأساتذة</h3>
-        <div class="chart-container">
-          ${hasTeacherData ? '<canvas id="teacherChart"></canvas>' : '<div class="empty" style="height:100%; display:flex; align-items:center; justify-content:center;">لا توجد بيانات مسجلة لهذا الشهر</div>'}
-        </div>
-      </div>
-      <div class="card">
-        <h3>إحصائيات دوام الطلاب</h3>
-        <div class="chart-container">
-          ${hasStudentData ? '<canvas id="studentChart"></canvas>' : '<div class="empty" style="height:100%; display:flex; align-items:center; justify-content:center;">لا توجد بيانات مسجلة لهذا الشهر</div>'}
-        </div>
-      </div>
+      <div class="card"><h3>إحصائيات دوام الأساتذة</h3><div class="chart-container">${tP+tL+tA>0 ? '<canvas id="teacherChart"></canvas>' : '<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center;">لا توجد بيانات</div>'}</div></div>
+      <div class="card"><h3>إحصائيات دوام الطلاب</h3><div class="chart-container">${sP+sL+sA>0 ? '<canvas id="studentChart"></canvas>' : '<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center;">لا توجد بيانات</div>'}</div></div>
     </div>
   `;
-
-  if (hasTeacherData) {
-    const ctxT = document.getElementById('teacherChart').getContext('2d');
-    charts.teacher = new Chart(ctxT, {
-      type: 'doughnut',
-      data: {
-        labels: ['حاضر', 'متأخر', 'غائب'],
-        datasets: [{ data: [tP, tL, tA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }]
-      },
-      options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { position: 'bottom' } } }
-    });
+  if (tP+tL+tA>0) {
+    charts.teacher = new Chart(document.getElementById('teacherChart').getContext('2d'), { type: 'doughnut', data: { labels: ['حاضر', 'متأخر', 'غائب'], datasets: [{ data: [tP, tL, tA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { position: 'bottom' } } } });
   }
-
-  if (hasStudentData) {
-    const ctxS = document.getElementById('studentChart').getContext('2d');
-    charts.student = new Chart(ctxS, {
-      type: 'doughnut',
-      data: {
-        labels: ['حاضر', 'متأخر', 'غائب'],
-        datasets: [{ data: [sP, sL, sA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }]
-      },
-      options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { position: 'bottom' } } }
-    });
+  if (sP+sL+sA>0) {
+    charts.student = new Chart(document.getElementById('studentChart').getContext('2d'), { type: 'doughnut', data: { labels: ['حاضر', 'متأخر', 'غائب'], datasets: [{ data: [sP, sL, sA], backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { position: 'bottom' } } } });
   }
 }
 
 async function renderNotifications(){
   const { data } = await sb.from('notifications').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false});
-  
-  if(data && data.length > 0) {
-    await sb.from('notifications').update({is_read: true}).eq('user_id', currentUser.id).eq('is_read', false);
-    loadNotifications();
-  }
-
+  if(data && data.length > 0) { await sb.from('notifications').update({is_read: true}).eq('user_id', currentUser.id).eq('is_read', false); loadNotifications(); }
   $('mainContent').innerHTML = `
-    <div class="page-head"><div><h2>الإشعارات</h2><p>آخر التحديثات والنشاطات</p></div></div>
-    <div class="card">
-      ${(data||[]).map(n=>`
-        <div style="padding:15px; border-bottom:1px solid #eee; ${n.is_read ? 'opacity:0.7;' : 'background:#f0f8ff;'}">
-          <strong style="color:var(--primary)">${esc(n.title)}</strong>
-          <p style="font-size:14px; margin-top:5px;">${esc(n.message)}</p>
-          <small style="color:var(--muted)">${new Date(n.created_at).toLocaleString('ar-EG')}</small>
-        </div>
-      `).join('') || '<div class="empty">لا توجد إشعارات حالياً</div>'}
-    </div>
-  `;
+    <div class="page-head"><div><h2>الإشعارات</h2><p>آخر التحديثات</p></div></div>
+    <div class="card">${(data||[]).map(n=>`<div style="padding:15px;border-bottom:1px solid #eee;${n.is_read?'opacity:0.7;':'background:#f0f8ff;'}"><strong style="color:var(--primary)">${esc(n.title)}</strong><p style="font-size:14px;margin-top:5px;">${esc(n.message)}</p><small style="color:var(--muted)">${new Date(n.created_at).toLocaleString('ar-EG')}</small></div>`).join('') || '<div class="empty">لا توجد إشعارات</div>'}</div>`;
 }
 
 async function renderSettings(){
   const { data } = await sb.from('site_settings').select('*');
   const s = {}; (data||[]).forEach(item => s[item.key] = item.value);
-
   $('mainContent').innerHTML = `
-    <div class="page-head"><div><h2>إعدادات الموقع</h2><p>تعديل نصوص الصفحة الرئيسية</p></div></div>
+    <div class="page-head"><div><h2>إعدادات الموقع</h2><p>تعديل النصوص</p></div></div>
     <div class="card">
-      <div class="form-group"><label>عنوان الصفحة الرئيسية (Hero)</label><textarea id="setHeroTitle" rows="2">${esc(s.hero_title||'')}</textarea></div>
-      <div class="form-group"><label>وصف الصفحة الرئيسية (Hero)</label><textarea id="setHeroDesc" rows="2">${esc(s.hero_desc||'')}</textarea></div>
+      <div class="form-group"><label>عنوان الصفحة (Hero)</label><textarea id="setHeroTitle" rows="2">${esc(s.hero_title||'')}</textarea></div>
+      <div class="form-group"><label>وصف الصفحة (Hero)</label><textarea id="setHeroDesc" rows="2">${esc(s.hero_desc||'')}</textarea></div>
       <div class="form-group"><label>نص "من نحن"</label><textarea id="setAbout" rows="4">${esc(s.about_text||'')}</textarea></div>
       <div class="form-group"><label>نص "الرؤية"</label><textarea id="setVision" rows="3">${esc(s.vision_text||'')}</textarea></div>
       <div class="form-group"><label>نص "الرسالة"</label><textarea id="setMission" rows="3">${esc(s.mission_text||'')}</textarea></div>
@@ -858,30 +732,18 @@ async function renderSettings(){
 }
 
 async function saveSettings(){
-  const updates = [
-    { key: 'hero_title', value: $('setHeroTitle').value },
-    { key: 'hero_desc', value: $('setHeroDesc').value },
-    { key: 'about_text', value: $('setAbout').value },
-    { key: 'vision_text', value: $('setVision').value },
-    { key: 'mission_text', value: $('setMission').value },
-  ];
-
+  const updates = [{ key: 'hero_title', value: $('setHeroTitle').value }, { key: 'hero_desc', value: $('setHeroDesc').value }, { key: 'about_text', value: $('setAbout').value }, { key: 'vision_text', value: $('setVision').value }, { key: 'mission_text', value: $('setMission').value }];
   for (let u of updates) { await sb.from('site_settings').upsert(u); }
-  
-  $('site-hero-title').textContent = $('setHeroTitle').value;
-  $('site-hero-desc').textContent = $('setHeroDesc').value;
-  $('site-about-text').textContent = $('setAbout').value;
-  $('site-vision').textContent = $('setVision').value;
-  $('site-mission').textContent = $('setMission').value;
-
-  toast('تم حفظ الإعدادات وتحديث الموقع', 'success');
+  $('site-hero-title').textContent = $('setHeroTitle').value; $('site-hero-desc').textContent = $('setHeroDesc').value; $('site-about-text').textContent = $('setAbout').value; $('site-vision').textContent = $('setVision').value; $('site-mission').textContent = $('setMission').value;
+  toast('تم حفظ الإعدادات', 'success');
 }
 
+/* ========== USERS MANAGEMENT ========== */
 async function renderUsers(){
   const { data } = await sb.from('profiles').select('*').order('created_at',{ascending:false});
   $('mainContent').innerHTML = `
     <div class="page-head">
-      <div><h2>إدارة الحسابات</h2><p>إنشاء وتعديل حسابات الأساتذة والموجهين</p></div>
+      <div><h2>إدارة الحسابات</h2><p>إنشاء وتعديل الحسابات والصلاحيات</p></div>
       <div style="display:flex; gap:10px;">
         <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('الحسابات')">📥 تصدير</button>
         <button class="btn btn-primary" onclick="openCreateUser()">➕ إضافة حساب</button>
@@ -890,24 +752,20 @@ async function renderUsers(){
     <div class="card">
       <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم أو البريد..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
-        <thead><tr><th>الصورة</th><th>الاسم</th><th>البريد</th><th>الدور / الصلاحيات</th><th>إجراءات</th></tr></thead>
+        <thead><tr><th>الصورة</th><th>الاسم</th><th>البريد</th><th>الدور والصلاحيات</th><th>إجراءات</th></tr></thead>
         <tbody>
           ${(data||[]).map(u=>`
             <tr>
-              <td style="width:60px;">
-                <div style="width:40px;height:40px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                  ${u.avatar_url ? `<img src="${u.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : (u.full_name||'U')[0]}
-                </div>
-              </td>
+              <td style="width:60px;"><div style="width:40px;height:40px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;">${u.avatar_url ? `<img src="${u.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : (u.full_name||'U')[0]}</div></td>
               <td>${esc(u.full_name)}</td>
               <td>${esc(u.email)}</td>
               <td>
                 <span class="badge badge-info">${roleLabel(u.role)}</span>
-                ${u.role === 'supervisor' ? 
-                  `<br><span class="badge badge-warn" style="margin-top:4px; font-size:10px; display:block;">${u.department === 'teachers' ? 'أساتذة' : u.department === 'students' ? 'طلاب' : 'الكل'} | ${u.scope === '1-4' ? 'صفوف 1-4' : u.scope === '5-9' ? 'صفوف 5-9' : 'كل الصفوف'}</span>` 
-                  : ''}
+                ${u.role === 'supervisor' ? `<br><span class="badge badge-warn" style="margin-top:4px; font-size:10px; display:block;">${u.department === 'teachers' ? 'أساتذة' : u.department === 'students' ? 'طلاب' : 'الكل'} | ${u.scope === '1-4' ? 'صفوف 1-4' : u.scope === '5-9' ? 'صفوف 5-9' : 'كل الصفوف'}</span>` : ''}
+                ${u.role === 'teacher' && u.assigned_classes && u.assigned_classes.length > 0 ? `<br><span class="badge badge-warn" style="margin-top:4px; font-size:10px; display:block;">${u.assigned_classes.length} شعب مخصصة</span>` : ''}
               </td>
               <td style="white-space:nowrap;">
+                <button class="btn btn-sm btn-success" onclick="openEditUser('${u.id}')">✏️ تعديل</button>
                 <button class="btn btn-sm btn-primary" onclick="openTeacherProfile('${u.id}', '${esc(u.full_name)}')">📊 بطاقة</button>
                 <button class="btn btn-sm btn-gold" onclick="openUploadAvatar('${u.id}', '${esc(u.full_name)}')">📸</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">حذف</button>
@@ -932,26 +790,16 @@ function openCreateUser(){
         <option value="admin">مدير</option>
       </select>
     </div>
-    
     <div id="supervisorFields" style="display:none; background:#f0f8ff; padding:15px; border-radius:8px; border:1px solid #dbeafe; margin-bottom:15px;">
       <div class="form-group">
-        <label style="color:var(--primary)">نوع الإشراف (الصلاحيات)</label>
-        <select id="cuDept">
-          <option value="all">الكل (أساتذة وطلاب)</option>
-          <option value="teachers">الأساتذة فقط (دوام ودفاتر)</option>
-          <option value="students">الطلاب فقط (دوام وعلامات)</option>
-        </select>
+        <label style="color:var(--primary)">نوع الإشراف</label>
+        <select id="cuDept"><option value="all">الكل</option><option value="teachers">الأساتذة فقط</option><option value="students">الطلاب فقط</option></select>
       </div>
       <div class="form-group" style="margin-bottom:0;">
-        <label style="color:var(--primary)">نطاق الصفوف</label>
-        <select id="cuScope">
-          <option value="all">جميع الصفوف</option>
-          <option value="1-4">من الصف الأول حتى الرابع</option>
-          <option value="5-9">من الصف الخامس حتى التاسع</option>
-        </select>
+        <label style="color:var(--primary)">نطاق الصفوف (للطلاب)</label>
+        <select id="cuScope"><option value="all">جميع الصفوف</option><option value="1-4">من الأول للرابع</option><option value="5-9">من الخامس للتاسع</option></select>
       </div>
     </div>
-
     <div class="actions">
       <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="createUser()">إنشاء</button>
@@ -969,30 +817,114 @@ async function createUser(){
   const email = $('cuEmail').value.trim();
   const password = $('cuPass').value;
   const role = $('cuRole').value;
-  
-  let department = null;
-  let scope = 'all';
-  
-  if (role === 'supervisor') {
-    department = $('cuDept').value;
-    scope = $('cuScope').value;
-  }
-
+  let department = null, scope = 'all';
+  if (role === 'supervisor') { department = $('cuDept').value; scope = $('cuScope').value; }
   if(!full_name || !email || !password){ toast('املأ كل الحقول','error'); return; }
   if(password.length < 6){ toast('كلمة المرور 6 أحرف على الأقل','error'); return; }
-
   const { data, error } = await sb.auth.signUp({ email, password });
   if(error){ toast('فشل: '+error.message,'error'); return; }
-
   const uid = data.user?.id;
   if(!uid){ toast('لم يتم إنشاء المستخدم','error'); return; }
-
   await new Promise(resolve => setTimeout(resolve, 500));
-
   const { error: pErr } = await sb.from('profiles').insert({ id: uid, full_name, email, role, department, scope });
   if(pErr){ toast('فشل حفظ البروفايل: '+pErr.message,'error'); return; }
+  closeModal(); toast('تم إنشاء الحساب','success'); renderUsers();
+}
 
-  closeModal(); toast('تم إنشاء الحساب بنجاح','success'); renderUsers();
+/* ========== EDIT USER ========== */
+async function openEditUser(id) {
+  const { data: user, error } = await sb.from('profiles').select('*').eq('id', id).single();
+  if(error || !user) { toast('خطأ في جلب البيانات', 'error'); return; }
+  
+  const { data: allTeachers } = await sb.from('profiles').select('id, full_name').eq('role', 'teacher').order('full_name');
+  const userClasses = user.assigned_classes || [];
+  const userTeachers = user.assigned_teachers || [];
+
+  let classesHtml = SECTIONS_LIST.map(c => `
+    <label class="checkbox-item">
+      <input type="checkbox" name="edit_classes" value="${c}" ${userClasses.includes(c) ? 'checked' : ''}> ${c}
+    </label>
+  `).join('');
+
+  let teachersHtml = (allTeachers||[]).map(t => `
+    <label class="checkbox-item">
+      <input type="checkbox" name="edit_teachers" value="${t.id}" ${userTeachers.includes(t.id) ? 'checked' : ''}> ${esc(t.full_name)}
+    </label>
+  `).join('');
+
+  openModal(`
+    <h3>تعديل حساب: ${esc(user.full_name)}</h3>
+    <div class="form-group"><label>الاسم الكامل</label><input id="edName" value="${esc(user.full_name)}" /></div>
+    <div class="form-group">
+      <label>الدور</label>
+      <select id="edRole" onchange="toggleEditRoleFields()">
+        <option value="teacher" ${user.role==='teacher'?'selected':''}>أستاذ</option>
+        <option value="supervisor" ${user.role==='supervisor'?'selected':''}>موجّه</option>
+        <option value="admin" ${user.role==='admin'?'selected':''}>مدير</option>
+      </select>
+    </div>
+
+    <!-- حقول الأستاذ -->
+    <div id="editTeacherFields" style="display: ${user.role === 'teacher' ? 'block' : 'none'};">
+      <div class="form-group">
+        <label style="color:var(--primary)">الشعب المخصصة له (يتم فلترة الطلاب حسبها):</label>
+        <div class="checkbox-grid">${classesHtml}</div>
+      </div>
+    </div>
+
+    <!-- حقول الموجه -->
+    <div id="editSupervisorFields" style="display: ${user.role === 'supervisor' ? 'block' : 'none'};">
+      <div class="form-group">
+        <label>نوع الإشراف</label>
+        <select id="edDept"><option value="all" ${user.department==='all'?'selected':''}>الكل</option><option value="teachers" ${user.department==='teachers'?'selected':''}>الأساتذة فقط</option><option value="students" ${user.department==='students'?'selected':''}>الطلاب فقط</option></select>
+      </div>
+      <div class="form-group">
+        <label>نطاق الصفوف (للطلاب)</label>
+        <select id="edScope"><option value="all" ${user.scope==='all'?'selected':''}>جميع الصفوف</option><option value="1-4" ${user.scope==='1-4'?'selected':''}>من الأول للرابع</option><option value="5-9" ${user.scope==='5-9'?'selected':''}>من الخامس للتاسع</option></select>
+      </div>
+      <div class="form-group">
+        <label style="color:var(--primary)">الأساتذة المشمولين بإشرافه:</label>
+        <div class="checkbox-grid">${teachersHtml}</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveEditUser('${user.id}')">حفظ التعديلات</button>
+    </div>
+  `);
+}
+
+function toggleEditRoleFields() {
+  const role = document.getElementById('edRole').value;
+  document.getElementById('editTeacherFields').style.display = role === 'teacher' ? 'block' : 'none';
+  document.getElementById('editSupervisorFields').style.display = role === 'supervisor' ? 'block' : 'none';
+}
+
+async function saveEditUser(id) {
+  const name = $('edName').value.trim();
+  const role = $('edRole').value;
+  
+  if(!name) { toast('الاسم مطلوب', 'error'); return; }
+
+  let department = null, scope = 'all';
+  let assigned_classes = [];
+  let assigned_teachers = [];
+
+  if (role === 'teacher') {
+    assigned_classes = Array.from(document.querySelectorAll('input[name="edit_classes"]:checked')).map(cb => cb.value);
+  } else if (role === 'supervisor') {
+    department = $('edDept').value;
+    scope = $('edScope').value;
+    assigned_teachers = Array.from(document.querySelectorAll('input[name="edit_teachers"]:checked')).map(cb => cb.value);
+  }
+
+  const updates = { full_name: name, role, department, scope, assigned_classes, assigned_teachers };
+
+  const { error } = await sb.from('profiles').update(updates).eq('id', id);
+  if (error) { toast('فشل الحفظ: ' + error.message, 'error'); return; }
+
+  closeModal(); toast('تم تعديل الحساب بنجاح', 'success'); renderUsers();
 }
 
 async function deleteUser(id){
@@ -1005,96 +937,49 @@ async function deleteUser(id){
 function openUploadAvatar(userId, name) {
   openModal(`
     <h3>رفع صورة لـ ${esc(name)}</h3>
-    <div class="form-group">
-      <label>اختر صورة (JPG, PNG)</label>
-      <input type="file" id="avatarFile" accept="image/*" />
-    </div>
+    <div class="form-group"><label>اختر صورة</label><input type="file" id="avatarFile" accept="image/*" /></div>
     <div class="actions">
       <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" id="upAvatarBtn" onclick="uploadAvatar('${userId}')">رفع الصورة</button>
+      <button class="btn btn-primary" id="upAvatarBtn" onclick="uploadAvatar('${userId}')">رفع</button>
     </div>
   `);
 }
 
 async function uploadAvatar(userId) {
-  const file = $('avatarFile').files[0];
-  if(!file) { toast('اختر صورة أولاً', 'error'); return; }
-
-  const btn = $('upAvatarBtn');
-  btn.disabled = true; btn.textContent = 'جاري الرفع...';
-
-  const fileExt = file.name.split('.').pop();
-  const path = `${userId}_${Date.now()}.${fileExt}`;
-
+  const file = $('avatarFile').files[0]; if(!file) return;
+  const btn = $('upAvatarBtn'); btn.disabled = true; btn.textContent = 'جاري الرفع...';
+  const fileExt = file.name.split('.').pop(); const path = `${userId}_${Date.now()}.${fileExt}`;
   const { error: upErr } = await sb.storage.from(STAFF_BUCKET).upload(path, file);
-  if(upErr) { 
-    btn.disabled = false; btn.textContent = 'رفع الصورة'; 
-    toast('فشل الرفع: ' + upErr.message, 'error'); 
-    return; 
-  }
-
+  if(upErr) { btn.disabled = false; btn.textContent = 'رفع'; toast('فشل الرفع', 'error'); return; }
   const { data: urlData } = sb.storage.from(STAFF_BUCKET).getPublicUrl(path);
-  const { error: dbErr } = await sb.from('profiles').update({ avatar_url: urlData.publicUrl }).eq('id', userId);
-  
-  if(dbErr) {
-    btn.disabled = false; btn.textContent = 'رفع الصورة'; 
-    toast('فشل حفظ الرابط: ' + dbErr.message, 'error'); 
-    return;
-  }
-  closeModal(); toast('تم رفع الصورة بنجاح', 'success'); renderUsers();
+  await sb.from('profiles').update({ avatar_url: urlData.publicUrl }).eq('id', userId);
+  closeModal(); toast('تم رفع الصورة', 'success'); renderUsers();
 }
 
 async function openTeacherProfile(id, name){
-  openModal('<h3>جاري تحميل بيانات الأستاذ...</h3>');
-  
+  openModal('<h3>جاري التحميل...</h3>');
   const { data: att } = await sb.from('teacher_attendance').select('status').eq('teacher_id', id);
-  let present = 0, absent = 0, late = 0;
-  (att||[]).forEach(a => {
-    if(a.status==='present') present++;
-    else if(a.status==='absent') absent++;
-    else if(a.status==='late') late++;
-  });
-
+  let p=0, a=0, l=0; (att||[]).forEach(x => { if(x.status==='present') p++; else if(x.status==='absent') a++; else l++; });
   const { data: plans } = await sb.from('lesson_plans').select('status').eq('teacher_id', id);
-  let approved = 0, rejected = 0, pending = 0;
-  (plans||[]).forEach(p => {
-    if(p.status==='approved') approved++;
-    else if(p.status==='rejected') rejected++;
-    else pending++;
-  });
-
+  let ap=0, rj=0, pd=0; (plans||[]).forEach(x => { if(x.status==='approved') ap++; else if(x.status==='rejected') rj++; else pd++; });
   openModal(`
     <h3>بطاقة الأستاذ: ${esc(name)}</h3>
-    
-    <div class="grid-3" style="margin-bottom:20px;">
-      <div class="stat" style="border-right-color:var(--success)"><div class="num" style="font-size:22px">${present}</div><div class="lbl">حاضر</div></div>
-      <div class="stat" style="border-right-color:var(--warn)"><div class="num" style="font-size:22px">${late}</div><div class="lbl">متأخر</div></div>
-      <div class="stat" style="border-right-color:var(--danger)"><div class="num" style="font-size:22px">${absent}</div><div class="lbl">غائب</div></div>
-    </div>
-
-    <h4 style="color:var(--primary); margin-bottom:10px;">حالة دفاتر التحضير (${plans?.length || 0}):</h4>
-    <div class="grid-3">
-      <div class="stat" style="border-right-color:var(--success)"><div class="num" style="font-size:22px; color:var(--success)">${approved}</div><div class="lbl">مقبول</div></div>
-      <div class="stat" style="border-right-color:var(--danger)"><div class="num" style="font-size:22px; color:var(--danger)">${rejected}</div><div class="lbl">مرفوض</div></div>
-      <div class="stat" style="border-right-color:var(--warn)"><div class="num" style="font-size:22px; color:var(--warn)">${pending}</div><div class="lbl">قيد المراجعة</div></div>
-    </div>
-
-    <div class="actions" style="margin-top:25px;">
-      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إغلاق</button>
-    </div>
+    <div class="grid-3" style="margin-bottom:20px;"><div class="stat" style="border-right-color:var(--success)"><div class="num" style="font-size:22px">${p}</div><div class="lbl">حاضر</div></div><div class="stat" style="border-right-color:var(--warn)"><div class="num" style="font-size:22px">${l}</div><div class="lbl">متأخر</div></div><div class="stat" style="border-right-color:var(--danger)"><div class="num" style="font-size:22px">${a}</div><div class="lbl">غائب</div></div></div>
+    <h4 style="color:var(--primary); margin-bottom:10px;">الدفاتر (${plans?.length||0}):</h4>
+    <div class="grid-3"><div class="stat" style="border-right-color:var(--success)"><div class="num" style="font-size:22px; color:var(--success)">${ap}</div><div class="lbl">مقبول</div></div><div class="stat" style="border-right-color:var(--danger)"><div class="num" style="font-size:22px; color:var(--danger)">${rj}</div><div class="lbl">مرفوض</div></div><div class="stat" style="border-right-color:var(--warn)"><div class="num" style="font-size:22px; color:var(--warn)">${pd}</div><div class="lbl">مراجعة</div></div></div>
+    <div class="actions" style="margin-top:25px;"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إغلاق</button></div>
   `);
 }
 
 async function renderStudents(){
   const { data } = await sb.from('students').select('*').order('class_name').order('full_name');
-  const filteredData = filterByScope(data);
-  
+  const filteredData = filterStudentDataByRole(data);
   $('mainContent').innerHTML = `
     <div class="page-head">
-      <div><h2>إدارة الطلاب</h2><p>سجل الطلاب وتوزيعهم على الصفوف</p></div>
+      <div><h2>إدارة الطلاب</h2></div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('الطلاب')">📥 تصدير</button>
-        ${currentUser.role !== 'teacher' ? `<button class="btn btn-success" onclick="openExcelUpload()">📊 رفع ملف إكسل</button>` : ''}
+        ${currentUser.role !== 'teacher' ? `<button class="btn btn-success" onclick="openExcelUpload()">📊 رفع إكسل</button>` : ''}
         ${currentUser.role !== 'teacher' ? `<button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>` : ''}
       </div>
     </div>
@@ -1108,9 +993,7 @@ async function renderStudents(){
         <tbody>
           ${(filteredData||[]).map(s=>`
             <tr data-class="${esc(s.class_name)}">
-              <td>${esc(s.full_name)}</td>
-              <td><span class="badge badge-info">${esc(s.class_name)}</span></td>
-              <td>${fmt(s.created_at)}</td>
+              <td>${esc(s.full_name)}</td><td><span class="badge badge-info">${esc(s.class_name)}</span></td><td>${fmt(s.created_at)}</td>
               <td style="white-space:nowrap;">
                 <button class="btn btn-sm btn-primary" onclick="openStudentProfile(${s.id}, '${esc(s.full_name)}', '${esc(s.class_name)}')">📊 بطاقة</button>
                 ${currentUser.role !== 'teacher' ? `<button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">حذف</button>` : ''}
@@ -1125,245 +1008,99 @@ async function renderStudents(){
 
 function openExcelUpload() {
   openModal(`
-    <h3>رفع ملف إكسل (Excel)</h3>
-    <p style="font-size:14px; color:var(--muted); margin-bottom:15px;">
-      تأكد أن العمود الأول <b>الاسم</b>، والثاني <b>الصف</b>، والثالث <b>الشعبة</b>.<br>
-      سيتم دمج الصف والشعبة تلقائياً (مثال: الأول - الأولى).
-    </p>
-    <div class="form-group">
-      <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" style="padding:10px; border:1px dashed #ccc;" />
-    </div>
-    <div class="actions">
-      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-success" id="excelBtn" onclick="processExcel()">رفع ومعالجة</button>
-    </div>
+    <h3>رفع ملف إكسل</h3>
+    <div class="form-group"><input type="file" id="excelFile" accept=".xlsx, .xls, .csv" style="padding:10px; border:1px dashed #ccc;" /></div>
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-success" id="excelBtn" onclick="processExcel()">رفع</button></div>
   `);
 }
 
 function processExcel() {
-  const fileInput = document.getElementById('excelFile');
-  const file = fileInput.files[0];
-  if (!file) { toast('يرجى اختيار ملف', 'error'); return; }
-
-  const btn = document.getElementById('excelBtn');
-  btn.disabled = true; btn.textContent = 'جاري المعالجة...';
-
+  const file = document.getElementById('excelFile').files[0]; if (!file) return;
+  const btn = document.getElementById('excelBtn'); btn.disabled = true; btn.textContent = 'جاري المعالجة...';
   const reader = new FileReader();
   reader.onload = async function(e) {
     const data = new Uint8Array(e.target.result);
     const workbook = XLSX.read(data, {type: 'array'});
-    const firstSheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[firstSheetName];
-    
-    const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+    const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
     let studentsToInsert = [];
-    
     for (let i = 1; i < json.length; i++) {
       const row = json[i];
       if (row[0] && row[1]) {
-        const fullName = row[0].toString().trim();
-        const grade = row[1].toString().trim();
-        const section = row[2] ? row[2].toString().trim() : '';
-        const className = section ? `${grade} - ${section}` : grade;
-        
-        studentsToInsert.push({
-          full_name: fullName,
-          class_name: className
-        });
+        studentsToInsert.push({ full_name: row[0].toString().trim(), class_name: row[2] ? `${row[1].toString().trim()} - ${row[2].toString().trim()}` : row[1].toString().trim() });
       }
     }
-
-    if (studentsToInsert.length === 0) {
-      toast('لم يتم العثور على بيانات صالحة في الملف', 'error');
-      btn.disabled = false; btn.textContent = 'رفع ومعالجة';
-      return;
-    }
-
+    if (studentsToInsert.length === 0) { toast('لا توجد بيانات', 'error'); btn.disabled = false; btn.textContent = 'رفع'; return; }
     const { error } = await sb.from('students').insert(studentsToInsert);
-    
-    if (error) {
-      toast('فشل حفظ البيانات: ' + error.message, 'error');
-      btn.disabled = false; btn.textContent = 'رفع ومعالجة';
-    } else {
-      closeModal();
-      toast('تم إضافة ' + studentsToInsert.length + ' طالبة بنجاح!', 'success');
-      renderStudents();
-    }
+    if (error) { toast('فشل: ' + error.message, 'error'); btn.disabled = false; btn.textContent = 'رفع'; } else { closeModal(); toast('تم إضافة ' + studentsToInsert.length + ' طالب', 'success'); renderStudents(); }
   };
   reader.readAsArrayBuffer(file);
 }
 
 async function openStudentProfile(id, name, className){
-  openModal('<h3>جاري تحميل بيانات الطالب...</h3>');
-  
+  openModal('<h3>جاري التحميل...</h3>');
   const { data: att } = await sb.from('student_attendance').select('status').eq('student_id', id);
-  let present = 0, absent = 0, late = 0;
-  (att||[]).forEach(a => {
-    if(a.status==='present') present++;
-    else if(a.status==='absent') absent++;
-    else if(a.status==='late') late++;
-  });
-
+  let p=0, a=0, l=0; (att||[]).forEach(x => { if(x.status==='present') p++; else if(x.status==='absent') a++; else l++; });
   const { data: grades } = await sb.from('student_grades').select('*').eq('student_id', id).order('date', {ascending:false});
-
   openModal(`
     <h3>بطاقة الطالب: ${esc(name)}</h3>
-    
-    <div class="grid-3" style="margin-bottom:20px;">
-      <div class="stat" style="border-right-color:var(--success)"><div class="num" style="font-size:22px">${present}</div><div class="lbl">حاضر</div></div>
-      <div class="stat" style="border-right-color:var(--warn)"><div class="num" style="font-size:22px">${late}</div><div class="lbl">متأخر</div></div>
-      <div class="stat" style="border-right-color:var(--danger)"><div class="num" style="font-size:22px">${absent}</div><div class="lbl">غائب</div></div>
-    </div>
-
-    <h4 style="color:var(--primary); margin-bottom:10px;">آخر العلامات (${grades?.length || 0}):</h4>
+    <div class="grid-3" style="margin-bottom:20px;"><div class="stat" style="border-right-color:var(--success)"><div class="num" style="font-size:22px">${p}</div><div class="lbl">حاضر</div></div><div class="stat" style="border-right-color:var(--warn)"><div class="num" style="font-size:22px">${l}</div><div class="lbl">متأخر</div></div><div class="stat" style="border-right-color:var(--danger)"><div class="num" style="font-size:22px">${a}</div><div class="lbl">غائب</div></div></div>
+    <h4 style="color:var(--primary); margin-bottom:10px;">آخر العلامات (${grades?.length||0}):</h4>
     <div style="max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px; margin-bottom:20px;">
-      <table style="min-width:100%;">
-        <thead><tr><th>التاريخ</th><th>المادة</th><th>المذاكرة</th><th>العلامة</th></tr></thead>
-        <tbody>
-          ${(grades||[]).map(g=>`
-            <tr>
-              <td>${fmt(g.date)}</td>
-              <td>${esc(g.subject)}</td>
-              <td>${esc(g.exam_name)}</td>
-              <td>${g.status==='submitted' ? `<b style="color:var(--success)">${esc(g.score)}</b>` : '<span class="badge badge-danger">غائب</span>'}</td>
-            </tr>
-          `).join('') || '<tr><td colspan="4" class="empty">لا توجد علامات مسجلة</td></tr>'}
-        </tbody>
-      </table>
+      <table style="min-width:100%;"><thead><tr><th>التاريخ</th><th>المادة</th><th>المذاكرة</th><th>العلامة</th></tr></thead><tbody>
+        ${(grades||[]).map(g=>`<tr><td>${fmt(g.date)}</td><td>${esc(g.subject)}</td><td>${esc(g.exam_name)}</td><td>${g.status==='submitted' ? `<b style="color:var(--success)">${esc(g.score)}</b>` : '<span class="badge badge-danger">غائب</span>'}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">لا توجد علامات</td></tr>'}
+      </tbody></table>
     </div>
-
-    <div class="actions" style="margin-top:20px;">
-      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إغلاق</button>
-      <button class="btn btn-primary" onclick="printStudentReportCard(${id}, '${esc(name)}', '${esc(className)}')">🖨️ طباعة كشف العلامات</button>
-    </div>
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إغلاق</button><button class="btn btn-primary" onclick="printStudentReportCard(${id}, '${esc(name)}', '${esc(className)}')">🖨️ طباعة</button></div>
   `);
 }
 
 async function printStudentReportCard(id, name, className) {
-  toast('جاري تجهيز الكشف للطباعة...', 'success');
+  toast('جاري التجهيز...', 'success');
   const { data: grades } = await sb.from('student_grades').select('*').eq('student_id', id).order('date', {ascending:true});
-  
-  const printWindow = window.open('', '_blank');
-  printWindow.document.write(`
-    <html dir="rtl" lang="ar">
-    <head>
-      <title>كشف علامات - ${name}</title>
-      <style>
-        body { font-family: 'Tajawal', Arial, sans-serif; padding: 20px; }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #0d3b66; padding-bottom: 15px; }
-        .header h1 { margin: 0; color: #0d3b66; font-size: 24px; }
-        .header h2 { margin: 5px 0 0; color: #555; font-size: 18px; }
-        .info { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 16px; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #999; padding: 10px; text-align: right; font-size: 15px; }
-        th { background: #eef2f7; color: #0d3b66; }
-        .footer { margin-top: 50px; display: flex; justify-content: space-between; font-size: 16px; font-weight: bold; }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1>مدارس الإمام أحمد للأيتام في الشمال السوري</h1>
-        <h2>كشف العلامات المدرسية</h2>
-      </div>
-      <div class="info">
-        <span>اسم الطالب: ${name}</span>
-        <span>الصف: ${className}</span>
-        <span>التاريخ: ${new Date().toLocaleDateString('ar-EG')}</span>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>التاريخ</th>
-            <th>المادة</th>
-            <th>اسم المذاكرة</th>
-            <th>الحالة</th>
-            <th>العلامة</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${(grades||[]).map((g, i) => `
-            <tr>
-              <td>${i+1}</td>
-              <td>${fmt(g.date)}</td>
-              <td>${esc(g.subject)}</td>
-              <td>${esc(g.exam_name)}</td>
-              <td>${g.status === 'submitted' ? 'تم التقديم' : 'غائب/لم يقدم'}</td>
-              <td><b>${g.status === 'submitted' ? esc(g.score) : '—'}</b></td>
-            </tr>
-          `).join('') || '<tr><td colspan="6" style="text-align:center;">لا توجد علامات مسجلة</td></tr>'}
-        </tbody>
-      </table>
-      <div class="footer">
-        <span>توقيع الأستاذ: ...........................</span>
-        <span>توقيع المدير: ...........................</span>
-      </div>
-      <script>
-        window.onload = function() { window.print(); }
-      <\/script>
-    </body>
-    </html>
-  `);
-  printWindow.document.close();
+  const w = window.open('', '_blank');
+  w.document.write(`<html dir="rtl" lang="ar"><head><title>كشف علامات</title><style>body{font-family:'Tajawal',Arial,sans-serif;padding:20px;}.header{text-align:center;margin-bottom:30px;border-bottom:2px solid #0d3b66;padding-bottom:15px;}.header h1{margin:0;color:#0d3b66;font-size:24px;}.info{display:flex;justify-content:space-between;margin-bottom:20px;font-size:16px;font-weight:bold;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #999;padding:10px;text-align:right;}th{background:#eef2f7;color:#0d3b66;}.footer{margin-top:50px;display:flex;justify-content:space-between;font-size:16px;font-weight:bold;}</style></head><body><div class="header"><h1>مدارس الإمام أحمد للأيتام</h1><h2>كشف العلامات</h2></div><div class="info"><span>الطالب: ${name}</span><span>الصف: ${className}</span><span>التاريخ: ${new Date().toLocaleDateString('ar-EG')}</span></div><table><thead><tr><th>#</th><th>التاريخ</th><th>المادة</th><th>المذاكرة</th><th>الحالة</th><th>العلامة</th></tr></thead><tbody>${(grades||[]).map((g, i) => `<tr><td>${i+1}</td><td>${fmt(g.date)}</td><td>${esc(g.subject)}</td><td>${esc(g.exam_name)}</td><td>${g.status==='submitted'?'تم التقديم':'غائب'}</td><td><b>${g.status==='submitted'?esc(g.score):'—'}</b></td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center;">لا توجد علامات</td></tr>'}</tbody></table><div class="footer"><span>توقيع الأستاذ: ...........................</span><span>توقيع المدير: ...........................</span></div><script>window.onload=function(){window.print();}<\/script></body></html>`);
+  w.document.close();
 }
 
 function openAddStudent(){
   openModal(`
     <h3>إضافة طالب جديد</h3>
-    <div class="form-group"><label>اسم الطالب الثلاثي</label><input id="stName" placeholder="مثال: أحمد محمد علي" /></div>
-    <div class="form-group">
-      <label>الصف / الشعبة</label>
-      <select id="stClass">
-        <option value="">-- اختر الشعبة --</option>
-        ${SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('')}
-      </select>
-    </div>
-    <div class="actions">
-      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveStudent()">حفظ</button>
-    </div>
+    <div class="form-group"><label>اسم الطالب الثلاثي</label><input id="stName" /></div>
+    <div class="form-group"><label>الصف / الشعبة</label><select id="stClass"><option value="">-- اختر --</option>${SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('')}</select></div>
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveStudent()">حفظ</button></div>
   `);
 }
 
 async function saveStudent(){
-  const full_name = $('stName').value.trim();
-  const class_name = $('stClass').value;
-  if(!full_name || !class_name){ toast('يرجى ملء جميع الحقول', 'error'); return; }
-
+  const full_name = $('stName').value.trim(); const class_name = $('stClass').value;
+  if(!full_name || !class_name){ toast('يرجى ملء الحقول', 'error'); return; }
   const { error } = await sb.from('students').insert({ full_name, class_name });
-  if(error){ toast('فشل الحفظ: '+error.message, 'error'); return; }
-  
-  closeModal(); 
-  toast('تم إضافة الطالب بنجاح', 'success'); 
-  
-  if (currentView === 'students') renderStudents();
-  if (currentView === 'studentAtt') renderStudentAtt();
+  if(error){ toast('فشل: '+error.message, 'error'); return; }
+  closeModal(); toast('تم الإضافة', 'success'); renderStudents();
 }
 
 async function deleteStudent(id){
-  if(!confirm('هل أنت متأكد من حذف هذا الطالب؟')) return;
+  if(!confirm('تأكيد الحذف؟')) return;
   const { error } = await sb.from('students').delete().eq('id', id);
-  if(error){ toast('فشل الحذف: '+error.message, 'error'); return; }
-  toast('تم حذف الطالب', 'success'); renderStudents();
+  if(error){ toast('فشل', 'error'); return; }
+  toast('تم الحذف', 'success'); renderStudents();
 }
 
 async function renderTeacherAtt(){
   const date = today();
   const { data: teachers } = await sb.from('profiles').select('*').eq('role','teacher').order('full_name');
+  const filteredTeachers = filterTeacherDataByRole(teachers);
   const { data: att } = await sb.from('teacher_attendance').select('*').eq('date', date);
   const map = {}; (att||[]).forEach(a=> map[a.teacher_id] = a);
 
   $('mainContent').innerHTML = `
-    <div class="page-head">
-      <div><h2>دوام الأساتذة</h2><p>تاريخ اليوم: ${fmt(date)}</p></div>
-      <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الأساتذة')">📥 تصدير</button>
-    </div>
+    <div class="page-head"><div><h2>دوام الأساتذة</h2><p>تاريخ اليوم: ${fmt(date)}</p></div><button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الأساتذة')">📥 تصدير</button></div>
     <div class="card">
-      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث باسم الأستاذ..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
+      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
         <thead><tr><th>الأستاذ</th><th>الحالة</th><th>إجراء</th></tr></thead>
         <tbody>
-          ${(teachers||[]).map(t=>{
+          ${(filteredTeachers||[]).map(t=>{
             const a = map[t.id];
             return `<tr>
               <td>${esc(t.full_name)}</td>
@@ -1374,7 +1111,7 @@ async function renderTeacherAtt(){
                 <button class="btn btn-sm btn-danger" onclick="openTeacherAtt('${t.id}','${esc(t.full_name)}','absent')">غائب</button>
               </td>
             </tr>`;
-          }).join('')}
+          }).join('') || '<tr><td colspan="3" class="empty">لا يوجد أساتذة</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -1384,49 +1121,30 @@ async function renderTeacherAtt(){
 function openTeacherAtt(teacherId, name, status){
   openModal(`
     <h3>تسجيل دوام: ${esc(name)}</h3>
-    <div class="form-group"><label>الحالة</label>
-      <select id="taStatus">
-        <option value="present" ${status==='present'?'selected':''}>حاضر</option>
-        <option value="late" ${status==='late'?'selected':''}>متأخر</option>
-        <option value="absent" ${status==='absent'?'selected':''}>غائب</option>
-      </select>
-    </div>
-    <div class="actions">
-      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveTeacherAtt('${teacherId}')">حفظ</button>
-    </div>
+    <div class="form-group"><label>الحالة</label><select id="taStatus"><option value="present" ${status==='present'?'selected':''}>حاضر</option><option value="late" ${status==='late'?'selected':''}>متأخر</option><option value="absent" ${status==='absent'?'selected':''}>غائب</option></select></div>
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveTeacherAtt('${teacherId}')">حفظ</button></div>
   `);
 }
 
 async function saveTeacherAtt(teacherId){
-  const date = today();
   const status = $('taStatus').value;
-  const { error } = await sb.from('teacher_attendance').upsert({
-    teacher_id: teacherId, date, status, recorded_by: currentUser.id
-  }, { onConflict: 'teacher_id,date' });
-  if(error){ toast('فشل: '+error.message,'error'); return; }
-  closeModal(); toast('تم الحفظ','success'); renderTeacherAtt();
+  const { error } = await sb.from('teacher_attendance').upsert({ teacher_id: teacherId, date: today(), status, recorded_by: currentUser.id }, { onConflict: 'teacher_id,date' });
+  if(error){ toast('فشل', 'error'); return; }
+  closeModal(); toast('تم الحفظ', 'success'); renderTeacherAtt();
 }
 
 async function renderStudentAtt(){
   const date = today();
   const { data: students } = await sb.from('students').select('*').order('class_name').order('full_name');
-  const filteredData = filterByScope(students);
-  
+  const filteredData = filterStudentDataByRole(students);
   const { data: att } = await sb.from('student_attendance').select('*').eq('date', date);
   const map = {}; (att||[]).forEach(a=> map[a.student_id] = a);
 
   $('mainContent').innerHTML = `
-    <div class="page-head">
-      <div><h2>دوام الطلاب</h2><p>سجل الحضور والغياب الفردي — تاريخ اليوم: ${fmt(date)}</p></div>
-      <div style="display:flex; gap:10px;">
-        <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الطلاب')">📥 تصدير</button>
-        ${currentUser.role !== 'teacher' ? `<button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>` : ''}
-      </div>
-    </div>
+    <div class="page-head"><div><h2>دوام الطلاب</h2><p>${fmt(date)}</p></div><div style="display:flex; gap:10px;"><button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الطلاب')">📥 تصدير</button>${currentUser.role !== 'teacher' ? `<button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>` : ''}</div></div>
     <div class="card">
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
-        <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم..." style="flex-grow:1; max-width:300px; padding:10px; border:1px solid #ccc; border-radius:8px;">
+        <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث..." style="flex-grow:1; max-width:300px; padding:10px; border:1px solid #ccc; border-radius:8px;">
         ${getSectionFilterHTML()}
       </div>
       <table>
@@ -1435,16 +1153,10 @@ async function renderStudentAtt(){
           ${(filteredData||[]).map(s=>{
             const a = map[s.id];
             return `<tr data-class="${esc(s.class_name)}">
-              <td>${esc(s.full_name)}</td>
-              <td><span class="badge badge-info">${esc(s.class_name)}</span></td>
-              <td>${a ? attBadge(a.status) : attBadge('none')}</td>
-              <td style="white-space:nowrap;">
-                <button class="btn btn-sm btn-success" onclick="saveStudentAtt(${s.id}, 'present')">حاضر</button>
-                <button class="btn btn-sm btn-gold" onclick="saveStudentAtt(${s.id}, 'late')">متأخر</button>
-                <button class="btn btn-sm btn-danger" onclick="saveStudentAtt(${s.id}, 'absent')">غائب</button>
-              </td>
+              <td>${esc(s.full_name)}</td><td><span class="badge badge-info">${esc(s.class_name)}</span></td><td>${a ? attBadge(a.status) : attBadge('none')}</td>
+              <td style="white-space:nowrap;"><button class="btn btn-sm btn-success" onclick="saveStudentAtt(${s.id}, 'present')">حاضر</button><button class="btn btn-sm btn-gold" onclick="saveStudentAtt(${s.id}, 'late')">متأخر</button><button class="btn btn-sm btn-danger" onclick="saveStudentAtt(${s.id}, 'absent')">غائب</button></td>
             </tr>`;
-          }).join('') || '<tr><td colspan="4" class="empty">لا يوجد طلاب مسجلين. أضف طلاباً أولاً.</td></tr>'}
+          }).join('') || '<tr><td colspan="4" class="empty">لا يوجد طلاب مسجلين في شعبك</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -1452,47 +1164,24 @@ async function renderStudentAtt(){
 }
 
 async function saveStudentAtt(studentId, status){
-  const date = today();
-  const { error } = await sb.from('student_attendance').upsert({
-    student_id: studentId, 
-    date: date, 
-    status: status, 
-    recorded_by: currentUser.id
-  }, { onConflict: 'student_id,date' });
-  
-  if(error){ toast('فشل الحفظ: '+error.message,'error'); return; }
-  toast('تم التسجيل بنجاح','success'); 
-  renderStudentAtt();
+  const { error } = await sb.from('student_attendance').upsert({ student_id: studentId, date: today(), status, recorded_by: currentUser.id }, { onConflict: 'student_id,date' });
+  if(error){ toast('فشل', 'error'); return; }
+  toast('تم التسجيل', 'success'); renderStudentAtt();
 }
 
 async function renderGrades(){
   const { data } = await sb.from('student_grades').select('*, students(full_name, class_name)').order('date', {ascending:false});
-  const filteredData = filterByScope(data);
+  const filteredData = filterStudentDataByRole(data);
   
   $('mainContent').innerHTML = `
-    <div class="page-head">
-      <div><h2>العلامات والمذاكرات</h2><p>سجل علامات الطلاب وتقديمهم للمذاكرات</p></div>
-      <div style="display:flex; gap:10px;">
-        <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('العلامات')">📥 تصدير</button>
-        <button class="btn btn-primary" onclick="openAddGrade()">➕ إضافة علامة</button>
-      </div>
-    </div>
+    <div class="page-head"><div><h2>العلامات</h2></div><div style="display:flex; gap:10px;"><button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('العلامات')">📥 تصدير</button><button class="btn btn-primary" onclick="openAddGrade()">➕ إضافة علامة</button></div></div>
     <div class="card">
-      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالطالب أو المادة..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
+      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
         <thead><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>المادة</th><th>اسم المذاكرة</th><th>الحالة</th><th>العلامة</th><th>إجراء</th></tr></thead>
         <tbody>
           ${(filteredData||[]).map(g=>`
-            <tr>
-              <td>${fmt(g.date)}</td>
-              <td>${esc(g.students?.full_name || '—')}</td>
-              <td><span class="badge badge-info">${esc(g.students?.class_name || '—')}</span></td>
-              <td>${esc(g.subject)}</td>
-              <td>${esc(g.exam_name)}</td>
-              <td>${g.status === 'submitted' ? '<span class="badge badge-success">تم التقديم</span>' : '<span class="badge badge-danger">لم يقدم</span>'}</td>
-              <td>${g.status === 'submitted' ? `<b style="color:var(--success); font-size:16px;">${esc(g.score)}</b>` : '—'}</td>
-              <td><button class="btn btn-sm btn-danger" onclick="deleteGrade(${g.id})">حذف</button></td>
-            </tr>`).join('') || '<tr><td colspan="8" class="empty">لا توجد علامات مسجلة</td></tr>'}
+            <tr><td>${fmt(g.date)}</td><td>${esc(g.students?.full_name || '—')}</td><td><span class="badge badge-info">${esc(g.students?.class_name || '—')}</span></td><td>${esc(g.subject)}</td><td>${esc(g.exam_name)}</td><td>${g.status === 'submitted' ? '<span class="badge badge-success">تم التقديم</span>' : '<span class="badge badge-danger">لم يقدم</span>'}</td><td>${g.status === 'submitted' ? `<b style="color:var(--success); font-size:16px;">${esc(g.score)}</b>` : '—'}</td><td><button class="btn btn-sm btn-danger" onclick="deleteGrade(${g.id})">حذف</button></td></tr>`).join('') || '<tr><td colspan="8" class="empty">لا توجد علامات</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -1501,72 +1190,32 @@ async function renderGrades(){
 
 async function openAddGrade(){
   const { data: students } = await sb.from('students').select('*').order('class_name').order('full_name');
-  const filteredStudents = filterByScope(students);
-  
-  if(!filteredStudents || filteredStudents.length === 0) { toast('لا يوجد طلاب مسجلين في نطاقك. أضف طلاباً أولاً.', 'error'); return; }
-
+  const filteredStudents = filterStudentDataByRole(students);
+  if(!filteredStudents || filteredStudents.length === 0) { toast('لا يوجد طلاب في شعبك', 'error'); return; }
   openModal(`
-    <h3>إضافة علامة / مذاكرة</h3>
-    <div class="form-group">
-      <label>الطالب</label>
-      <select id="grStudent">
-        ${filteredStudents.map(s => `<option value="${s.id}">${esc(s.full_name)} (${esc(s.class_name)})</option>`).join('')}
-      </select>
-    </div>
-    <div class="grid-2">
-      <div class="form-group"><label>المادة</label><input id="grSubject" placeholder="مثال: رياضيات" /></div>
-      <div class="form-group"><label>اسم المذاكرة</label><input id="grExamName" placeholder="مثال: مذاكرة الوحدة الأولى" /></div>
-    </div>
-    <div class="grid-2">
-      <div class="form-group"><label>التاريخ</label><input type="date" id="grDate" value="${today()}" /></div>
-      <div class="form-group">
-        <label>الحالة</label>
-        <select id="grStatus" onchange="toggleGradeScore()">
-          <option value="submitted">تم التقديم</option>
-          <option value="missing">لم يقدم</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group" id="scoreInputs">
-      <label>العلامة (مثال: 10/10)</label>
-      <input type="text" id="grScore" placeholder="10/10" />
-    </div>
-    <div class="actions">
-      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveGrade()">حفظ</button>
-    </div>
+    <h3>إضافة علامة</h3>
+    <div class="form-group"><label>الطالب</label><select id="grStudent">${filteredStudents.map(s => `<option value="${s.id}">${esc(s.full_name)} (${esc(s.class_name)})</option>`).join('')}</select></div>
+    <div class="grid-2"><div class="form-group"><label>المادة</label><input id="grSubject" /></div><div class="form-group"><label>اسم المذاكرة</label><input id="grExamName" /></div></div>
+    <div class="grid-2"><div class="form-group"><label>التاريخ</label><input type="date" id="grDate" value="${today()}" /></div><div class="form-group"><label>الحالة</label><select id="grStatus" onchange="toggleGradeScore()"><option value="submitted">تم التقديم</option><option value="missing">لم يقدم</option></select></div></div>
+    <div class="form-group" id="scoreInputs"><label>العلامة (10/10)</label><input type="text" id="grScore" /></div>
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveGrade()">حفظ</button></div>
   `);
 }
 
-function toggleGradeScore(){
-  $('scoreInputs').style.display = $('grStatus').value === 'submitted' ? 'block' : 'none';
-}
+function toggleGradeScore(){ $('scoreInputs').style.display = $('grStatus').value === 'submitted' ? 'block' : 'none'; }
 
 async function saveGrade(){
-  const student_id = $('grStudent').value;
-  const subject = $('grSubject').value.trim();
-  const exam_name = $('grExamName').value.trim();
-  const date = $('grDate').value;
-  const status = $('grStatus').value;
-  const score = status === 'submitted' ? $('grScore').value.trim() : '0';
-
-  if(!subject || !exam_name){ toast('يرجى ملء اسم المادة واسم المذاكرة', 'error'); return; }
-  if(status === 'submitted' && !score) { toast('يرجى كتابة العلامة', 'error'); return; }
-
-  const { error } = await sb.from('student_grades').insert({
-    student_id, subject, exam_name, date, status, score, recorded_by: currentUser.id
-  });
-
-  if(error){ toast('فشل الحفظ: '+error.message, 'error'); return; }
-  closeModal(); 
-  toast('تم حفظ العلامة بنجاح', 'success'); 
-  renderGrades();
+  const student_id = $('grStudent').value, subject = $('grSubject').value.trim(), exam_name = $('grExamName').value.trim();
+  const date = $('grDate').value, status = $('grStatus').value, score = status === 'submitted' ? $('grScore').value.trim() : '0';
+  if(!subject || !exam_name || (status === 'submitted' && !score)){ toast('املأ الحقول', 'error'); return; }
+  const { error } = await sb.from('student_grades').insert({ student_id, subject, exam_name, date, status, score, recorded_by: currentUser.id });
+  if(error){ toast('فشل', 'error'); return; }
+  closeModal(); toast('تم الحفظ', 'success'); renderGrades();
 }
 
 async function deleteGrade(id){
-  if(!confirm('تأكيد حذف هذه العلامة؟')) return;
-  const { error } = await sb.from('student_grades').delete().eq('id', id);
-  if(error){ toast('فشل الحذف: '+error.message, 'error'); return; }
+  if(!confirm('تأكيد الحذف؟')) return;
+  await sb.from('student_grades').delete().eq('id', id);
   toast('تم الحذف', 'success'); renderGrades();
 }
 
@@ -1579,22 +1228,20 @@ async function renderPlans(){
     (profs||[]).forEach(p=> names[p.id]=p.full_name);
   }
 
+  let filteredPlans = data || [];
+  if (currentUser.role === 'supervisor' && currentUser.assigned_teachers && currentUser.assigned_teachers.length > 0) {
+    filteredPlans = filteredPlans.filter(p => currentUser.assigned_teachers.includes(p.teacher_id));
+  }
+
   $('mainContent').innerHTML = `
-    <div class="page-head">
-      <div><h2>دفاتر التحضير</h2><p>مراجعة واعتماد دفاتر الأساتذة</p></div>
-      <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دفاتر_التحضير')">📥 تصدير</button>
-    </div>
+    <div class="page-head"><div><h2>دفاتر التحضير</h2></div><button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دفاتر_التحضير')">📥 تصدير</button></div>
     <div class="card">
-      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث باسم الأستاذ..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
+      <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
         <thead><tr><th>الأستاذ</th><th>التاريخ</th><th>الحالة</th><th>الملاحظات</th><th>إجراءات</th></tr></thead>
         <tbody>
-          ${(data||[]).map(d=>`
-            <tr>
-              <td>${esc(names[d.teacher_id]||'—')}</td>
-              <td>${fmt(d.plan_date)}</td>
-              <td>${statusBadge(d.status)}</td>
-              <td style="font-size:13px; color:#555;">${esc(d.supervisor_notes || d.admin_notes || '—')}</td>
+          ${(filteredPlans||[]).map(d=>`
+            <tr><td>${esc(names[d.teacher_id]||'—')}</td><td>${fmt(d.plan_date)}</td><td>${statusBadge(d.status)}</td><td style="font-size:13px; color:#555;">${esc(d.supervisor_notes || d.admin_notes || '—')}</td>
               <td style="white-space:nowrap;">
                 <button class="btn btn-sm btn-gold" onclick="openPlanReview(${d.id})">مراجعة</button>
                 ${(currentUser.role === 'admin' || currentUser.role === 'supervisor') ? `<button class="btn btn-sm btn-danger" onclick="deletePlan(${d.id}, '${esc(d.file_url)}')">حذف</button>` : ''}
@@ -1607,95 +1254,44 @@ async function renderPlans(){
 }
 
 async function deletePlan(id, fileUrl) {
-  if(!confirm('هل أنت متأكد من حذف هذا الدفتر نهائياً؟ (سيتم توفير مساحة)')) return;
-  
-  const { error: storageErr } = await sb.storage.from(BUCKET_NAME).remove([fileUrl]);
-  if(storageErr) { toast('فشل حذف الملف من التخزين: ' + storageErr.message, 'error'); return; }
-
-  const { error: dbErr } = await sb.from('lesson_plans').delete().eq('id', id);
-  if(dbErr) { toast('فشل حذف السجل: ' + dbErr.message, 'error'); return; }
-
-  toast('تم حذف الدفتر وتوفير مساحة', 'success');
-  renderPlans();
+  if(!confirm('تأكيد الحذف؟')) return;
+  await sb.storage.from(BUCKET_NAME).remove([fileUrl]);
+  await sb.from('lesson_plans').delete().eq('id', id);
+  toast('تم الحذف', 'success'); renderPlans();
 }
 
 async function openPlanReview(planId){
   const { data } = await sb.from('lesson_plans').select('*').eq('id', planId).single();
-  if(!data){ toast('خطأ في جلب البيانات','error'); return; }
-
-  let signedUrl = null;
+  if(!data){ toast('خطأ', 'error'); return; }
   const { data: su } = await sb.storage.from(BUCKET_NAME).createSignedUrl(data.file_url, 300);
-  if(su) signedUrl = su.signedUrl;
-
+  const signedUrl = su ? su.signedUrl : null;
   const isSupervisor = currentUser.role === 'supervisor';
 
   openModal(`
-    <h3>مراجعة دفتر التحضير</h3>
-    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank" style="margin-bottom:15px; display:inline-block;">📄 عرض الملف</a>` : '<p class="empty" style="margin-bottom:15px;">لا يمكن فتح الملف</p>'}
-    
-    ${data.supervisor_notes && !isSupervisor ? `<p style="font-size:13px; color:#555; margin-bottom:10px; background:#f1f5f9; padding:8px; border-radius:5px;"><b>ملاحظات الموجّه:</b> ${esc(data.supervisor_notes)}</p>` : ''}
-    ${data.admin_notes && isSupervisor ? `<p style="font-size:13px; color:#555; margin-bottom:10px; background:#f1f5f9; padding:8px; border-radius:5px;"><b>ملاحظات المدير:</b> ${esc(data.admin_notes)}</p>` : ''}
-
-    <div class="form-group">
-      <label>القرار</label>
-      <select id="prStatus">
-        <option value="pending" ${data.status==='pending'?'selected':''}>قيد المراجعة</option>
-        <option value="approved" ${data.status==='approved'?'selected':''}>مقبول (معتمد)</option>
-        <option value="rejected" ${data.status==='rejected'?'selected':''}>مرفوض</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>إضافة ملاحظاتك</label>
-      <textarea id="prNotes" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea>
-    </div>
-
-    <div class="actions">
-      <button class="btn" style="background:#e2e8f0; color:#333; font-weight:bold;" onclick="closeModal()">إغلاق</button>
-      <button class="btn btn-primary" onclick="savePlanReview(${planId}, ${isSupervisor})">حفظ القرار</button>
-    </div>
+    <h3>مراجعة دفتر</h3>
+    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank" style="margin-bottom:15px; display:inline-block;">📄 عرض</a>` : ''}
+    <div class="form-group"><label>القرار</label><select id="prStatus"><option value="pending" ${data.status==='pending'?'selected':''}>قيد المراجعة</option><option value="approved" ${data.status==='approved'?'selected':''}>مقبول</option><option value="rejected" ${data.status==='rejected'?'selected':''}>مرفوض</option></select></div>
+    <div class="form-group"><label>ملاحظاتك</label><textarea id="prNotes" rows="3"></textarea></div>
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="savePlanReview(${planId}, ${isSupervisor})">حفظ</button></div>
   `);
 }
 
 async function savePlanReview(planId, isSupervisor){
-  const status = $('prStatus').value;
-  const notes = $('prNotes').value.trim();
-  
+  const status = $('prStatus').value, notes = $('prNotes').value.trim();
   const updates = { status: status };
-  
-  if(isSupervisor) {
-    updates.supervisor_notes = notes;
-  } else {
-    updates.admin_notes = notes;
-  }
-
-  const { error } = await sb.from('lesson_plans').update(updates).eq('id', planId);
-  if(error){ toast('فشل الحفظ: '+error.message,'error'); return; }
-  
-  closeModal(); 
-  toast('تم حفظ المراجعة بنجاح','success'); 
-  renderPlans();
+  if(isSupervisor) { updates.supervisor_notes = notes; } else { updates.admin_notes = notes; }
+  await sb.from('lesson_plans').update(updates).eq('id', planId);
+  closeModal(); toast('تم الحفظ', 'success'); renderPlans();
 }
 
 async function renderMyPlans(){
   const { data } = await sb.from('lesson_plans').select('*').eq('teacher_id', currentUser.id).order('created_at',{ascending:false});
   $('mainContent').innerHTML = `
-    <div class="page-head">
-      <div><h2>دفتر التحضير</h2></div>
-      <button class="btn btn-primary" onclick="openUploadPlan()">➕ رفع دفتر</button>
-    </div>
+    <div class="page-head"><div><h2>دفتر التحضير</h2></div><button class="btn btn-primary" onclick="openUploadPlan()">➕ رفع</button></div>
     <div class="card">
-      <table>
-        <thead><tr><th>التاريخ</th><th>الحالة</th><th>الملف</th></tr></thead>
-        <tbody>
-          ${(data||[]).map(d=>`
-            <tr>
-              <td>${fmt(d.plan_date)}</td>
-              <td>${statusBadge(d.status)}</td>
-              <td><button class="btn btn-sm btn-primary" onclick="openMyPlanFile('${esc(d.file_url)}')">عرض</button></td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
+      <table><thead><tr><th>التاريخ</th><th>الحالة</th><th>الملف</th></tr></thead><tbody>
+        ${(data||[]).map(d=>`<tr><td>${fmt(d.plan_date)}</td><td>${statusBadge(d.status)}</td><td><button class="btn btn-sm btn-primary" onclick="openMyPlanFile('${esc(d.file_url)}')">عرض</button></td></tr>`).join('')}
+      </tbody></table>
     </div>
   `;
 }
@@ -1704,42 +1300,19 @@ function openUploadPlan(){
   openModal(`
     <h3>رفع دفتر</h3>
     <div class="form-group"><label>التاريخ</label><input type="date" id="upDate" value="${today()}" /></div>
-    <div class="form-group">
-      <label>الملف (PDF أو صورة)</label>
-      <input type="file" id="upFile" accept="application/pdf, image/*" />
-    </div>
-    <div class="actions">
-      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" onclick="uploadPlan()">رفع</button>
-    </div>
+    <div class="form-group"><label>الملف (PDF أو صورة)</label><input type="file" id="upFile" accept="application/pdf, image/*" /></div>
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="uploadPlan()">رفع</button></div>
   `);
 }
 
 async function uploadPlan(){
-  const date = $('upDate').value;
-  const file = $('upFile').files[0];
-  if(!file) return;
-
-  const isPdf = file.type === 'application/pdf';
-  const isImage = file.type.startsWith('image/');
-  if (!isPdf && !isImage) {
-    toast('يجب أن يكون الملف PDF أو صورة (JPG, PNG)', 'error'); 
-    return;
-  }
-
-  if (file.size > 2 * 1024 * 1024) {
-    toast('حجم الملف كبير جداً! يجب أن يكون أقل من 2 ميجابايت.', 'error');
-    return;
-  }
-
-  const fileExt = file.name.split('.').pop();
-  const path = `${currentUser.id}/${date}_${Date.now()}.${fileExt}`;
-  
+  const date = $('upDate').value, file = $('upFile').files[0]; if(!file) return;
+  if (file.size > 2 * 1024 * 1024) { toast('أقل من 2MB', 'error'); return; }
+  const fileExt = file.name.split('.').pop(), path = `${currentUser.id}/${date}_${Date.now()}.${fileExt}`;
   const { error: upErr } = await sb.storage.from(BUCKET_NAME).upload(path, file);
-  if(upErr){ toast('فشل الرفع: '+upErr.message,'error'); return; }
-
+  if(upErr){ toast('فشل الرفع', 'error'); return; }
   await sb.from('lesson_plans').insert({ teacher_id: currentUser.id, plan_date: date, file_url: path });
-  closeModal(); toast('تم الرفع','success'); renderMyPlans();
+  closeModal(); toast('تم الرفع', 'success'); renderMyPlans();
 }
 
 async function openMyPlanFile(path){
@@ -1748,42 +1321,23 @@ async function openMyPlanFile(path){
 }
 
 async function renderReports(){
-  const currentMonth = new Date().toISOString().slice(0, 7); 
-  
-  const { data: tAtt } = await sb.from('teacher_attendance').select('*').gte('date', currentMonth + '-01');
-  const { data: sAtt } = await sb.from('student_attendance').select('*').gte('date', currentMonth + '-01');
-
-  let tPresent = 0, tAbsent = 0, tLate = 0;
-  (tAtt||[]).forEach(a => {
-    if(a.status === 'present') tPresent++;
-    else if(a.status === 'absent') tAbsent++;
-    else if(a.status === 'late') tLate++;
-  });
-
-  let sPresent = 0, sAbsent = 0, sLate = 0;
-  (sAtt||[]).forEach(a => {
-    if(a.status === 'present') sPresent++;
-    else if(a.status === 'absent') sAbsent++;
-    else if(a.status === 'late') sLate++;
-  });
+  const month = new Date().toISOString().slice(0, 7); 
+  const { data: tAtt } = await sb.from('teacher_attendance').select('*').gte('date', month + '-01');
+  const { data: sAtt } = await sb.from('student_attendance').select('*').gte('date', month + '-01');
+  let tP=0, tA=0, tL=0; (tAtt||[]).forEach(a => { if(a.status === 'present') tP++; else if(a.status === 'absent') tA++; else if(a.status === 'late') tL++; });
+  let sP=0, sA=0, sL=0; (sAtt||[]).forEach(a => { if(a.status === 'present') sP++; else if(a.status === 'absent') sA++; else if(a.status === 'late') sL++; });
 
   $('mainContent').innerHTML = `
-    <div class="page-head"><div><h2>التقارير الشهرية</h2><p>إحصائيات الشهر الحالي (${currentMonth})</p></div></div>
-    
-    <h3 style="color:var(--primary); margin-bottom:15px;">👨‍🏫 دوام الأساتذة</h3>
-    <div class="grid-3" style="margin-bottom:30px;">
-      <div class="stat"><div class="num" style="color:var(--success)">${tPresent}</div><div class="lbl">حاضر</div></div>
-      <div class="stat"><div class="num" style="color:var(--warn)">${tLate}</div><div class="lbl">متأخر</div></div>
-      <div class="stat"><div class="num" style="color:var(--danger)">${tAbsent}</div><div class="lbl">غائب</div></div>
-    </div>
-
-    <h3 style="color:var(--primary); margin-bottom:15px;">🎒 دوام الطلاب (فردي)</h3>
-    <div class="grid-3">
-      <div class="stat" style="border-right-color:var(--success)"><div class="num" style="color:var(--success)">${sPresent}</div><div class="lbl">حاضر</div></div>
-      <div class="stat" style="border-right-color:var(--warn)"><div class="num" style="color:var(--warn)">${sLate}</div><div class="lbl">متأخر</div></div>
-      <div class="stat" style="border-right-color:var(--danger)"><div class="num" style="color:var(--danger)">${sAbsent}</div><div class="lbl">غائب</div></div>
-    </div>
+    <div class="page-head"><div><h2>التقارير الشهرية</h2><p>${month}</p></div></div>
+    <h3 style="color:var(--primary); margin-bottom:15px;">👨‍🏫 الأساتذة</h3>
+    <div class="grid-3" style="margin-bottom:30px;"><div class="stat"><div class="num" style="color:var(--success)">${tP}</div><div class="lbl">حاضر</div></div><div class="stat"><div class="num" style="color:var(--warn)">${tL}</div><div class="lbl">متأخر</div></div><div class="stat"><div class="num" style="color:var(--danger)">${tA}</div><div class="lbl">غائب</div></div></div>
+    <h3 style="color:var(--primary); margin-bottom:15px;">🎒 الطلاب</h3>
+    <div class="grid-3"><div class="stat" style="border-right-color:var(--success)"><div class="num" style="color:var(--success)">${sP}</div><div class="lbl">حاضر</div></div><div class="stat" style="border-right-color:var(--warn)"><div class="num" style="color:var(--warn)">${sL}</div><div class="lbl">متأخر</div></div><div class="stat" style="border-right-color:var(--danger)"><div class="num" style="color:var(--danger)">${sA}</div><div class="lbl">غائب</div></div></div>
   `;
+}
+
+function getSectionFilterHTML() {
+  return `<select id="sectionFilter" onchange="filterTable()" style="padding:10px; border:1px solid #ccc; border-radius:8px; flex-grow:1; max-width:250px;"><option value="">جميع الشعب</option>${SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('')}</select>`;
 }
 </script>
 </body>
