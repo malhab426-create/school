@@ -155,7 +155,7 @@ table tr:hover td{background:#fafbfd;}
 
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;}
 .modal-overlay.show{display:flex;}
-.modal{background:#fff;border-radius:14px;padding:28px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal{background:#fff;border-radius:14px;padding:28px;max-width:750px;width:100%;max-height:90vh;overflow-y:auto;}
 .modal h3{color:var(--primary);margin-bottom:20px;font-size: 22px; border-bottom: 2px solid #eee; padding-bottom: 10px;}
 .modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--primary);color:#fff;padding:12px 22px;border-radius:10px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:.3s;z-index:3000;opacity:0;}
@@ -165,10 +165,13 @@ table tr:hover td{background:#fafbfd;}
 
 .chart-container { position: relative; height: 250px; width: 100%; }
 
-/* Custom Checkbox Grid */
 .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; max-height: 250px; overflow-y: auto; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; }
 .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
 .checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
+
+.view-field { margin-bottom: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
+.view-field label { display: block; font-size: 12px; color: var(--muted); font-weight: bold; margin-bottom: 5px; }
+.view-field p { font-size: 15px; color: #1a1a1a; white-space: pre-wrap; line-height: 1.6; }
 
 @media print {
   body * { visibility: hidden; }
@@ -199,6 +202,7 @@ table tr:hover td{background:#fafbfd;}
   .main {padding:20px 15px; overflow-y: visible; min-height: auto;}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}
   .page-head { flex-direction: column; align-items: flex-start; }
+  .modal { max-width: 95%; padding: 20px; }
 }
 </style>
 </head>
@@ -442,16 +446,13 @@ function attBadge(s){
   return '<span class="badge badge-info">لم يُسجل</span>';
 }
 
-// دالة الفلترة للطلاب (حسب الأستاذ أو نطاق الموجه)
 function filterStudentDataByRole(data) {
   if (!data) return [];
   if (currentUser.role === 'admin') return data;
-
   if (currentUser.role === 'teacher') {
     if (!currentUser.assigned_classes || currentUser.assigned_classes.length === 0) return []; 
     return data.filter(item => currentUser.assigned_classes.includes(item.class_name || (item.students && item.students.class_name)));
   }
-
   if (currentUser.role === 'supervisor') {
     const scope = currentUser.scope || 'all';
     if (scope === 'all') return data;
@@ -467,7 +468,6 @@ function filterStudentDataByRole(data) {
   return data;
 }
 
-// دالة الفلترة للأساتذة (حسب تخصيص الموجه)
 function filterTeacherDataByRole(data) {
   if (!data) return [];
   if (currentUser.role !== 'supervisor') return data;
@@ -738,7 +738,6 @@ async function saveSettings(){
   toast('تم حفظ الإعدادات', 'success');
 }
 
-/* ========== USERS MANAGEMENT ========== */
 async function renderUsers(){
   const { data } = await sb.from('profiles').select('*').order('created_at',{ascending:false});
   $('mainContent').innerHTML = `
@@ -831,26 +830,15 @@ async function createUser(){
   closeModal(); toast('تم إنشاء الحساب','success'); renderUsers();
 }
 
-/* ========== EDIT USER ========== */
 async function openEditUser(id) {
   const { data: user, error } = await sb.from('profiles').select('*').eq('id', id).single();
   if(error || !user) { toast('خطأ في جلب البيانات', 'error'); return; }
-  
   const { data: allTeachers } = await sb.from('profiles').select('id, full_name').eq('role', 'teacher').order('full_name');
   const userClasses = user.assigned_classes || [];
   const userTeachers = user.assigned_teachers || [];
 
-  let classesHtml = SECTIONS_LIST.map(c => `
-    <label class="checkbox-item">
-      <input type="checkbox" name="edit_classes" value="${c}" ${userClasses.includes(c) ? 'checked' : ''}> ${c}
-    </label>
-  `).join('');
-
-  let teachersHtml = (allTeachers||[]).map(t => `
-    <label class="checkbox-item">
-      <input type="checkbox" name="edit_teachers" value="${t.id}" ${userTeachers.includes(t.id) ? 'checked' : ''}> ${esc(t.full_name)}
-    </label>
-  `).join('');
+  let classesHtml = SECTIONS_LIST.map(c => `<label class="checkbox-item"><input type="checkbox" name="edit_classes" value="${c}" ${userClasses.includes(c) ? 'checked' : ''}> ${c}</label>`).join('');
+  let teachersHtml = (allTeachers||[]).map(t => `<label class="checkbox-item"><input type="checkbox" name="edit_teachers" value="${t.id}" ${userTeachers.includes(t.id) ? 'checked' : ''}> ${esc(t.full_name)}</label>`).join('');
 
   openModal(`
     <h3>تعديل حساب: ${esc(user.full_name)}</h3>
@@ -863,31 +851,14 @@ async function openEditUser(id) {
         <option value="admin" ${user.role==='admin'?'selected':''}>مدير</option>
       </select>
     </div>
-
-    <!-- حقول الأستاذ -->
     <div id="editTeacherFields" style="display: ${user.role === 'teacher' ? 'block' : 'none'};">
-      <div class="form-group">
-        <label style="color:var(--primary)">الشعب المخصصة له (يتم فلترة الطلاب حسبها):</label>
-        <div class="checkbox-grid">${classesHtml}</div>
-      </div>
+      <div class="form-group"><label style="color:var(--primary)">الشعب المخصصة له:</label><div class="checkbox-grid">${classesHtml}</div></div>
     </div>
-
-    <!-- حقول الموجه -->
     <div id="editSupervisorFields" style="display: ${user.role === 'supervisor' ? 'block' : 'none'};">
-      <div class="form-group">
-        <label>نوع الإشراف</label>
-        <select id="edDept"><option value="all" ${user.department==='all'?'selected':''}>الكل</option><option value="teachers" ${user.department==='teachers'?'selected':''}>الأساتذة فقط</option><option value="students" ${user.department==='students'?'selected':''}>الطلاب فقط</option></select>
-      </div>
-      <div class="form-group">
-        <label>نطاق الصفوف (للطلاب)</label>
-        <select id="edScope"><option value="all" ${user.scope==='all'?'selected':''}>جميع الصفوف</option><option value="1-4" ${user.scope==='1-4'?'selected':''}>من الأول للرابع</option><option value="5-9" ${user.scope==='5-9'?'selected':''}>من الخامس للتاسع</option></select>
-      </div>
-      <div class="form-group">
-        <label style="color:var(--primary)">الأساتذة المشمولين بإشرافه:</label>
-        <div class="checkbox-grid">${teachersHtml}</div>
-      </div>
+      <div class="form-group"><label>نوع الإشراف</label><select id="edDept"><option value="all" ${user.department==='all'?'selected':''}>الكل</option><option value="teachers" ${user.department==='teachers'?'selected':''}>الأساتذة فقط</option><option value="students" ${user.department==='students'?'selected':''}>الطلاب فقط</option></select></div>
+      <div class="form-group"><label>نطاق الصفوف</label><select id="edScope"><option value="all" ${user.scope==='all'?'selected':''}>جميع الصفوف</option><option value="1-4" ${user.scope==='1-4'?'selected':''}>من الأول للرابع</option><option value="5-9" ${user.scope==='5-9'?'selected':''}>من الخامس للتاسع</option></select></div>
+      <div class="form-group"><label style="color:var(--primary)">الأساتذة المشمولين بإشرافه:</label><div class="checkbox-grid">${teachersHtml}</div></div>
     </div>
-
     <div class="actions">
       <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
       <button class="btn btn-primary" onclick="saveEditUser('${user.id}')">حفظ التعديلات</button>
@@ -902,29 +873,18 @@ function toggleEditRoleFields() {
 }
 
 async function saveEditUser(id) {
-  const name = $('edName').value.trim();
-  const role = $('edRole').value;
-  
+  const name = $('edName').value.trim(), role = $('edRole').value;
   if(!name) { toast('الاسم مطلوب', 'error'); return; }
-
-  let department = null, scope = 'all';
-  let assigned_classes = [];
-  let assigned_teachers = [];
-
-  if (role === 'teacher') {
-    assigned_classes = Array.from(document.querySelectorAll('input[name="edit_classes"]:checked')).map(cb => cb.value);
-  } else if (role === 'supervisor') {
-    department = $('edDept').value;
-    scope = $('edScope').value;
+  let department = null, scope = 'all', assigned_classes = [], assigned_teachers = [];
+  if (role === 'teacher') { assigned_classes = Array.from(document.querySelectorAll('input[name="edit_classes"]:checked')).map(cb => cb.value); } 
+  else if (role === 'supervisor') {
+    department = $('edDept').value; scope = $('edScope').value;
     assigned_teachers = Array.from(document.querySelectorAll('input[name="edit_teachers"]:checked')).map(cb => cb.value);
   }
-
   const updates = { full_name: name, role, department, scope, assigned_classes, assigned_teachers };
-
   const { error } = await sb.from('profiles').update(updates).eq('id', id);
   if (error) { toast('فشل الحفظ: ' + error.message, 'error'); return; }
-
-  closeModal(); toast('تم تعديل الحساب بنجاح', 'success'); renderUsers();
+  closeModal(); toast('تم تعديل الحساب', 'success'); renderUsers();
 }
 
 async function deleteUser(id){
@@ -935,14 +895,7 @@ async function deleteUser(id){
 }
 
 function openUploadAvatar(userId, name) {
-  openModal(`
-    <h3>رفع صورة لـ ${esc(name)}</h3>
-    <div class="form-group"><label>اختر صورة</label><input type="file" id="avatarFile" accept="image/*" /></div>
-    <div class="actions">
-      <button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" id="upAvatarBtn" onclick="uploadAvatar('${userId}')">رفع</button>
-    </div>
-  `);
+  openModal(`<h3>رفع صورة لـ ${esc(name)}</h3><div class="form-group"><input type="file" id="avatarFile" accept="image/*" /></div><div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" id="upAvatarBtn" onclick="uploadAvatar('${userId}')">رفع</button></div>`);
 }
 
 async function uploadAvatar(userId) {
@@ -1007,11 +960,7 @@ async function renderStudents(){
 }
 
 function openExcelUpload() {
-  openModal(`
-    <h3>رفع ملف إكسل</h3>
-    <div class="form-group"><input type="file" id="excelFile" accept=".xlsx, .xls, .csv" style="padding:10px; border:1px dashed #ccc;" /></div>
-    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-success" id="excelBtn" onclick="processExcel()">رفع</button></div>
-  `);
+  openModal(`<h3>رفع ملف إكسل</h3><div class="form-group"><input type="file" id="excelFile" accept=".xlsx, .xls, .csv" style="padding:10px; border:1px dashed #ccc;" /></div><div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-success" id="excelBtn" onclick="processExcel()">رفع</button></div>`);
 }
 
 function processExcel() {
@@ -1025,9 +974,7 @@ function processExcel() {
     let studentsToInsert = [];
     for (let i = 1; i < json.length; i++) {
       const row = json[i];
-      if (row[0] && row[1]) {
-        studentsToInsert.push({ full_name: row[0].toString().trim(), class_name: row[2] ? `${row[1].toString().trim()} - ${row[2].toString().trim()}` : row[1].toString().trim() });
-      }
+      if (row[0] && row[1]) { studentsToInsert.push({ full_name: row[0].toString().trim(), class_name: row[2] ? `${row[1].toString().trim()} - ${row[2].toString().trim()}` : row[1].toString().trim() }); }
     }
     if (studentsToInsert.length === 0) { toast('لا توجد بيانات', 'error'); btn.disabled = false; btn.textContent = 'رفع'; return; }
     const { error } = await sb.from('students').insert(studentsToInsert);
@@ -1219,6 +1166,7 @@ async function deleteGrade(id){
   toast('تم الحذف', 'success'); renderGrades();
 }
 
+/* ========== LESSON PLANS (Forms) ========== */
 async function renderPlans(){
   const { data } = await sb.from('lesson_plans').select('*').order('created_at',{ascending:false});
   const ids = [...new Set((data||[]).map(d=>d.teacher_id))];
@@ -1234,90 +1182,200 @@ async function renderPlans(){
   }
 
   $('mainContent').innerHTML = `
-    <div class="page-head"><div><h2>دفاتر التحضير</h2></div><button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دفاتر_التحضير')">📥 تصدير</button></div>
+    <div class="page-head"><div><h2>دفاتر التحضير</h2><p>مراجعة النماذج المقدمة من الأساتذة</p></div><button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دفاتر_التحضير')">📥 تصدير</button></div>
     <div class="card">
       <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث..." style="width:100%; max-width:300px; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px;">
       <table>
-        <thead><tr><th>الأستاذ</th><th>التاريخ</th><th>الحالة</th><th>الملاحظات</th><th>إجراءات</th></tr></thead>
+        <thead><tr><th>الأستاذ</th><th>التاريخ</th><th>المادة</th><th>عنوان الدرس</th><th>الحالة</th><th>إجراءات</th></tr></thead>
         <tbody>
           ${(filteredPlans||[]).map(d=>`
-            <tr><td>${esc(names[d.teacher_id]||'—')}</td><td>${fmt(d.plan_date)}</td><td>${statusBadge(d.status)}</td><td style="font-size:13px; color:#555;">${esc(d.supervisor_notes || d.admin_notes || '—')}</td>
+            <tr>
+              <td>${esc(names[d.teacher_id]||'—')}</td>
+              <td>${fmt(d.plan_date)}</td>
+              <td>${esc(d.subject || '—')}</td>
+              <td>${esc(d.lesson_title || '—')}</td>
+              <td>${statusBadge(d.status)}</td>
               <td style="white-space:nowrap;">
                 <button class="btn btn-sm btn-gold" onclick="openPlanReview(${d.id})">مراجعة</button>
-                ${(currentUser.role === 'admin' || currentUser.role === 'supervisor') ? `<button class="btn btn-sm btn-danger" onclick="deletePlan(${d.id}, '${esc(d.file_url)}')">حذف</button>` : ''}
+                ${(currentUser.role === 'admin' || currentUser.role === 'supervisor') ? `<button class="btn btn-sm btn-danger" onclick="deletePlan(${d.id})">حذف</button>` : ''}
               </td>
-            </tr>`).join('') || '<tr><td colspan="5" class="empty">لا توجد دفاتر</td></tr>'}
+            </tr>`).join('') || '<tr><td colspan="6" class="empty">لا توجد دفاتر</td></tr>'}
         </tbody>
       </table>
     </div>
   `;
 }
 
-async function deletePlan(id, fileUrl) {
-  if(!confirm('تأكيد الحذف؟')) return;
-  await sb.storage.from(BUCKET_NAME).remove([fileUrl]);
-  await sb.from('lesson_plans').delete().eq('id', id);
-  toast('تم الحذف', 'success'); renderPlans();
+async function deletePlan(id) {
+  if(!confirm('هل أنت متأكد من حذف هذا الدفتر نهائياً؟')) return;
+  const { error } = await sb.from('lesson_plans').delete().eq('id', id);
+  if(error) { toast('فشل حذف السجل: ' + error.message, 'error'); return; }
+  toast('تم حذف الدفتر', 'success');
+  renderPlans();
 }
 
 async function openPlanReview(planId){
   const { data } = await sb.from('lesson_plans').select('*').eq('id', planId).single();
-  if(!data){ toast('خطأ', 'error'); return; }
-  const { data: su } = await sb.storage.from(BUCKET_NAME).createSignedUrl(data.file_url, 300);
-  const signedUrl = su ? su.signedUrl : null;
+  if(!data){ toast('خطأ في جلب البيانات','error'); return; }
   const isSupervisor = currentUser.role === 'supervisor';
 
   openModal(`
-    <h3>مراجعة دفتر</h3>
-    ${signedUrl ? `<a class="btn btn-primary btn-sm" href="${signedUrl}" target="_blank" style="margin-bottom:15px; display:inline-block;">📄 عرض</a>` : ''}
-    <div class="form-group"><label>القرار</label><select id="prStatus"><option value="pending" ${data.status==='pending'?'selected':''}>قيد المراجعة</option><option value="approved" ${data.status==='approved'?'selected':''}>مقبول</option><option value="rejected" ${data.status==='rejected'?'selected':''}>مرفوض</option></select></div>
-    <div class="form-group"><label>ملاحظاتك</label><textarea id="prNotes" rows="3"></textarea></div>
-    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="savePlanReview(${planId}, ${isSupervisor})">حفظ</button></div>
+    <h3>مراجعة دفتر التحضير</h3>
+    
+    <div class="grid-2">
+      <div class="view-field"><label>المادة</label><p>${esc(data.subject || '—')}</p></div>
+      <div class="view-field"><label>الوحدة</label><p>${esc(data.unit || '—')}</p></div>
+    </div>
+    <div class="view-field"><label>عنوان الدرس</label><p>${esc(data.lesson_title || '—')}</p></div>
+    <div class="grid-3">
+      <div class="view-field"><label>الصف</label><p>${esc(data.grade || '—')}</p></div>
+      <div class="view-field"><label>الشعبة</label><p>${esc(data.section || '—')}</p></div>
+      <div class="view-field"><label>تاريخ الحصة</label><p>${fmt(data.plan_date)}</p></div>
+    </div>
+    <div class="view-field"><label>طريقة الإعطاء</label><p>${esc(data.teaching_method || '—')}</p></div>
+    <div class="view-field"><label>أهداف الدرس</label><p>${esc(data.objectives || '—')}</p></div>
+    <div class="view-field"><label>سير الدرس</label><p>${esc(data.activities || '—')}</p></div>
+    <div class="view-field"><label>قفل الدرس (الخاتمة)</label><p>${esc(data.lesson_closure || '—')}</p></div>
+    <div class="view-field"><label>وسائل مستخدمة</label><p>${esc(data.materials_used || '—')}</p></div>
+    <div class="view-field"><label>ملاحظات الأستاذ</label><p>${esc(data.teacher_notes || '—')}</p></div>
+
+    ${data.supervisor_notes && !isSupervisor ? `<p style="font-size:13px; color:#555; margin-bottom:10px; background:#f1f5f9; padding:8px; border-radius:5px;"><b>ملاحظات الموجّه السابقة:</b> ${esc(data.supervisor_notes)}</p>` : ''}
+    ${data.admin_notes && isSupervisor ? `<p style="font-size:13px; color:#555; margin-bottom:10px; background:#f1f5f9; padding:8px; border-radius:5px;"><b>ملاحظات المدير السابقة:</b> ${esc(data.admin_notes)}</p>` : ''}
+
+    <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+    
+    <div class="form-group">
+      <label>القرار</label>
+      <select id="prStatus">
+        <option value="pending" ${data.status==='pending'?'selected':''}>قيد المراجعة</option>
+        <option value="approved" ${data.status==='approved'?'selected':''}>مقبول (معتمد)</option>
+        <option value="rejected" ${data.status==='rejected'?'selected':''}>مرفوض</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>إضافة ملاحظاتك للدفتر</label>
+      <textarea id="prNotes" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="btn" style="background:#e2e8f0; color:#333; font-weight:bold;" onclick="closeModal()">إغلاق</button>
+      <button class="btn btn-primary" onclick="savePlanReview(${planId}, ${isSupervisor})">حفظ القرار</button>
+    </div>
   `);
 }
 
 async function savePlanReview(planId, isSupervisor){
-  const status = $('prStatus').value, notes = $('prNotes').value.trim();
+  const status = $('prStatus').value;
+  const notes = $('prNotes').value.trim();
   const updates = { status: status };
   if(isSupervisor) { updates.supervisor_notes = notes; } else { updates.admin_notes = notes; }
-  await sb.from('lesson_plans').update(updates).eq('id', planId);
-  closeModal(); toast('تم الحفظ', 'success'); renderPlans();
+  const { error } = await sb.from('lesson_plans').update(updates).eq('id', planId);
+  if(error){ toast('فشل الحفظ: '+error.message,'error'); return; }
+  closeModal(); toast('تم حفظ المراجعة بنجاح','success'); renderPlans();
 }
 
+/* ========== MY PLANS (Teacher Form) ========== */
 async function renderMyPlans(){
   const { data } = await sb.from('lesson_plans').select('*').eq('teacher_id', currentUser.id).order('created_at',{ascending:false});
   $('mainContent').innerHTML = `
-    <div class="page-head"><div><h2>دفتر التحضير</h2></div><button class="btn btn-primary" onclick="openUploadPlan()">➕ رفع</button></div>
+    <div class="page-head"><div><h2>دفتر التحضير</h2><p>سجل تحضيراتك اليومية</p></div><button class="btn btn-primary" onclick="openAddPlan()">➕ إضافة تحضير</button></div>
     <div class="card">
-      <table><thead><tr><th>التاريخ</th><th>الحالة</th><th>الملف</th></tr></thead><tbody>
-        ${(data||[]).map(d=>`<tr><td>${fmt(d.plan_date)}</td><td>${statusBadge(d.status)}</td><td><button class="btn btn-sm btn-primary" onclick="openMyPlanFile('${esc(d.file_url)}')">عرض</button></td></tr>`).join('')}
+      <table><thead><tr><th>التاريخ</th><th>المادة</th><th>عنوان الدرس</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody>
+        ${(data||[]).map(d=>`<tr><td>${fmt(d.plan_date)}</td><td>${esc(d.subject || '—')}</td><td>${esc(d.lesson_title || '—')}</td><td>${statusBadge(d.status)}</td><td><button class="btn btn-sm btn-primary" onclick="openViewMyPlan(${d.id})">عرض</button></td></tr>`).join('') || '<tr><td colspan="5" class="empty">لم تقم بإضافة أي تحضير بعد</td></tr>'}
       </tbody></table>
     </div>
   `;
 }
 
-function openUploadPlan(){
+function openAddPlan(){
   openModal(`
-    <h3>رفع دفتر</h3>
-    <div class="form-group"><label>التاريخ</label><input type="date" id="upDate" value="${today()}" /></div>
-    <div class="form-group"><label>الملف (PDF أو صورة)</label><input type="file" id="upFile" accept="application/pdf, image/*" /></div>
-    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="uploadPlan()">رفع</button></div>
+    <h3>إضافة تحضير جديد</h3>
+    <div class="grid-2">
+      <div class="form-group"><label>المادة</label><input id="upSubject" placeholder="مثال: رياضيات" /></div>
+      <div class="form-group"><label>الوحدة</label><input id="upUnit" placeholder="مثال: الوحدة الأولى" /></div>
+    </div>
+    <div class="form-group"><label>عنوان الدرس</label><input id="upTitle" placeholder="مثال: جمع وطرح الكسور" /></div>
+    <div class="grid-3">
+      <div class="form-group"><label>الصف</label><input id="upGrade" placeholder="مثال: الخامس" /></div>
+      <div class="form-group"><label>الشعبة</label><input id="upSection" placeholder="مثال: الأولى" /></div>
+      <div class="form-group"><label>التاريخ</label><input type="date" id="upDate" value="${today()}" /></div>
+    </div>
+    <div class="form-group"><label>طريقة الإعطاء</label><input id="upMethod" placeholder="مثال: عرض تقديمي، عمل مجموعات..." /></div>
+    <div class="form-group"><label>أهداف الدرس</label><textarea id="upObjectives" rows="2" placeholder="ماذا يتوقع من الطالب أن يتعلم؟"></textarea></div>
+    <div class="form-group"><label>سير الدرس</label><textarea id="upActivities" rows="3" placeholder="التمهيد، الشرح، التطبيق، الخ..."></textarea></div>
+    <div class="form-group"><label>قفل الدرس</label><textarea id="upClosure" rows="2" placeholder="كيف سيتم إنهاء الدرس وتلخيصه؟"></textarea></div>
+    <div class="form-group"><label>وسائل مستخدمة</label><input id="upMaterials" placeholder="سبورة، كتاب، أوراق عمل..." /></div>
+    <div class="form-group"><label>ملاحظات</label><input id="upNotes" placeholder="أي ملاحظات إضافية" /></div>
+    
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="savePlan()">حفظ التحضير</button></div>
   `);
 }
 
-async function uploadPlan(){
-  const date = $('upDate').value, file = $('upFile').files[0]; if(!file) return;
-  if (file.size > 2 * 1024 * 1024) { toast('أقل من 2MB', 'error'); return; }
-  const fileExt = file.name.split('.').pop(), path = `${currentUser.id}/${date}_${Date.now()}.${fileExt}`;
-  const { error: upErr } = await sb.storage.from(BUCKET_NAME).upload(path, file);
-  if(upErr){ toast('فشل الرفع', 'error'); return; }
-  await sb.from('lesson_plans').insert({ teacher_id: currentUser.id, plan_date: date, file_url: path });
-  closeModal(); toast('تم الرفع', 'success'); renderMyPlans();
+async function savePlan(){
+  const date = $('upDate').value;
+  const subject = $('upSubject').value.trim();
+  const unit = $('upUnit').value.trim();
+  const title = $('upTitle').value.trim();
+  const grade = $('upGrade').value.trim();
+  const section = $('upSection').value.trim();
+  const method = $('upMethod').value.trim();
+  const objectives = $('upObjectives').value.trim();
+  const activities = $('upActivities').value.trim();
+  const closure = $('upClosure').value.trim();
+  const materials = $('upMaterials').value.trim();
+  const notes = $('upNotes').value.trim();
+  
+  if(!subject || !title || !objectives || !activities) { toast('يرجى ملء المادة، العنوان، الأهداف، وسير الدرس', 'error'); return; }
+
+  const { error } = await sb.from('lesson_plans').insert({ 
+    teacher_id: currentUser.id, 
+    plan_date: date, 
+    subject: subject,
+    unit: unit,
+    lesson_title: title,
+    grade: grade,
+    section: section,
+    teaching_method: method,
+    objectives: objectives,
+    activities: activities,
+    lesson_closure: closure,
+    materials_used: materials,
+    teacher_notes: notes
+  });
+
+  if(error){ toast('فشل الحفظ: '+error.message, 'error'); return; }
+  closeModal(); toast('تم حفظ التحضير بنجاح', 'success'); renderMyPlans();
 }
 
-async function openMyPlanFile(path){
-  const { data } = await sb.storage.from(BUCKET_NAME).createSignedUrl(path, 300);
-  if(data) window.open(data.signedUrl, '_blank');
+async function openViewMyPlan(id){
+  const { data } = await sb.from('lesson_plans').select('*').eq('id', id).single();
+  if(!data) return;
+  openModal(`
+    <h3>تفاصيل التحضير (${fmt(data.plan_date)})</h3>
+    <div class="grid-2">
+      <div class="view-field"><label>المادة</label><p>${esc(data.subject || '—')}</p></div>
+      <div class="view-field"><label>الوحدة</label><p>${esc(data.unit || '—')}</p></div>
+    </div>
+    <div class="view-field"><label>عنوان الدرس</label><p>${esc(data.lesson_title || '—')}</p></div>
+    <div class="grid-3">
+      <div class="view-field"><label>الصف</label><p>${esc(data.grade || '—')}</p></div>
+      <div class="view-field"><label>الشعبة</label><p>${esc(data.section || '—')}</p></div>
+      <div class="view-field"><label>التاريخ</label><p>${fmt(data.plan_date)}</p></div>
+    </div>
+    <div class="view-field"><label>طريقة الإعطاء</label><p>${esc(data.teaching_method || '—')}</p></div>
+    <div class="view-field"><label>أهداف الدرس</label><p>${esc(data.objectives || '—')}</p></div>
+    <div class="view-field"><label>سير الدرس</label><p>${esc(data.activities || '—')}</p></div>
+    <div class="view-field"><label>قفل الدرس</label><p>${esc(data.lesson_closure || '—')}</p></div>
+    <div class="view-field"><label>وسائل مستخدمة</label><p>${esc(data.materials_used || '—')}</p></div>
+    <div class="view-field"><label>ملاحظاتك</label><p>${esc(data.teacher_notes || '—')}</p></div>
+
+    <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+    <h4 style="margin-bottom:10px;">حالة المراجعة: ${statusBadge(data.status)}</h4>
+    ${data.supervisor_notes ? `<div class="view-field" style="background:#fef3c7; border-color:#fde68a;"><label style="color:#92400e">ملاحظات الموجه</label><p>${esc(data.supervisor_notes)}</p></div>` : ''}
+    ${data.admin_notes ? `<div class="view-field" style="background:#dcfce7; border-color:#bbf7d0;"><label style="color:#166534">ملاحظات المدير</label><p>${esc(data.admin_notes)}</p></div>` : ''}
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إغلاق</button></div>
+  `);
 }
 
 async function renderReports(){
