@@ -736,7 +736,6 @@ async function loadNotifications(){
   } catch(e) { console.error(e); }
 }
 
-// 💡 تم إرجاع شرط الإشراف للموجهين بشكل صحيح
 function buildNav(){
   try {
     const links = [];
@@ -755,7 +754,7 @@ function buildNav(){
     }
     
     if(currentUser.role === 'supervisor'){
-      const dept = currentUser.department || 'all'; // افتراضي الكل
+      const dept = currentUser.department || 'all'; 
       if (dept === 'all' || dept === 'students') {
         links.push({ key:'students',   label:'🎓 إدارة الطلاب' });
         links.push({ key:'studentAtt', label:'🎒 دوام الطلاب' });
@@ -784,7 +783,6 @@ function setActiveNav(key){
   document.querySelectorAll('#navLinks a').forEach(a=>{ a.classList.toggle('active', a.dataset.view === key); });
 }
 
-// 💡 تم إرجاع حماية الصفحات للموجهين
 async function renderView(key){
   currentView = key;
   setActiveNav(key);
@@ -1164,33 +1162,38 @@ function processExcel() {
 }
 
 function openAddStudent(){
-  let classOptions = "";
-  if (currentUser.role === 'teacher') {
-    let assigned = currentUser.assigned_classes || [];
-    if (typeof assigned === 'string') {
-      if (assigned.startsWith('[') && assigned.endsWith(']')) {
-        try { assigned = JSON.parse(assigned); } catch(e) { assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean); }
-      } else if (assigned.startsWith('{') && assigned.endsWith('}')) {
-        assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
-      } else {
-        assigned = assigned.split(',').map(s => s.trim()).filter(Boolean);
+  try {
+    let classOptions = "";
+    if (currentUser.role === 'teacher') {
+      let assigned = currentUser.assigned_classes || [];
+      if (typeof assigned === 'string') {
+        if (assigned.startsWith('[') && assigned.endsWith(']')) {
+          try { assigned = JSON.parse(assigned); } catch(e) { assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean); }
+        } else if (assigned.startsWith('{') && assigned.endsWith('}')) {
+          assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+        } else {
+          assigned = assigned.split(',').map(s => s.trim()).filter(Boolean);
+        }
       }
+      if (!Array.isArray(assigned) || assigned.length === 0) {
+        toast('ليس لديك شعب مخصصة. تواصل مع الإدارة.', 'error');
+        return;
+      }
+      classOptions = assigned.map(s => `<option value="${s}">${s}</option>`).join('');
+    } else {
+      classOptions = SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('');
     }
-    if (!Array.isArray(assigned) || assigned.length === 0) {
-      toast('ليس لديك شعب مخصصة. تواصل مع الإدارة.', 'error');
-      return;
-    }
-    classOptions = assigned.map(s => `<option value="${s}">${s}</option>`).join('');
-  } else {
-    classOptions = SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('');
-  }
 
-  openModal(`
-    <h3>إضافة طالب جديد</h3>
-    <div class="form-group"><label>اسم الطالب الثلاثي</label><input id="stName" /></div>
-    <div class="form-group"><label>الصف / الشعبة</label><select id="stClass"><option value="">-- اختر --</option>${classOptions}</select></div>
-    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveStudent()">حفظ</button></div>
-  `);
+    openModal(`
+      <h3>إضافة طالب جديد</h3>
+      <div class="form-group"><label>اسم الطالب الثلاثي</label><input id="stName" /></div>
+      <div class="form-group"><label>الصف / الشعبة</label><select id="stClass"><option value="">-- اختر --</option>${classOptions}</select></div>
+      <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveStudent()">حفظ</button></div>
+    `);
+  } catch (error) {
+    console.error("Error opening modal:", error);
+    toast("حدث خطأ تقني: " + error.message, 'error');
+  }
 }
 
 async function saveStudent(){
@@ -1337,6 +1340,20 @@ async function renderGrades(){
   `;
 }
 
+async function openAddGrade(){
+  const { data: students } = await sb.from('students').select('*').order('class_name').order('full_name');
+  const filteredStudents = filterStudentDataByRole(students);
+  if(!filteredStudents || filteredStudents.length === 0) { toast('لا يوجد طلاب في شعبك', 'error'); return; }
+  openModal(`
+    <h3>إضافة علامة</h3>
+    <div class="form-group"><label>الطالب</label><select id="grStudent">${filteredStudents.map(s => `<option value="${s.id}">${esc(s.full_name)} (${esc(s.class_name)})</option>`).join('')}</select></div>
+    <div class="grid-2"><div class="form-group"><label>المادة</label><input id="grSubject" /></div><div class="form-group"><label>اسم المذاكرة</label><input id="grExamName" /></div></div>
+    <div class="grid-2"><div class="form-group"><label>التاريخ</label><input type="date" id="grDate" value="${today()}" /></div><div class="form-group"><label>الحالة</label><select id="grStatus" onchange="toggleGradeScore()"><option value="submitted">تم التقديم</option><option value="missing">لم يقدم</option></select></div></div>
+    <div class="form-group" id="scoreInputs"><label>العلامة (10/10)</label><input type="text" id="grScore" /></div>
+    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveGrade()">حفظ</button></div>
+  `);
+}
+
 function toggleGradeScore(){ $('scoreInputs').style.display = $('grStatus').value === 'submitted' ? 'block' : 'none'; }
 
 async function saveGrade(){
@@ -1459,7 +1476,6 @@ async function openPlanReview(planId){
   `);
 }
 
-// 💡 دالة حفظ المراجعة مع إضافة إشعار
 async function savePlanReview(planId, isSupervisor, teacherId){
   const status = $('prStatus').value;
   const notes = $('prNotes').value.trim();
@@ -1469,7 +1485,6 @@ async function savePlanReview(planId, isSupervisor, teacherId){
   const { error } = await sb.from('lesson_plans').update(updates).eq('id', planId);
   if(error){ toast('فشل الحفظ: '+error.message,'error'); return; }
   
-  // إرسال إشعار للأستاذ
   if (status === 'rejected' || status === 'approved') {
     const titleMsg = status === 'rejected' ? 'تم رفض دفتر التحضير' : 'تم قبول دفتر التحضير';
     const roleStr = isSupervisor ? 'الموجه' : 'المدير';
@@ -1562,7 +1577,6 @@ async function savePlan(){
   closeModal(); toast('تم حفظ التحضير بنجاح', 'success'); renderMyPlans();
 }
 
-// 💡 تعديل: فتح التحضير للتعديل
 async function openEditPlan(id) {
   const { data } = await sb.from('lesson_plans').select('*').eq('id', id).single();
   if(!data) return;
@@ -1590,7 +1604,6 @@ async function openEditPlan(id) {
   `);
 }
 
-// 💡 دالة حفظ التعديلات وإرجاع الحالة إلى "قيد المراجعة"
 async function updatePlan(id) {
   const date = $('edDate').value;
   const subject = $('edSubject').value.trim();
@@ -1611,8 +1624,8 @@ async function updatePlan(id) {
     plan_date: date, 
     subject, unit, lesson_title: title, grade, section, teaching_method: method, 
     objectives, activities, lesson_closure: closure, materials_used: materials, teacher_notes: notes,
-    status: 'pending', // إعادة الحالة لقيد المراجعة
-    supervisor_notes: null, // مسح ملاحظات المراجعة القديمة
+    status: 'pending', 
+    supervisor_notes: null, 
     admin_notes: null
   };
 
