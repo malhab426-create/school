@@ -444,26 +444,31 @@ function attBadge(s){
   return '<span class="badge badge-info">لم يُسجل</span>';
 }
 
-// 💡 دالة التطبيع المصححة (لحل مشكلة اختلاف أسماء الصفوف)
+// 💡 دالة التطبيع الخارقة (تتجاهل ال التعريف، الهمزات، المسافات، والشرطات)
 function normalizeClassName(str) {
   if (!str) return "";
-  return str
-    .replace(/[أإآ]/g, "ا")
-    .replace(/ة/g, "ه")
-    .replace(/ى/g, "ي") // توحيد الياء
-    .replace(/-/g, " ")
-    .replace(/(^|\s)ال/g, "$1") // إزالة "ال" بطريقة صحيحة
-    .replace(/\s+/g, " ")
-    .trim();
+  let s = String(str).toLowerCase().trim();
+  s = s.replace(/[أإآ]/g, "ا");
+  s = s.replace(/[ةه]/g, "ه");
+  s = s.replace(/[ىي]/g, "ي");
+  s = s.replace(/[^\w\s\u0600-\u06FF]/g, " "); // إزالة أي علامات ترقيم أو شرطات
+  s = s.replace(/(^|\s)ال/g, "$1"); // إزالة "ال" من بداية الكلمات
+  s = s.replace(/\s+/g, " "); // إزالة المسافات الزائدة
+  return s;
 }
 
-// دالة فلترة الطلاب حسب صلاحيات الأستاذ والموجه
+// دالة فلترة الطلاب (تمت حمايتها من أخطاء قاعدة البيانات)
 function filterStudentDataByRole(data) {
   if (!data) return [];
   if (currentUser.role === 'admin') return data;
 
   if (currentUser.role === 'teacher') {
-    if (!currentUser.assigned_classes || currentUser.assigned_classes.length === 0) return []; 
+    let assigned = currentUser.assigned_classes || [];
+    // في حال رجعت قاعدة البيانات النص كـ String بدل Array
+    if (typeof assigned === 'string') {
+      assigned = assigned.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (!Array.isArray(assigned) || assigned.length === 0) return []; 
     
     return data.filter(item => {
       const studentClass = item.class_name || (item.students && item.students.class_name);
@@ -471,8 +476,8 @@ function filterStudentDataByRole(data) {
       
       const normStudentClass = normalizeClassName(studentClass);
       
-      return currentUser.assigned_classes.some(assigned => {
-        const normAssigned = normalizeClassName(assigned);
+      return assigned.some(a => {
+        const normAssigned = normalizeClassName(a);
         return normStudentClass === normAssigned || normStudentClass.includes(normAssigned);
       });
     });
@@ -496,8 +501,13 @@ function filterStudentDataByRole(data) {
 function filterTeacherDataByRole(data) {
   if (!data) return [];
   if (currentUser.role !== 'supervisor') return data;
-  if (!currentUser.assigned_teachers || currentUser.assigned_teachers.length === 0) return data; 
-  return data.filter(item => currentUser.assigned_teachers.includes(item.id));
+  
+  let assignedT = currentUser.assigned_teachers || [];
+  if (typeof assignedT === 'string') {
+    assignedT = assignedT.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+  }
+  if (!Array.isArray(assignedT) || assignedT.length === 0) return data; 
+  return data.filter(item => assignedT.includes(item.id));
 }
 
 function filterTable() {
@@ -708,6 +718,7 @@ function buildNav(){
       links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
     }
     if(currentUser.role === 'teacher'){
+      links.push({ key:'students',   label:'🎓 طلابي' }); // أضفنا صفحة الطلاب للأستاذ
       links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
       links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
       links.push({ key:'myPlans',    label:'📄 دفتري' });
@@ -913,8 +924,16 @@ async function openEditUser(id) {
   const { data: user, error } = await sb.from('profiles').select('*').eq('id', id).single();
   if(error || !user) { toast('خطأ في جلب البيانات', 'error'); return; }
   const { data: allTeachers } = await sb.from('profiles').select('id, full_name').eq('role', 'teacher').order('full_name');
-  const userClasses = user.assigned_classes || [];
-  const userTeachers = user.assigned_teachers || [];
+  
+  let userClasses = user.assigned_classes || [];
+  if (typeof userClasses === 'string') {
+    userClasses = userClasses.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+  }
+
+  let userTeachers = user.assigned_teachers || [];
+  if (typeof userTeachers === 'string') {
+    userTeachers = userTeachers.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+  }
 
   let classesHtml = SECTIONS_LIST.map(c => `<label class="checkbox-item"><input type="checkbox" name="edit_classes" value="${c}" ${userClasses.includes(c) ? 'checked' : ''}> ${c}</label>`).join('');
   let teachersHtml = (allTeachers||[]).map(t => `<label class="checkbox-item"><input type="checkbox" name="edit_teachers" value="${t.id}" ${userTeachers.includes(t.id) ? 'checked' : ''}> ${esc(t.full_name)}</label>`).join('');
@@ -1066,11 +1085,15 @@ function processExcel() {
 function openAddStudent(){
   let classOptions = "";
   if (currentUser.role === 'teacher') {
-    if (!currentUser.assigned_classes || currentUser.assigned_classes.length === 0) {
+    let assigned = currentUser.assigned_classes || [];
+    if (typeof assigned === 'string') {
+      assigned = assigned.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (!Array.isArray(assigned) || assigned.length === 0) {
       toast('ليس لديك شعب مخصصة. تواصل مع الإدارة.', 'error');
       return;
     }
-    classOptions = currentUser.assigned_classes.map(s => `<option value="${s}">${s}</option>`).join('');
+    classOptions = assigned.map(s => `<option value="${s}">${s}</option>`).join('');
   } else {
     classOptions = SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('');
   }
@@ -1242,8 +1265,14 @@ async function renderPlans(){
   }
 
   let filteredPlans = data || [];
-  if (currentUser.role === 'supervisor' && currentUser.assigned_teachers && currentUser.assigned_teachers.length > 0) {
-    filteredPlans = filteredPlans.filter(p => currentUser.assigned_teachers.includes(p.teacher_id));
+  if (currentUser.role === 'supervisor') {
+    let assignedT = currentUser.assigned_teachers || [];
+    if (typeof assignedT === 'string') {
+      assignedT = assignedT.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (Array.isArray(assignedT) && assignedT.length > 0) {
+      filteredPlans = filteredPlans.filter(p => assignedT.includes(p.teacher_id));
+    }
   }
 
   $('mainContent').innerHTML = `
