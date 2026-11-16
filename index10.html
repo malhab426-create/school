@@ -444,14 +444,15 @@ function attBadge(s){
   return '<span class="badge badge-info">لم يُسجل</span>';
 }
 
-// دالة التطبيع للشعب
+// 💡 دالة التطبيع المصححة (لحل مشكلة اختلاف أسماء الصفوف)
 function normalizeClassName(str) {
   if (!str) return "";
   return str
     .replace(/[أإآ]/g, "ا")
     .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي") // توحيد الياء
     .replace(/-/g, " ")
-    .replace(/\bال/g, "")
+    .replace(/(^|\s)ال/g, "$1") // إزالة "ال" بطريقة صحيحة
     .replace(/\s+/g, " ")
     .trim();
 }
