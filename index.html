@@ -1293,8 +1293,35 @@ async function saveStudentAtt(studentId, status){
 
 async function renderGrades(){
   const { data } = await sb.from('student_grades').select('*, students(full_name, class_name)').order('date', {ascending:false});
-  const filteredData = filterStudentDataByRole(data);
   
+  let filteredData = data || [];
+
+  // 💡 فلترة العلامات للأستاذ (دون التأثير على بقية الصلاحيات)
+  if (currentUser.role === 'teacher') {
+    let assigned = currentUser.assigned_classes || [];
+    if (typeof assigned === 'string') {
+      if (assigned.startsWith('[') && assigned.endsWith(']')) {
+        try { assigned = JSON.parse(assigned); } catch(e) { assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean); }
+      } else if (assigned.startsWith('{') && assigned.endsWith('}')) {
+        assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+      } else {
+        assigned = assigned.split(',').map(s => s.trim()).filter(Boolean);
+      }
+    }
+    
+    if (!Array.isArray(assigned) || assigned.length === 0) {
+      filteredData = [];
+    } else {
+      const assignedKeys = assigned.map(a => getStandardKey(String(a).trim()));
+      
+      filteredData = filteredData.filter(g => {
+        if (!g.students || !g.students.class_name) return false;
+        const studentKey = getStandardKey(g.students.class_name);
+        return assignedKeys.includes(studentKey);
+      });
+    }
+  }
+
   $('mainContent').innerHTML = `
     <div class="page-head"><div><h2>العلامات</h2></div><div style="display:flex; gap:10px;"><button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('العلامات')">📥 تصدير</button><button class="btn btn-primary" onclick="openAddGrade()">➕ إضافة علامة</button></div></div>
     <div class="card">
@@ -1303,25 +1330,11 @@ async function renderGrades(){
         <thead><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>المادة</th><th>اسم المذاكرة</th><th>الحالة</th><th>العلامة</th><th>إجراء</th></tr></thead>
         <tbody>
           ${(filteredData||[]).map(g=>`
-            <tr><td>${fmt(g.date)}</td><td>${esc(g.students?.full_name || '—')}</td><td><span class="badge badge-info">${esc(g.students?.class_name || '—')}</span></td><td>${esc(g.subject)}</td><td>${esc(g.exam_name)}</td><td>${g.status === 'submitted' ? '<span class="badge badge-success">تم التقديم</span>' : '<span class="badge badge-danger">لم يقدم</span>'}</td><td>${g.status === 'submitted' ? `<b style="color:var(--success); font-size:16px;">${esc(g.score)}</b>` : '—'}</td><td><button class="btn btn-sm btn-danger" onclick="deleteGrade(${g.id})">حذف</button></td></tr>`).join('') || '<tr><td colspan="8" class="empty">لا توجد علامات</td></tr>'}
+            <tr><td>${fmt(g.date)}</td><td>${esc(g.students?.full_name || '—')}</td><td><span class="badge badge-info">${esc(g.students?.class_name || '—')}</span></td><td>${esc(g.subject)}</td><td>${esc(g.exam_name)}</td><td>${g.status === 'submitted' ? '<span class="badge badge-success">تم التقديم</span>' : '<span class="badge badge-danger">لم يقدم</span>'}</td><td>${g.status === 'submitted' ? `<b style="color:var(--success); font-size:16px;">${esc(g.score)}</b>` : '—'}</td><td><button class="btn btn-sm btn-danger" onclick="deleteGrade(${g.id})">حذف</button></td></tr>`).join('') || '<tr><td colspan="8" class="empty">لا توجد علامات مسجلة</td></tr>'}
         </tbody>
       </table>
     </div>
   `;
-}
-
-async function openAddGrade(){
-  const { data: students } = await sb.from('students').select('*').order('class_name').order('full_name');
-  const filteredStudents = filterStudentDataByRole(students);
-  if(!filteredStudents || filteredStudents.length === 0) { toast('لا يوجد طلاب في شعبك', 'error'); return; }
-  openModal(`
-    <h3>إضافة علامة</h3>
-    <div class="form-group"><label>الطالب</label><select id="grStudent">${filteredStudents.map(s => `<option value="${s.id}">${esc(s.full_name)} (${esc(s.class_name)})</option>`).join('')}</select></div>
-    <div class="grid-2"><div class="form-group"><label>المادة</label><input id="grSubject" /></div><div class="form-group"><label>اسم المذاكرة</label><input id="grExamName" /></div></div>
-    <div class="grid-2"><div class="form-group"><label>التاريخ</label><input type="date" id="grDate" value="${today()}" /></div><div class="form-group"><label>الحالة</label><select id="grStatus" onchange="toggleGradeScore()"><option value="submitted">تم التقديم</option><option value="missing">لم يقدم</option></select></div></div>
-    <div class="form-group" id="scoreInputs"><label>العلامة (10/10)</label><input type="text" id="grScore" /></div>
-    <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveGrade()">حفظ</button></div>
-  `);
 }
 
 function toggleGradeScore(){ $('scoreInputs').style.display = $('grStatus').value === 'submitted' ? 'block' : 'none'; }
