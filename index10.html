@@ -444,58 +444,80 @@ function attBadge(s){
   return '<span class="badge badge-info">لم يُسجل</span>';
 }
 
-// 💡 دالة التطبيع الخارقة (تتجاهل ال التعريف، الهمزات، المسافات، والشرطات)
-function normalizeClassName(str) {
-  if (!str) return "";
-  let s = String(str).toLowerCase().trim();
-  s = s.replace(/[أإآ]/g, "ا");
-  s = s.replace(/[ةه]/g, "ه");
-  s = s.replace(/[ىي]/g, "ي");
-  s = s.replace(/[^\w\s\u0600-\u06FF]/g, " "); // إزالة أي علامات ترقيم أو شرطات
-  s = s.replace(/(^|\s)ال/g, "$1"); // إزالة "ال" من بداية الكلمات
-  s = s.replace(/\s+/g, " "); // إزالة المسافات الزائدة
-  return s;
+// 💡 دالة استخراج المفتاح الموحد للشعبة (تحل مشكلة الاختلافات في الكتابة)
+function getStandardKey(classStr) {
+  if (!classStr) return "";
+  let s = String(classStr).trim().toLowerCase();
+  s = s.replace(/[أإآ]/g, "ا").replace(/[ةه]/g, "ه").replace(/[ىي]/g, "ي");
+  s = s.replace(/[^\w\s\u0600-\u06FF]/g, " "); // إزالة الرموز والشرطات
+  s = s.replace(/(^|\s)ال/g, "$1"); // إزالة "ال" التعريف
+  s = s.replace(/\s+/g, " ").trim();
+  
+  const words = s.split(" ");
+  let grade = "", section = "";
+  
+  for (let w of words) {
+    if (["اول", "1"].includes(w)) grade = "1";
+    else if (["ثاني", "2"].includes(w)) grade = "2";
+    else if (["ثالث", "3"].includes(w)) grade = "3";
+    else if (["رابع", "4"].includes(w)) grade = "4";
+    else if (["خامس", "5"].includes(w)) grade = "5";
+    else if (["سادس", "6"].includes(w)) grade = "6";
+    else if (["سابع", "7"].includes(w)) grade = "7";
+    else if (["ثامن", "8"].includes(w)) grade = "8";
+    else if (["تاسع", "9"].includes(w)) grade = "9";
+    
+    if (["اولي", "1"].includes(w)) section = "1";
+    else if (["ثانيه", "2"].includes(w)) section = "2";
+    else if (["ثالثه", "3"].includes(w)) section = "3";
+    else if (["رابعه", "4"].includes(w)) section = "4";
+  }
+  
+  if (!section && grade) section = "1"; // افتراضي
+  
+  return `${grade}-${section}`;
 }
 
-// دالة فلترة الطلاب (تمت حمايتها من أخطاء قاعدة البيانات)
+// دالة فلترة الطلاب (تستخدم المفتاح الموحد وتزيل التكرار)
 function filterStudentDataByRole(data) {
   if (!data) return [];
-  if (currentUser.role === 'admin') return data;
+  
+  // إزالة تكرار الطلاب (لأن بعض الأسماء مكررة بالداتابيس)
+  const uniqueData = Array.from(new Map(data.map(item => [item.id, item])).values());
+
+  if (currentUser.role === 'admin') return uniqueData;
 
   if (currentUser.role === 'teacher') {
     let assigned = currentUser.assigned_classes || [];
-    // في حال رجعت قاعدة البيانات النص كـ String بدل Array
     if (typeof assigned === 'string') {
       assigned = assigned.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
     }
-    if (!Array.isArray(assigned) || assigned.length === 0) return []; 
+    if (!Array.isArray(assigned) || assigned.length === 0) return [];
     
-    return data.filter(item => {
+    const assignedKeys = assigned.map(a => getStandardKey(a));
+    
+    return uniqueData.filter(item => {
       const studentClass = item.class_name || (item.students && item.students.class_name);
       if (!studentClass) return false;
-      
-      const normStudentClass = normalizeClassName(studentClass);
-      
-      return assigned.some(a => {
-        const normAssigned = normalizeClassName(a);
-        return normStudentClass === normAssigned || normStudentClass.includes(normAssigned);
-      });
+      const studentKey = getStandardKey(studentClass);
+      return assignedKeys.includes(studentKey);
     });
   }
 
   if (currentUser.role === 'supervisor') {
     const scope = currentUser.scope || 'all';
-    if (scope === 'all') return data;
-    const grade1to4 = ['اول', 'ثاني', 'ثالث', 'رابع'];
-    const grade5to9 = ['خامس', 'سادس', 'سابع', 'ثامن', 'تاسع'];
-    return data.filter(item => {
-      const className = normalizeClassName(item.class_name || (item.students && item.students.class_name) || '');
-      if (scope === '1-4') return grade1to4.some(g => className.includes(g));
-      if (scope === '5-9') return grade5to9.some(g => className.includes(g));
+    if (scope === 'all') return uniqueData;
+    const grade1to4 = ['1', '2', '3', '4'];
+    const grade5to9 = ['5', '6', '7', '8', '9'];
+    return uniqueData.filter(item => {
+      const className = getStandardKey(item.class_name || (item.students && item.students.class_name) || '');
+      const grade = className.split('-')[0];
+      if (scope === '1-4') return grade1to4.includes(grade);
+      if (scope === '5-9') return grade5to9.includes(grade);
       return true;
     });
   }
-  return data;
+  return uniqueData;
 }
 
 function filterTeacherDataByRole(data) {
@@ -718,7 +740,7 @@ function buildNav(){
       links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
     }
     if(currentUser.role === 'teacher'){
-      links.push({ key:'students',   label:'🎓 طلابي' }); // أضفنا صفحة الطلاب للأستاذ
+      links.push({ key:'students',   label:'🎓 طلابي' });
       links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
       links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
       links.push({ key:'myPlans',    label:'📄 دفتري' });
@@ -1025,6 +1047,21 @@ async function openTeacherProfile(id, name){
 async function renderStudents(){
   const { data } = await sb.from('students').select('*').order('class_name').order('full_name');
   const filteredData = filterStudentDataByRole(data);
+
+  // 💡 إظهار الشعب المخصصة للأستاذ للتأكيد
+  let assignedText = "";
+  if (currentUser.role === 'teacher') {
+    let assigned = currentUser.assigned_classes || [];
+    if (typeof assigned === 'string') {
+      assigned = assigned.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (Array.isArray(assigned) && assigned.length > 0) {
+      assignedText = assigned.join(' | ');
+    } else {
+      assignedText = "لا يوجد شعب مخصصة";
+    }
+  }
+
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>إدارة الطلاب</h2></div>
@@ -1035,6 +1072,11 @@ async function renderStudents(){
       </div>
     </div>
     <div class="card">
+      ${currentUser.role === 'teacher' ? `
+        <div style="background:#e0f2fe; border:1px solid #7dd3fc; color:#0369a1; padding:10px; border-radius:8px; margin-bottom:15px; font-size:14px;">
+          <strong>الشعب المخصصة لك في النظام:</strong> ${assignedText}
+        </div>
+      ` : ''}
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
         <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم..." style="flex-grow:1; max-width:300px; padding:10px; border:1px solid #ccc; border-radius:8px;">
         ${getSectionFilterHTML()}
@@ -1050,7 +1092,7 @@ async function renderStudents(){
                 ${currentUser.role !== 'teacher' ? `<button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">حذف</button>` : ''}
               </td>
             </tr>
-          `).join('') || '<tr><td colspan="4" class="empty">لا يوجد طلاب مسجلين</td></tr>'}
+          `).join('') || '<tr><td colspan="4" class="empty">لا يوجد طلاب مسجلين في شعبك</td></tr>'}
         </tbody>
       </table>
     </div>
