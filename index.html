@@ -208,7 +208,7 @@ table tr:hover td{background:#fafbfd;}
 </head>
 <body>
 
-<!-- ============ LANDING PAGE ============ -->
+
 <div id="landing">
 <header>
   <div class="topbar">
@@ -320,13 +320,13 @@ table tr:hover td{background:#fafbfd;}
       <a href="#staff">الكادر</a>
       <a href="#" onclick="showLogin();return false;">تسجيل الدخول</a>
     </div>
-    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0947909804</p><p>✉️ k.haroush@zeyd.org</p></div>
+    <div><h4>تواصل معنا</h4><p>📍 الشمال السوري</p><p>📞 0947909804</p><p>✉️ K.haroush@zeyd.org</p></div>
   </div>
   <div class="footer-bottom">© 2025 مدارس الإمام أحمد للأيتام في الشمال السوري — جميع الحقوق محفوظة</div>
 </footer>
 </div>
 
-<!-- ============ LOGIN PAGE ============ -->
+
 <div id="loginPage" class="auth-page" style="display:none">
   <div class="auth-card">
     <h2>تسجيل الدخول</h2>
@@ -347,7 +347,7 @@ table tr:hover td{background:#fafbfd;}
   </div>
 </div>
 
-<!-- ============ DASHBOARD ============ -->
+
 <div id="dashboard" class="dash-wrap" style="display:none">
   <div class="mobile-topbar">
     <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
@@ -386,13 +386,11 @@ table tr:hover td{background:#fafbfd;}
   </div>
 </div>
 
-<!-- ============ MODAL & TOAST ============ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modalBody"></div>
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- ============ SUPABASE ============ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL  = "https://msewuspuarnifzfvouik.supabase.co";
@@ -446,57 +444,99 @@ function attBadge(s){
   return '<span class="badge badge-info">لم يُسجل</span>';
 }
 
-function normalizeClassName(str) {
-  if (!str) return "";
-  return str
-    .replace(/[أإآ]/g, "ا")
-    .replace(/ة/g, "ه")
-    .replace(/-/g, " ")
-    .replace(/\bال/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+// 💡 دالة استخراج المفتاح الموحد للشعبة (تم اصلاحها بالكامل)
+function getStandardKey(classStr) {
+  if (!classStr) return "";
+  let s = String(classStr).trim().toLowerCase();
+  s = s.replace(/[أإآ]/g, "ا").replace(/[ةه]/g, "ه").replace(/[ىي]/g, "ي");
+  s = s.replace(/[^\u0600-\u06FF0-9]/g, " "); // إزالة الرموز والشرطات
+  s = s.replace(/\s+/g, " ").trim();
+  
+  // إزالة "ال" التعريف من بداية الكلمات
+  s = s.split(" ").map(w => w.startsWith("ال") && w.length > 2 ? w.substring(2) : w).join(" ");
+
+  let grade = "";
+  if (s.includes("اول")) grade = "1";
+  else if (s.includes("ثاني")) grade = "2";
+  else if (s.includes("ثالث")) grade = "3";
+  else if (s.includes("رابع")) grade = "4";
+  else if (s.includes("خامس")) grade = "5";
+  else if (s.includes("سادس")) grade = "6";
+  else if (s.includes("سابع")) grade = "7";
+  else if (s.includes("ثامن")) grade = "8";
+  else if (s.includes("تاسع")) grade = "9";
+  
+  let section = "";
+  if (s.includes("اولي")) section = "1";
+  else if (s.includes("ثانيه")) section = "2";
+  else if (s.includes("ثالثه")) section = "3";
+  else if (s.includes("رابعه")) section = "4";
+  
+  if (!section && grade) section = "1"; // افتراضي
+  
+  return `${grade}-${section}`;
 }
 
+// دالة فلترة الطلاب (تستخدم المفتاح الموحد وتزيل التكرار)
 function filterStudentDataByRole(data) {
   if (!data) return [];
-  if (currentUser.role === 'admin') return data;
+  
+  // إزالة تكرار الطلاب (بناءً على الاسم والصف)
+  const uniqueData = Array.from(new Map(data.map(item => [`${item.full_name}-${item.class_name}`, item])).values());
+
+  if (currentUser.role === 'admin') return uniqueData;
 
   if (currentUser.role === 'teacher') {
-    if (!currentUser.assigned_classes || currentUser.assigned_classes.length === 0) return []; 
+    let assigned = currentUser.assigned_classes || [];
+    // معالجة إذا كانت المصفوفة مخزنة كنص
+    if (typeof assigned === 'string') {
+      if (assigned.startsWith('[') && assigned.endsWith(']')) {
+        try { assigned = JSON.parse(assigned); } catch(e) { assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean); }
+      } else if (assigned.startsWith('{') && assigned.endsWith('}')) {
+        assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+      } else {
+        assigned = assigned.split(',').map(s => s.trim()).filter(Boolean);
+      }
+    }
     
-    return data.filter(item => {
+    if (!Array.isArray(assigned) || assigned.length === 0) return [];
+    
+    const assignedKeys = assigned.map(a => getStandardKey(String(a).trim()));
+    
+    return uniqueData.filter(item => {
       const studentClass = item.class_name || (item.students && item.students.class_name);
       if (!studentClass) return false;
-      
-      const normStudentClass = normalizeClassName(studentClass);
-      
-      return currentUser.assigned_classes.some(assigned => {
-        const normAssigned = normalizeClassName(assigned);
-        return normStudentClass === normAssigned || normStudentClass.includes(normAssigned);
-      });
+      const studentKey = getStandardKey(studentClass);
+      return assignedKeys.includes(studentKey);
     });
   }
 
   if (currentUser.role === 'supervisor') {
     const scope = currentUser.scope || 'all';
-    if (scope === 'all') return data;
-    const grade1to4 = ['اول', 'ثاني', 'ثالث', 'رابع'];
-    const grade5to9 = ['خامس', 'سادس', 'سابع', 'ثامن', 'تاسع'];
-    return data.filter(item => {
-      const className = normalizeClassName(item.class_name || (item.students && item.students.class_name) || '');
-      if (scope === '1-4') return grade1to4.some(g => className.includes(g));
-      if (scope === '5-9') return grade5to9.some(g => className.includes(g));
+    if (scope === 'all') return uniqueData;
+    const grade1to4 = ['1', '2', '3', '4'];
+    const grade5to9 = ['5', '6', '7', '8', '9'];
+    return uniqueData.filter(item => {
+      const className = getStandardKey(item.class_name || (item.students && item.students.class_name) || '');
+      const grade = className.split('-')[0];
+      if (scope === '1-4') return grade1to4.includes(grade);
+      if (scope === '5-9') return grade5to9.includes(grade);
       return true;
     });
   }
-  return data;
+  return uniqueData;
 }
 
 function filterTeacherDataByRole(data) {
   if (!data) return [];
   if (currentUser.role !== 'supervisor') return data;
-  if (!currentUser.assigned_teachers || currentUser.assigned_teachers.length === 0) return data; 
-  return data.filter(item => currentUser.assigned_teachers.includes(item.id));
+  
+  let assignedT = currentUser.assigned_teachers || [];
+  if (typeof assignedT === 'string') {
+    assignedT = assignedT.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+  }
+  if (!Array.isArray(assignedT) || assignedT.length === 0) return data; 
+  return data.filter(item => assignedT.includes(item.id));
 }
 
 function filterTable() {
@@ -707,6 +747,7 @@ function buildNav(){
       links.push({ key:'reports',    label:'📊 التقارير الشهرية' });
     }
     if(currentUser.role === 'teacher'){
+      links.push({ key:'students',   label:'🎓 طلابي' });
       links.push({ key:'studentAtt', label:'🎒 دوام طلابي' });
       links.push({ key:'grades',     label:'📝 العلامات والمذاكرات' });
       links.push({ key:'myPlans',    label:'📄 دفتري' });
@@ -912,8 +953,22 @@ async function openEditUser(id) {
   const { data: user, error } = await sb.from('profiles').select('*').eq('id', id).single();
   if(error || !user) { toast('خطأ في جلب البيانات', 'error'); return; }
   const { data: allTeachers } = await sb.from('profiles').select('id, full_name').eq('role', 'teacher').order('full_name');
-  const userClasses = user.assigned_classes || [];
-  const userTeachers = user.assigned_teachers || [];
+  
+  let userClasses = user.assigned_classes || [];
+  if (typeof userClasses === 'string') {
+    if (userClasses.startsWith('[') && userClasses.endsWith(']')) {
+      try { userClasses = JSON.parse(userClasses); } catch(e) { userClasses = userClasses.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean); }
+    } else if (userClasses.startsWith('{') && userClasses.endsWith('}')) {
+      userClasses = userClasses.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+    } else {
+      userClasses = userClasses.split(',').map(s => s.trim()).filter(Boolean);
+    }
+  }
+
+  let userTeachers = user.assigned_teachers || [];
+  if (typeof userTeachers === 'string') {
+    userTeachers = userTeachers.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+  }
 
   let classesHtml = SECTIONS_LIST.map(c => `<label class="checkbox-item"><input type="checkbox" name="edit_classes" value="${c}" ${userClasses.includes(c) ? 'checked' : ''}> ${c}</label>`).join('');
   let teachersHtml = (allTeachers||[]).map(t => `<label class="checkbox-item"><input type="checkbox" name="edit_teachers" value="${t.id}" ${userTeachers.includes(t.id) ? 'checked' : ''}> ${esc(t.full_name)}</label>`).join('');
@@ -954,7 +1009,9 @@ async function saveEditUser(id) {
   const name = $('edName').value.trim(), role = $('edRole').value;
   if(!name) { toast('الاسم مطلوب', 'error'); return; }
   let department = null, scope = 'all', assigned_classes = [], assigned_teachers = [];
-  if (role === 'teacher') { assigned_classes = Array.from(document.querySelectorAll('input[name="edit_classes"]:checked')).map(cb => cb.value); } 
+  if (role === 'teacher') { 
+    assigned_classes = Array.from(document.querySelectorAll('input[name="edit_classes"]:checked')).map(cb => cb.value.trim()); 
+  } 
   else if (role === 'supervisor') {
     department = $('edDept').value; scope = $('edScope').value;
     assigned_teachers = Array.from(document.querySelectorAll('input[name="edit_teachers"]:checked')).map(cb => cb.value);
@@ -1005,6 +1062,23 @@ async function openTeacherProfile(id, name){
 async function renderStudents(){
   const { data } = await sb.from('students').select('*').order('class_name').order('full_name');
   const filteredData = filterStudentDataByRole(data);
+
+  // إظهار الشعب المخصصة للتأكد
+  let assignedText = "";
+  if (currentUser.role === 'teacher') {
+    let assigned = currentUser.assigned_classes || [];
+    if (typeof assigned === 'string') {
+      if (assigned.startsWith('[') && assigned.endsWith(']')) {
+        try { assigned = JSON.parse(assigned); } catch(e) { assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean); }
+      } else if (assigned.startsWith('{') && assigned.endsWith('}')) {
+        assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+      } else {
+        assigned = assigned.split(',').map(s => s.trim()).filter(Boolean);
+      }
+    }
+    assignedText = Array.isArray(assigned) && assigned.length > 0 ? assigned.join(' | ') : 'لا يوجد شعب مخصصة';
+  }
+
   $('mainContent').innerHTML = `
     <div class="page-head">
       <div><h2>إدارة الطلاب</h2></div>
@@ -1015,6 +1089,11 @@ async function renderStudents(){
       </div>
     </div>
     <div class="card">
+      ${currentUser.role === 'teacher' ? `
+        <div style="background:#e0f2fe; border:1px solid #7dd3fc; color:#0369a1; padding:10px; border-radius:8px; margin-bottom:15px; font-size:14px;">
+          <strong>الشعب المخصصة لك في النظام:</strong> ${assignedText}
+        </div>
+      ` : ''}
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
         <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث بالاسم..." style="flex-grow:1; max-width:300px; padding:10px; border:1px solid #ccc; border-radius:8px;">
         ${getSectionFilterHTML()}
@@ -1030,7 +1109,7 @@ async function renderStudents(){
                 ${currentUser.role !== 'teacher' ? `<button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">حذف</button>` : ''}
               </td>
             </tr>
-          `).join('') || '<tr><td colspan="4" class="empty">لا يوجد طلاب مسجلين</td></tr>'}
+          `).join('') || '<tr><td colspan="4" class="empty">لا يوجد طلاب مسجلين في شعبك</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -1061,15 +1140,24 @@ function processExcel() {
   reader.readAsArrayBuffer(file);
 }
 
-// 💡 تعديل: إضافة الطالب حسب صلاحيات المستخدم
 function openAddStudent(){
   let classOptions = "";
   if (currentUser.role === 'teacher') {
-    if (!currentUser.assigned_classes || currentUser.assigned_classes.length === 0) {
+    let assigned = currentUser.assigned_classes || [];
+    if (typeof assigned === 'string') {
+      if (assigned.startsWith('[') && assigned.endsWith(']')) {
+        try { assigned = JSON.parse(assigned); } catch(e) { assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean); }
+      } else if (assigned.startsWith('{') && assigned.endsWith('}')) {
+        assigned = assigned.replace(/[\[\]{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+      } else {
+        assigned = assigned.split(',').map(s => s.trim()).filter(Boolean);
+      }
+    }
+    if (!Array.isArray(assigned) || assigned.length === 0) {
       toast('ليس لديك شعب مخصصة. تواصل مع الإدارة.', 'error');
       return;
     }
-    classOptions = currentUser.assigned_classes.map(s => `<option value="${s}">${s}</option>`).join('');
+    classOptions = assigned.map(s => `<option value="${s}">${s}</option>`).join('');
   } else {
     classOptions = SECTIONS_LIST.map(s => `<option value="${s}">${s}</option>`).join('');
   }
@@ -1241,8 +1329,14 @@ async function renderPlans(){
   }
 
   let filteredPlans = data || [];
-  if (currentUser.role === 'supervisor' && currentUser.assigned_teachers && currentUser.assigned_teachers.length > 0) {
-    filteredPlans = filteredPlans.filter(p => currentUser.assigned_teachers.includes(p.teacher_id));
+  if (currentUser.role === 'supervisor') {
+    let assignedT = currentUser.assigned_teachers || [];
+    if (typeof assignedT === 'string') {
+      assignedT = assignedT.replace(/[{}"']/g, '').split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (Array.isArray(assignedT) && assignedT.length > 0) {
+      filteredPlans = filteredPlans.filter(p => assignedT.includes(p.teacher_id));
+    }
   }
 
   $('mainContent').innerHTML = `
@@ -1324,19 +1418,39 @@ async function openPlanReview(planId){
 
     <div class="actions">
       <button class="btn" style="background:#e2e8f0; color:#333; font-weight:bold;" onclick="closeModal()">إغلاق</button>
-      <button class="btn btn-primary" onclick="savePlanReview(${planId}, ${isSupervisor})">حفظ القرار</button>
+      <button class="btn btn-primary" onclick="savePlanReview(${planId}, ${isSupervisor}, '${data.teacher_id}')">حفظ القرار</button>
     </div>
   `);
 }
 
-async function savePlanReview(planId, isSupervisor){
+// 💡 دالة حفظ المراجعة مع إضافة إشعار
+async function savePlanReview(planId, isSupervisor, teacherId){
   const status = $('prStatus').value;
   const notes = $('prNotes').value.trim();
   const updates = { status: status };
   if(isSupervisor) { updates.supervisor_notes = notes; } else { updates.admin_notes = notes; }
+  
   const { error } = await sb.from('lesson_plans').update(updates).eq('id', planId);
   if(error){ toast('فشل الحفظ: '+error.message,'error'); return; }
-  closeModal(); toast('تم حفظ المراجعة بنجاح','success'); renderPlans();
+  
+  // إرسال إشعار للأستاذ
+  if (status === 'rejected' || status === 'approved') {
+    const titleMsg = status === 'rejected' ? 'تم رفض دفتر التحضير' : 'تم قبول دفتر التحضير';
+    const roleStr = isSupervisor ? 'الموجه' : 'المدير';
+    const msg = status === 'rejected' 
+      ? `تم رفض دفتر التحضير الخاص بك من قبل ${roleStr}. يرجى مراجعة الملاحظات.`
+      : `تم قبول واعتماد دفتر التحضير الخاص بك من قبل ${roleStr}.`;
+      
+    await sb.from('notifications').insert({
+      user_id: teacherId,
+      title: titleMsg,
+      message: msg
+    });
+  }
+  
+  closeModal(); 
+  toast('تم حفظ المراجعة بنجاح','success'); 
+  renderPlans();
 }
 
 /* ========== MY PLANS (Teacher Form) ========== */
