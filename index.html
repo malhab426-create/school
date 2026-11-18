@@ -1106,7 +1106,7 @@ async function renderStudents(){
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('الطلاب')">📥 تصدير</button>
         ${currentUser.role !== 'teacher' ? `<button class="btn btn-success" onclick="openExcelUpload()">📊 رفع إكسل</button>` : ''}
-        <button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>
+        ${currentUser.role !== 'teacher' ? `<button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>` : ''}
       </div>
     </div>
     <div class="card">
@@ -1266,7 +1266,7 @@ async function renderStudentAtt(){
   const map = {}; (att||[]).forEach(a=> map[a.student_id] = a);
 
   $('mainContent').innerHTML = `
-    <div class="page-head"><div><h2>دوام الطلاب</h2><p>${fmt(date)}</p></div><div style="display:flex; gap:10px;"><button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الطلاب')">📥 تصدير</button><button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button></div></div>
+    <div class="page-head"><div><h2>دوام الطلاب</h2><p>${fmt(date)}</p></div><div style="display:flex; gap:10px;"><button class="btn" style="background:#fff; border:1px solid #ccc; color:#333;" onclick="exportTableToCSV('دوام_الطلاب')">📥 تصدير</button>${currentUser.role !== 'teacher' ? `<button class="btn btn-primary" onclick="openAddStudent()">➕ إضافة طالب</button>` : ''}</div></div>
     <div class="card">
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
         <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="🔍 بحث..." style="flex-grow:1; max-width:300px; padding:10px; border:1px solid #ccc; border-radius:8px;">
@@ -1349,17 +1349,41 @@ async function openAddGrade(){
     <div class="form-group"><label>الطالب</label><select id="grStudent">${filteredStudents.map(s => `<option value="${s.id}">${esc(s.full_name)} (${esc(s.class_name)})</option>`).join('')}</select></div>
     <div class="grid-2"><div class="form-group"><label>المادة</label><input id="grSubject" /></div><div class="form-group"><label>اسم المذاكرة</label><input id="grExamName" /></div></div>
     <div class="grid-2"><div class="form-group"><label>التاريخ</label><input type="date" id="grDate" value="${today()}" /></div><div class="form-group"><label>الحالة</label><select id="grStatus" onchange="toggleGradeScore()"><option value="submitted">تم التقديم</option><option value="missing">لم يقدم</option></select></div></div>
-    <div class="form-group" id="scoreInputs"><label>العلامة (10/10)</label><input type="text" id="grScore" /></div>
+    <div class="grid-2" id="scoreInputs">
+      <div class="form-group">
+        <label>الدرجة</label>
+        <input type="number" id="grScore" placeholder="مثال: 85" />
+      </div>
+      <div class="form-group">
+        <label>من أصل (العلامة العظمى)</label>
+        <select id="grMaxScore">
+          <option value="50">50</option>
+          <option value="100" selected>100</option>
+          <option value="200">200</option>
+          <option value="400">400</option>
+        </select>
+      </div>
+    </div>
     <div class="actions"><button class="btn" style="background:#e2e8f0; color:#333;" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveGrade()">حفظ</button></div>
   `);
 }
 
-function toggleGradeScore(){ $('scoreInputs').style.display = $('grStatus').value === 'submitted' ? 'block' : 'none'; }
+function toggleGradeScore(){ $('scoreInputs').style.display = $('grStatus').value === 'submitted' ? 'grid' : 'none'; }
 
 async function saveGrade(){
   const student_id = $('grStudent').value, subject = $('grSubject').value.trim(), exam_name = $('grExamName').value.trim();
-  const date = $('grDate').value, status = $('grStatus').value, score = status === 'submitted' ? $('grScore').value.trim() : '0';
-  if(!subject || !exam_name || (status === 'submitted' && !score)){ toast('املأ الحقول', 'error'); return; }
+  const date = $('grDate').value, status = $('grStatus').value;
+  
+  let score = '0';
+  if (status === 'submitted') {
+    const scoreValue = $('grScore').value.trim();
+    const maxScore = $('grMaxScore').value;
+    if (!scoreValue) { toast('يرجى كتابة الدرجة', 'error'); return; }
+    score = `${scoreValue} / ${maxScore}`;
+  }
+
+  if(!subject || !exam_name){ toast('املأ الحقول', 'error'); return; }
+  
   const { error } = await sb.from('student_grades').insert({ student_id, subject, exam_name, date, status, score, recorded_by: currentUser.id });
   if(error){ toast('فشل', 'error'); return; }
   closeModal(); toast('تم الحفظ', 'success'); renderGrades();
